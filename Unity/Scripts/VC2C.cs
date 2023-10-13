@@ -6,13 +6,13 @@ public class VC2C : Singleton<VC2C>
 {
     public CinemachineVirtualCamera CV;
     public CinemachineFramingTransposer CFT;
+    [Range(0f, 20f)]
     public float O_YD = 2f;
     public bool SYD_IE = false;
     public AnimationCurve MyCyrve;
     void Update()
     {
         //CFT.m_YDamping = 0;
-
     }
     void Start()
     {

@@ -645,7 +645,7 @@ public class PlayerController : MonoBehaviour
             IsRunning = false;
             IsMoving = false;
         }
-        UI_Test.Instance.text = rb.velocity.y.ToString() +"   "+¡@VC2C.Instance.CFT.m_YDamping.ToShortString();
+        //UI_Test.Instance.text = rb.velocity.y.ToString() +"   "+¡@VC2C.Instance.CFT.m_YDamping.ToShortString();
         if (!VC2C.Instance.SYD_IE)
         {
             // ¼Y¸¨¶ZÂ÷¤j©ó10
