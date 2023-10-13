@@ -637,44 +637,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool cameraControlExecuted = false;
+    private bool SYD_on = false;
     private void Update()
     {
-        //Debug.Log(lockplay);
-        //Debug.Log(touchingDirections.IsGrounded&& touchingDirections.IsOnwall);
-
         if (lockplay)
         {
             IsRunning = false;
             IsMoving = false;
         }
+        UI_Test.Instance.text = rb.velocity.y.ToString() +"   "+¡@VC2C.Instance.CFT.m_YDamping.ToShortString();
+        if (!VC2C.Instance.SYD_IE)
+        {
+            // ¼Y¸¨¶ZÂ÷¤j©ó10
+            if (rb.velocity.y < -10 && !SYD_on)
+            {
+                
+                VC2C.Instance.SYD(true, 2f, 2f, 0.25f);
+                SYD_on = true;
+            }
+            else if(rb.velocity.y < -10 && SYD_on)
+            {
+                VC2C.Instance.CFT.m_YDamping = 0.25f;
+            }
+            else if(touchingDirections.IsGrounded && SYD_on)
+            {
+                SYD_on = false;
+                VC2C.Instance.SYD(false, 2f, 2f, 0.25f);
+            }
+        }
 
-        //if(touchingDirections.IsOnwall)
+        //if (!VC2C.Instance.SYD_IE)
         //{
-        //    gameObject.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + 0.1f);
-        //}
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1,1);
-        Debug.Log(rb.velocity.y);
-        //if (rb.velocity.y >= 0)
-        //   {
-        //        CVCamera_control.CFT.m_XDamping = 2f;
-        //   }
-
-        //if(!cameraControlExecuted)
-        //{
-        //    if (rb.velocity.y >= 0)
+        //    if (rb.velocity.y > -0.3 && VC2C.Instance.CFT.m_YDamping != 0)
         //    {
-        //        CVCamera_control.CFT_YD(true);
+        //        VC2C.Instance.SYD(true, 2f);
         //    }
-        //    else
+        //    else if (rb.velocity.y < 0 && VC2C.Instance.CFT.m_YDamping != 2)
         //    {
-        //        CVCamera_control.CFT_YD(false);
+        //        VC2C.Instance.SYD(false, 2f);
         //    }
-        //    cameraControlExecuted = true;
-        //}
-        //if(CVCamera_control.cameraControlExecuted)
-        //{
-        //    cameraControlExecuted = false;
         //}
     }
 }
