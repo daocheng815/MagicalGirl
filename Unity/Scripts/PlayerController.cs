@@ -646,6 +646,7 @@ public class PlayerController : MonoBehaviour
             IsMoving = false;
         }
         //UI_Test.Instance.text = rb.velocity.y.ToString() +"   "+¡@VC2C.Instance.CFT.m_YDamping.ToShortString();
+        
         if (!VC2C.Instance.SYD_IE)
         {
             // ¼Y¸¨¶ZÂ÷¤j©ó10
@@ -665,18 +666,6 @@ public class PlayerController : MonoBehaviour
                 VC2C.Instance.SYD(false, 2f, 2f, 0.25f);
             }
         }
-
-        //if (!VC2C.Instance.SYD_IE)
-        //{
-        //    if (rb.velocity.y > -0.3 && VC2C.Instance.CFT.m_YDamping != 0)
-        //    {
-        //        VC2C.Instance.SYD(true, 2f);
-        //    }
-        //    else if (rb.velocity.y < 0 && VC2C.Instance.CFT.m_YDamping != 2)
-        //    {
-        //        VC2C.Instance.SYD(false, 2f);
-        //    }
-        //}
     }
 }
 
