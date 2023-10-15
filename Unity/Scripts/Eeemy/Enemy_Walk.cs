@@ -136,7 +136,7 @@ public abstract class Enemy_Walk : MonoBehaviour
             {
                 //Debug.Log("碰撞牆壁翻轉");
                 FilpDirection();
-            }
+            }   
 
             if (!damageable.LockVelocity)
             {

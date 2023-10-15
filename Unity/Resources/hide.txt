@@ -1,0 +1,3 @@
+[lock_player]
+[hide,1]
+[unlock_player]

@@ -1,0 +1,10 @@
+[lock_player]
+[show,100]
+[button_st_show]
+[#p][r]果然我還是覺得要得到這份力量。[w]
+
+
+[hide]
+[button_st_hide]
+[unlock_player]
+

@@ -1,0 +1,11 @@
+[lock_player]
+[show,100]
+
+[button_st_show]
+[#o][r]不再多多做考慮嗎?處此之外，你應該沒有任何去處了吧?[w]
+
+
+[hide,100]
+[button_st_hide]
+[unlock_player]
+[choose1]

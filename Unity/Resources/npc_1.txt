@@ -1,0 +1,9 @@
+[lock_player]
+[show,10]
+
+商人[r]你好 想要購買什麼嗎[w]
+[shop]
+
+[hide,100]
+
+[unlock_player]

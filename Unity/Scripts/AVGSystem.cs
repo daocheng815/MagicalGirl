@@ -170,6 +170,20 @@ public class AVGSystem : MonoBehaviour
             fs.Stop();
             IsFsStop = true;
         });
+
+        fs.RegisterCommand("image_1_show", (List<string> _params) =>
+        {
+            character_image.Instance.ImageActive(true);
+            character_image.Instance.AddImage("player_idle",20,20,190,-220);
+        });
+        fs.RegisterCommand("image_1_hide", (List<string> _params) => {
+
+            character_image.Instance.ImageActive(false);
+        });
+        fs.RegisterCommand("image_1_offset", (List<string> _params) => {
+
+            character_image.Instance.Offset_Ani(0.5f, 100f, 100f);
+        });
     }
 
     private void buttonreset()
