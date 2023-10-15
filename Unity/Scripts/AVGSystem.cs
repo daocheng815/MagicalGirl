@@ -1,8 +1,6 @@
 using Flower;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public class AVGSystem : MonoBehaviour
 {
@@ -19,7 +17,6 @@ public class AVGSystem : MonoBehaviour
     public item thisItem2;
 
     public bool isDialog;
-
     
     // Start is called before the first frame update
     void Start()
@@ -48,15 +45,51 @@ public class AVGSystem : MonoBehaviour
             fs.ReadTextFromResource("start1");
         }
             
-
         fs.SetVariable("p", "常");
         fs.SetVariable("p_0", "???");
         fs.SetVariable("o_0", "奇怪的生物");
         fs.SetVariable("o", "OS");
 
+        Commad();
+    }
 
+    private void buttonreset()
+    {
+        NPC2 = GameObject.Find(_NPC2);
+        Debug.Log("物件名稱:" + NPC2);
+        CharacterEvents.characterText.Invoke(NPC2, "購買成功");
+        fs.Resume();
+        fs.RemoveButtonGroup();
+        fs.SetupButtonGroup();
+    }
 
+    void RemoveButtonGroup()
+    {
+        fs.Next();
+        
+    }
 
+    void Update()
+    {   
+        if (!IsFsStop)
+        {
+            if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Return))
+            {
+                fs.Next();
+            }
+        }
+
+    }
+
+    public void Dramtic_emotion_1()
+    {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource("npc_1");
+    }
+
+    public void Commad()
+    {
         //開啟與關閉玩家鎖定
         fs.RegisterCommand("lock_player", (List<string> _params) => {
             Time.timeScale = 0.5f;
@@ -81,7 +114,7 @@ public class AVGSystem : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("錯誤"); 
+                Debug.LogWarning("錯誤");
             }
         });
         fs.RegisterCommand("hideNPC1", (List<string> _params) => {
@@ -95,13 +128,13 @@ public class AVGSystem : MonoBehaviour
             fs.SetupButtonGroup("ButtonGroup_st");
             fs.SetupButton("", () =>
             {
-            }, true ,"DefaultButtonPrefab 1");
+            }, true, "DefaultButtonPrefab 1");
             fs.SetupButton("SKIP", () =>
             {
 
                 Time.timeScale = 1f;
                 PlayerController.lockplay = false;
-                
+
                 fs.ReadTextFromResource("hide");
                 fs.RemoveButtonGroup();
                 Invoke("RemoveButtonGroup", 0.4f);
@@ -140,16 +173,6 @@ public class AVGSystem : MonoBehaviour
             fs.RemoveButtonGroup();
             fs.SetupButtonGroup();
             fs.Stop();
-            /*for(int i = 1; i < 6; i++)
-            {
-                fs.SetupButton("商品"+ i.ToString(), () => {
-                    invventoryManger.AddNewItem(thisItem1);
-                    CharacterEvents.characterText.Invoke(NPC2, "購買成功");
-                    fs.Resume();
-                    fs.RemoveButtonGroup();
-                    fs.SetupButtonGroup();
-                });
-            }*/
             fs.SetupButton("藥水(小)", () => {
                 invventoryManger.AddNewItem(thisItem1);
                 buttonreset();
@@ -159,66 +182,36 @@ public class AVGSystem : MonoBehaviour
                 buttonreset();
             });
             fs.SetupButton("取消購買", () => {
-            fs.Resume();
-            fs.RemoveButtonGroup();
-            fs.SetupButtonGroup();
-            },true);
+                fs.Resume();
+                fs.RemoveButtonGroup();
+                fs.SetupButtonGroup();
+            }, true);
         });
         // 很少情況會用到
         fs.RegisterCommand("stop_on", (List<string> _params) => {
-
             fs.Stop();
             IsFsStop = true;
         });
-
-        fs.RegisterCommand("image_1_show", (List<string> _params) =>
-        {
+        fs.RegisterCommand("image_1_show", (List<string> _params) => {
             character_image.Instance.ImageActive(true);
-            character_image.Instance.AddImage("player_idle",20,20,190,-220);
+            character_image.Instance.AddImage("player_idle", 20, 20, 190, -220);
         });
         fs.RegisterCommand("image_1_hide", (List<string> _params) => {
-
             character_image.Instance.ImageActive(false);
         });
         fs.RegisterCommand("image_1_offset", (List<string> _params) => {
-
-            character_image.Instance.Offset_Ani(0.5f, 100f, 100f);
+            character_image.Instance.Offset(0.5f, 100f, 0f);
         });
-    }
+        fs.RegisterCommand("FadeIn", (List<string> _params) => {
+            character_image.Instance.fade(0.5f, true);
+        });
+        fs.RegisterCommand("FadeOut", (List<string> _params) => {
+            character_image.Instance.fade(0.5f, false);
+        });
+        fs.RegisterCommand("Zoom", (List<string> _params) => {
+            character_image.Instance.Zoom(0.05f, 1.2f, 1.2f);
+            character_image.Instance.Zoom(0.05f, 1f, 1f);
+        });
 
-    private void buttonreset()
-    {
-        NPC2 = GameObject.Find(_NPC2);
-        Debug.Log("物件名稱:" + NPC2);
-        CharacterEvents.characterText.Invoke(NPC2, "購買成功");
-        fs.Resume();
-        fs.RemoveButtonGroup();
-        fs.SetupButtonGroup();
-    }
-
-    void RemoveButtonGroup()
-    {
-        fs.Next();
-        
-    }
-
-    void Update()
-    {   
-        if (!IsFsStop)
-        {
-            if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Return))
-            {
-                fs.Next();
-            }
-        }
-
-    }
-
-
-    public void Dramtic_emotion_1()
-    {
-        fs.RemoveDialog();
-        fs.SetupDialog();
-        fs.ReadTextFromResource("npc_1");
     }
 }
