@@ -23,8 +23,8 @@ public class PMagic : MonoBehaviour
 
     private void Update()
     {
-        MagicBar.MagicMax = P_MaxMagic;
-        MagicBar.MagicCurrent = P_Magic;
+        MagicBar.Instance.MagicMax = P_MaxMagic;
+        MagicBar.Instance.MagicCurrent = P_Magic;
 
         o_Time += Time.deltaTime;
         if(o_Time >= P_Time)

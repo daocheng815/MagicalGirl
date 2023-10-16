@@ -10,7 +10,7 @@ public class VC2CSwitch : MonoBehaviour
     public GameObject VC2_2;
     // Update is called once per frame
 
-    //BUG 玩家若是剛好待在碰撞箱內會直接移動，應該改用判定是否在碰撞箱的上下左右側進入
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("ee");

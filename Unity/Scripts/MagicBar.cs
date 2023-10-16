@@ -1,13 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MagicBar : MonoBehaviour
+public class MagicBar : Singleton<MagicBar>
 {
 
-    public static float MagicCurrent;
-    public static float MagicMax;
+    public float MagicCurrent;
+    public float MagicMax;
     private Image healtbar;
 
     public float decreaseSpeed = 10.0f;

@@ -322,6 +322,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetTrigger(AnimationStrings.attackTrigger);
             }
+        VC2C.Instance.StartCoroutine(VC2C.Instance.CameraSize_Num());
     }
 
     public void OnRangeAttack(InputAction.CallbackContext context)
@@ -329,19 +330,18 @@ public class PlayerController : MonoBehaviour
         if (!lockplay && pmagic.IsMagic(20))
             if (context.started)
             {
-               
                 animator.SetTrigger(AnimationStrings.rangeaAttackTrigger);
             }
     }
-
 
     public void OnHit(int damage, Vector2 knockback)
     {
         if (!lockplay)
             damageable.LockVelocity = true;
             // 玩家擊退
-
             rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
+        VC2C.Instance.StartCoroutine(VC2C.Instance.CameraShock_Num());
+        //VC2C.Instance.CameraShock(0.1f, 1f, true, false);
     }
 
     // 閃避
@@ -379,8 +379,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
-
     // 牆跳
     private bool IsScratch;
     public void OnScratch(InputAction.CallbackContext context)
@@ -401,8 +399,6 @@ public class PlayerController : MonoBehaviour
                 IsScratch = true;
             }
     }
-
-
     // 牆跳 結束
     // 玩家身上的UI
     //魔法選單
