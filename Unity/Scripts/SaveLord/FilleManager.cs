@@ -20,15 +20,15 @@ public class FilleManager : MonoBehaviour
     private void Update()
     {
         // PlayerPrefs 讀取存儲系統
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Save();
+        //if (Input.GetKeyDown(KeyCode.S))
+        //{
+        //    Save();
             
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Lord();
-        }
+        //}
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    Lord();
+        //}
         if(ScreenSetting.GameLoadNum == 1)
         {
             ScreenSetting.GameLoadNum = 0;

@@ -1,4 +1,5 @@
 using Flower;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -135,6 +136,7 @@ public class AVGSystem : MonoBehaviour
                 Time.timeScale = 1f;
                 PlayerController.lockplay = false;
 
+
                 fs.ReadTextFromResource("hide");
                 fs.RemoveButtonGroup();
                 Invoke("RemoveButtonGroup", 0.4f);
@@ -203,14 +205,22 @@ public class AVGSystem : MonoBehaviour
             character_image.Instance.Offset(0.5f, 100f, 0f);
         });
         fs.RegisterCommand("FadeIn", (List<string> _params) => {
-            character_image.Instance.fade(0.5f, true);
+            //character_image.Instance.fade(0.5f, true);
+            //character_image.Instance.StartCoroutine(character_image.Instance.color_A(0.5f, true));
+            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.5f, true));
+            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, false));
+            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.4f, true));
+            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.2f, false));
+            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, true));
+            character_image.Instance.StartCoroutine(character_image.Instance.QueueExecute());
         });
         fs.RegisterCommand("FadeOut", (List<string> _params) => {
             character_image.Instance.fade(0.5f, false);
+            
         });
         fs.RegisterCommand("Zoom", (List<string> _params) => {
-            character_image.Instance.Zoom(0.05f, 1.2f, 1.2f);
-            character_image.Instance.Zoom(0.05f, 1f, 1f);
+            //character_image.Instance.Zoom(0.5f, 1.2f, 1.2f);
+            character_image.Instance.zoom_num(11);
         });
 
     }
