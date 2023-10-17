@@ -14,27 +14,31 @@ public class FilleManager : MonoBehaviour
 
     public Inventory mybag;
 
+    //土炮物品處理
     public item RecoveryWater1;
     public item RecoveryWater2;
 
     private void Update()
-    {
-        // PlayerPrefs 讀取存儲系統
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    Save();
+    {   
+        /*
+        //PlayerPrefs 讀取存儲系統
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Save();
             
-        //}
-        //if (Input.GetKeyDown(KeyCode.L))
-        //{
-        //    Lord();
-        //}
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Lord();
+        }
+        */
         if(ScreenSetting.GameLoadNum == 1)
         {
             ScreenSetting.GameLoadNum = 0;
             Lord();
         }
     }
+
 
     [ContextMenu("存檔")]
     public void Save()
@@ -85,7 +89,24 @@ public class FilleManager : MonoBehaviour
         {
             mybag.itemList.Add(null);
         }
-        //遍歷List的內容
+        //遍歷背包List的內容
+        for (int i = 0; i < mybag.itemList.Count; i++)
+        {
+            //PlayerPrefs.Haskey 這是判定如果當前的key存在的話
+            if (PlayerPrefs.HasKey("mybag_" + i + "itemName"))
+            {
+                string item = PlayerPrefs.GetString("mybag_" + i + "itemName");
+                for(int j = 0; j < ItemList.Instance.Item.Count; j++ )
+                {
+                    if(item == ItemList.Instance.Item[j].itemName.ToString())
+                    {
+                        mybag.itemList[j] = ItemList.Instance.Item[j];
+                        mybag.itemList[j].itemHeld = PlayerPrefs.GetInt("mybag_" + j + "itemHeld");
+                    }
+                }
+            }
+        }
+        /*
         for (int i = 0; i < mybag.itemList.Count; i++)
         {
             //PlayerPrefs.Haskey 這是判定如果當前的key存在的話
@@ -107,14 +128,11 @@ public class FilleManager : MonoBehaviour
                         break;
                 }
             }
-        }
-
+        }*/
         play.transform.position = new Vector3(PlayerPrefs.GetFloat("playerTransformX"), PlayerPrefs.GetFloat("playerTransformY"), play.transform.position.z);
         damageable.health = PlayerPrefs.GetInt("health");
         pMagic.P_Magic = PlayerPrefs.GetInt("MagicVar");
     }
-
-    
 }
 
 //[CustomEditor(typeof(FilleManager))]

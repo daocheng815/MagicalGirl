@@ -23,12 +23,12 @@ public class VC2C : Singleton<VC2C>
     public IEnumerator CameraShock_Num()
     {
         
-        yield return StartCoroutine(CameraShock(0.05f,Random.Range(0.5f,1f),true, true));
-        yield return StartCoroutine(CameraShock(0.05f, Random.Range(-1f, 0f), true, true));
-        yield return StartCoroutine(CameraShock(0.05f, Random.Range(0.5f, 1f), true, true));
-        yield return StartCoroutine(CameraShock(0.05f, Random.Range(-1f, 0f), true, true));
-        yield return StartCoroutine(CameraShock(0.05f, Random.Range(0.5f, 1f), true, true));
-        yield return StartCoroutine(CameraShock(0.05f, Random.Range(-1f, 0f), true, true));
+        yield return StartCoroutine(CameraShock(0.05f,Random.Range(0.7f,1f),true, true));
+        yield return StartCoroutine(CameraShock(0.05f, Random.Range(-0.7f, 0f), true, true));
+        //yield return StartCoroutine(CameraShock(0.05f, Random.Range(0.5f, 1f), true, true));
+        //yield return StartCoroutine(CameraShock(0.05f, Random.Range(-1f, 0f), true, true));
+        //yield return StartCoroutine(CameraShock(0.05f, Random.Range(0.5f, 1f), true, true));
+        //yield return StartCoroutine(CameraShock(0.05f, Random.Range(-1f, 0f), true, true));
         CFT.m_TrackedObjectOffset = Vector3.zero;
     }
     public IEnumerator CameraShock(float timedelay, float shockNum, bool X, bool Y)
@@ -51,10 +51,10 @@ public class VC2C : Singleton<VC2C>
 
     public IEnumerator CameraSize_Num()
     {
-        yield return StartCoroutine(CameraSize(Random.Range(6.5f,7f),0.3f));
-        yield return StartCoroutine(CameraSize(7f, 0.2f));
-        yield return StartCoroutine(CameraSize(Random.Range(6.5f, 7f), 0.2f));
-        yield return StartCoroutine(CameraSize(7f, 0.3f));
+        yield return StartCoroutine(CameraSize(Random.Range(6.8f,7f),0.2f));
+        yield return StartCoroutine(CameraSize(7f, 0.1f));
+        yield return StartCoroutine(CameraSize(Random.Range(6.8f, 7f), 0.15f));
+        yield return StartCoroutine(CameraSize(7f, 0.1f));
     }
     //攝影機大小抖動
     public IEnumerator CameraSize(float size ,float delaytime)

@@ -15,12 +15,23 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f ;
     public float runspeed = 8f;
     public float airWalkSpeed = 3f ;
+    public float airrunkSpeed = 5f;
     public float jumpImpulse = 10f ;
     public static bool lockplay = false;
+
+    private float currentSpeed = 0f;
+    public float acceleration = 5.0f; //加速度
+    public float deceleration = 10.0f; //
+
+    public bool slide_wall;
+    public DetectionZone slide_wall_DetectionZone;
 
     Vector2 moveInput;
     TouchingDirections touchingDirections;
     Damageable damageable;
+
+    public Rigidbody2D rb;
+    Animator animator;
 
     //玩家速度
     public float CurrentMoveSpeed{
@@ -44,7 +55,14 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-                        return airWalkSpeed ;
+                        if (IsRunning)
+                        {
+                            return airrunkSpeed;
+                        }
+                        else
+                        {
+                            return airWalkSpeed;
+                        }
                     }
                     
                 }
@@ -75,7 +93,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(AnimationStrings.isMoving, value);
         }
     }
-    public bool isJump {  get {return animator.GetBool(AnimationStrings.jumpTrigger); }  }
+    public bool isJump {  get {return animator.GetBool(AnimationStrings.IsJump); }  }
 
 
     [SerializeField]
@@ -136,8 +154,7 @@ public class PlayerController : MonoBehaviour
 
 
     
-    Rigidbody2D rb;
-    Animator animator;
+
 
     // Start is called before the first frame update
     private void Awake()
@@ -155,35 +172,34 @@ public class PlayerController : MonoBehaviour
 
         if (ScreenSetting.GameLoadNum == 0)
             invventoryManger.deltbag();
-
-       
     }
 
+    private bool is_Slide_up;
     private void FixedUpdate()
     {
+        
         if (!lockplay)
         {
             if (!IsSlide)
             {
                 if (!damageable.LockVelocity)
                 {
+                    //加速度與減速度
+                    bool hasInput = moveInput.x != 0;
+                    currentSpeed = Mathf.MoveTowards(currentSpeed, CurrentMoveSpeed, acceleration * Time.deltaTime);
+                    if (!hasInput) { currentSpeed = Mathf.MoveTowards(3f, 0f, deceleration * Time.deltaTime); }
 
-                    rb.velocity = new Vector2(moveInput.x * CurrentMoveSpeed, rb.velocity.y);
-                    //Debug.Log(rb.velocity);
-
+                    rb.velocity = new Vector2(moveInput.x * currentSpeed, rb.velocity.y);
                 }
             }
-            else if (!damageable.LockVelocity && touchingDirections.IsGrounded)
+            //else if (!damageable.LockVelocity && touchingDirections.IsGrounded)
+            else if (!damageable.LockVelocity)
             {
-                
-                if (IsFacingRight)
-                { 
-                    Vector2 Np = rb.position + new Vector2(0.4f, moveInput.y);
-                    rb.MovePosition(Np);
-                }
-                else
+
+                if (!touchingDirections.IsOnwall)
                 {
-                    Vector2 Np = rb.position + new Vector2(-0.4f, moveInput.y);
+                    is_Slide_up = false;
+                    Vector2 Np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
                     rb.MovePosition(Np);
                 }
             }
@@ -198,7 +214,7 @@ public class PlayerController : MonoBehaviour
 
 
     }
-
+    
     private int MoveCount = 0;
 
     public void ReMoveCount(){MoveCount = 0;}
@@ -351,7 +367,7 @@ public class PlayerController : MonoBehaviour
     {
             
         // 未完成 打算再做一條用來表示體力 與顯示冷卻時間
-
+        
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
         if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20))
         {
@@ -369,7 +385,7 @@ public class PlayerController : MonoBehaviour
             
             IsSlide = false;
             //Debug.Log("閃避完成");
-            StartCoroutine(FadeSlide(1f));
+            StartCoroutine(FadeSlide(0.3f));
         }
         //冷卻時間
         IEnumerator FadeSlide(float time)
@@ -636,6 +652,8 @@ public class PlayerController : MonoBehaviour
     private bool SYD_on = false;
     private void Update()
     {
+        slide_wall = slide_wall_DetectionZone.detectColliders.Count > 0;
+        rb.gravityScale = !isJump && !touchingDirections.IsGrounded && !IsScratch ?  1.2f : 1f;
         if (lockplay)
         {
             IsRunning = false;
@@ -646,13 +664,13 @@ public class PlayerController : MonoBehaviour
         if (!VC2C.Instance.SYD_IE)
         {
             // 墜落距離大於10
-            if (rb.velocity.y < -10 && !SYD_on)
+            if (rb.velocity.y < -3 && !SYD_on)
             {
                 
                 VC2C.Instance.SYD(true, 2f, 2f, 0.25f);
                 SYD_on = true;
             }
-            else if(rb.velocity.y < -10 && SYD_on)
+            else if(rb.velocity.y < -3 && SYD_on)
             {
                 VC2C.Instance.CFT.m_YDamping = 0.25f;
             }
