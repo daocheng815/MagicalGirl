@@ -1,0 +1,9 @@
+[lock_player]
+[show,10]
+
+[#p][r]這真是個奇怪的石頭。[w]
+
+
+[hide,100]
+
+[unlock_player]

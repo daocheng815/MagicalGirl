@@ -111,7 +111,7 @@ public class MenuUiManger : MonoBehaviour
         
         //GameObject ui = GameObject.Find("UIMager");
         //ui.GetComponent<UIManger>().SubscribeToEvents();
-
+        AVGSystem.RemoveDialog_C();
         Time.timeScale = 1f;
         SceneManager.LoadScene("SampleScene");
         

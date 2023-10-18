@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(Damageable))]
 public class PlayerController : MonoBehaviour
 {
+    public ParticleSystem dast;
     public PMagic pmagic;
     public float walkSpeed = 5f ;
     public float runspeed = 8f;
@@ -266,11 +267,17 @@ public class PlayerController : MonoBehaviour
     {
         if(moveInput.x >0 && !IsFacingRight)
         {
+            CreateDust();
             IsFacingRight = true;
         }else if (moveInput.x <0 && IsFacingRight)
         {
+            CreateDust();
             IsFacingRight = false;
         }
+    }
+    void CreateDust()
+    {
+        dast.Play();
     }
     public void OnRun(InputAction.CallbackContext context) 
     {
@@ -317,7 +324,7 @@ public class PlayerController : MonoBehaviour
 
     private void PerformJump()
     {
-    
+        CreateDust();
         animator.SetTrigger(AnimationStrings.jumpTrigger);
         rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
     }
@@ -371,6 +378,7 @@ public class PlayerController : MonoBehaviour
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
         if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20))
         {
+            CreateDust();
             iss = true;
             IsSlide = true;
             pmagic.OnMagic(20);
@@ -653,7 +661,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         slide_wall = slide_wall_DetectionZone.detectColliders.Count > 0;
-        rb.gravityScale = !isJump && !touchingDirections.IsGrounded && !IsScratch ?  1.2f : 1f;
+        rb.gravityScale = !isJump && !touchingDirections.IsGrounded ?  1.2f : 1f;
         if (lockplay)
         {
             IsRunning = false;

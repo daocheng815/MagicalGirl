@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Invoke("RemoveButtonGroup", 0.4f);這一段在之後必須要修改
 public class AVGSystem : MonoBehaviour
 {
     FlowerSystem fs;
@@ -18,7 +20,7 @@ public class AVGSystem : MonoBehaviour
     public item thisItem2;
 
     public bool isDialog;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,15 +39,15 @@ public class AVGSystem : MonoBehaviour
         fs.SetupDialog();
         if (ScreenSetting.GameLoadNum == 1)
         {
-            
+
             fs.ReadTextFromResource("hide");
         }
         if (ScreenSetting.GameLoadNum == 0)
         {
-            
+
             fs.ReadTextFromResource("start1");
         }
-            
+
         fs.SetVariable("p", "常");
         fs.SetVariable("p_0", "???");
         fs.SetVariable("o_0", "奇怪的生物");
@@ -64,14 +66,14 @@ public class AVGSystem : MonoBehaviour
         fs.SetupButtonGroup();
     }
 
-    void RemoveButtonGroup()
+    public void RemoveButtonGroup()
     {
         fs.Next();
-        
+
     }
 
     void Update()
-    {   
+    {
         if (!IsFsStop)
         {
             if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Return))
@@ -81,12 +83,22 @@ public class AVGSystem : MonoBehaviour
         }
 
     }
-
+    public void RemoveDialog_C()
+    {
+        fs.RemoveDialog();
+    }
     public void Dramtic_emotion_1()
     {
         fs.RemoveDialog();
         fs.SetupDialog();
         fs.ReadTextFromResource("npc_1");
+    }
+
+    public void Dramtic_emotion_2()
+    {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource("npc_2");
     }
 
     public void Commad()
@@ -139,7 +151,8 @@ public class AVGSystem : MonoBehaviour
 
                 fs.ReadTextFromResource("hide");
                 fs.RemoveButtonGroup();
-                Invoke("RemoveButtonGroup", 0.4f);
+                //因為無法調用此函數，所以暫時關閉
+                //Invoke("RemoveButtonGroup", 0.4f);
                 //fs.RemoveDialog();
 
             }, false);
@@ -216,7 +229,7 @@ public class AVGSystem : MonoBehaviour
         });
         fs.RegisterCommand("FadeOut", (List<string> _params) => {
             character_image.Instance.fade(0.5f, false);
-            
+
         });
         fs.RegisterCommand("Zoom", (List<string> _params) => {
             //character_image.Instance.Zoom(0.5f, 1.2f, 1.2f);

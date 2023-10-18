@@ -1,0 +1,6 @@
+[show]
+你好[w]
+你好ww[w]
+你好w[w]
+你好www[w]
+[hide]
