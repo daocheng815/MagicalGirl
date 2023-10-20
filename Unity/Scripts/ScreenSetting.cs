@@ -16,12 +16,15 @@ public class ScreenSetting : MonoBehaviour
     }
     public void OnStartGame()
     {
-        GameLoadNum = 0;
-        SceneManager.LoadScene("SampleScene");
+        OnSL(0);
     }
     public void OnLoadGame(int LoadNum)
     {
-        GameLoadNum = 1;
+        OnSL(LoadNum);
+    }
+    void OnSL(int LoadNum = 0)
+    {
+        GameLoadNum = LoadNum;
         SceneManager.LoadScene("SampleScene");
     }
     public void QuitGame()

@@ -378,6 +378,7 @@ public class PlayerController : MonoBehaviour
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
         if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20))
         {
+            
             CreateDust();
             iss = true;
             IsSlide = true;

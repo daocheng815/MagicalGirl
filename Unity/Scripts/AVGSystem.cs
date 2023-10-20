@@ -21,6 +21,8 @@ public class AVGSystem : MonoBehaviour
 
     public bool isDialog;
 
+    public FilleManager FilleManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,8 +41,7 @@ public class AVGSystem : MonoBehaviour
         fs.SetupDialog();
         if (ScreenSetting.GameLoadNum == 1)
         {
-
-            fs.ReadTextFromResource("hide");
+            FilleManager.Lord(1);
         }
         if (ScreenSetting.GameLoadNum == 0)
         {

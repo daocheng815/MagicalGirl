@@ -10,7 +10,8 @@ public class NPC_bubble : MonoBehaviour
    
     public GameObject bubble;
     public bool istrue;
-    
+    private bool IsCollision;
+
     public void bubble_show()
     { 
         bubble.SetActive(true);
@@ -21,14 +22,14 @@ public class NPC_bubble : MonoBehaviour
         bubble.SetActive(false);
         istrue = false;
     }
-
     private void Update()
     {
+
         if(bubbleCommand != null)
         {
             if(Input.GetKeyDown(KeyCode.Z) && istrue)
             {
-                bubble_hide();
+                
                 bubbleCommand.Invoke();
             }
 

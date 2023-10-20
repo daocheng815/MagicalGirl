@@ -111,6 +111,7 @@ public class MenuUiManger : MonoBehaviour
         
         //GameObject ui = GameObject.Find("UIMager");
         //ui.GetComponent<UIManger>().SubscribeToEvents();
+        //因為事前已經刪除對話框 所以要加回來
         AVGSystem.RemoveDialog_C();
         Time.timeScale = 1f;
         SceneManager.LoadScene("SampleScene");

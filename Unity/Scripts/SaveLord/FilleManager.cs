@@ -12,11 +12,14 @@ public class FilleManager : MonoBehaviour
 
     public PMagic pMagic;
 
+    public AVGSystem AVGSystem;
+
     public Inventory mybag;
 
+    public string SaveNumSuffix = "_SL";
     //土炮物品處理
-    public item RecoveryWater1;
-    public item RecoveryWater2;
+    //public item RecoveryWater1;
+    //public item RecoveryWater2;
 
     private void Update()
     {   
@@ -41,8 +44,9 @@ public class FilleManager : MonoBehaviour
 
 
     [ContextMenu("存檔")]
-    public void Save()
+    public void Save(int Num = 1)
     {
+        
         /*
         FileStream fs = new FileStream(Application.dataPath + "/Save.sav", FileMode.Create);
         StreamWriter sw = new StreamWriter(fs);
@@ -54,24 +58,24 @@ public class FilleManager : MonoBehaviour
         */
         for (int i = 0; i < mybag.itemList.Count; i++)
         {
-            PlayerPrefs.SetString("mybag_" + i + "itemName", "");
-            PlayerPrefs.SetInt("mybag_" + i + "itemHeld", 1);
+            PlayerPrefs.SetString(Num + SaveNumSuffix + "mybag_" + i + "itemName", "");
+            PlayerPrefs.SetInt(Num + SaveNumSuffix + "mybag_" + i + "itemHeld", 1);
             if (mybag.itemList[i] != null)
             {
-                PlayerPrefs.SetString("mybag_" + i + "itemName", mybag.itemList[i].itemName);
-                PlayerPrefs.SetInt("mybag_" + i + "itemHeld", mybag.itemList[i].itemHeld);
+                PlayerPrefs.SetString(Num + SaveNumSuffix + "mybag_" + i + "itemName", mybag.itemList[i].itemName);
+                PlayerPrefs.SetInt(Num + SaveNumSuffix + "mybag_" + i + "itemHeld", mybag.itemList[i].itemHeld);
             }
         }
 
-        PlayerPrefs.SetInt("MagicVar", pMagic.P_Magic);
-        PlayerPrefs.SetInt("health", damageable.health);
-        PlayerPrefs.SetFloat("playerTransformX", play.transform.position.x);
-        PlayerPrefs.SetFloat("playerTransformY", play.transform.position.y);
+        PlayerPrefs.SetInt(Num + SaveNumSuffix + "MagicVar", pMagic.P_Magic);
+        PlayerPrefs.SetInt(Num + SaveNumSuffix + "health", damageable.health);
+        PlayerPrefs.SetFloat(Num + SaveNumSuffix + "playerTransformX", play.transform.position.x);
+        PlayerPrefs.SetFloat(Num + SaveNumSuffix + "playerTransformY", play.transform.position.y);
         Debug.Log("存檔成功");
     }
 
     [ContextMenu("讀檔")]
-    public void Lord()
+    public void Lord(int Num = 1)
     {
         /*
         FileStream fs = new FileStream(Application.dataPath + "/save.sav", FileMode.Open);
@@ -81,7 +85,7 @@ public class FilleManager : MonoBehaviour
         sr.Close();
         fs.Close();
         */
-
+        AVGSystem.RemoveDialog_C();
         //清除背包List 並重新生成
 
         mybag.itemList.Clear();
@@ -93,15 +97,15 @@ public class FilleManager : MonoBehaviour
         for (int i = 0; i < mybag.itemList.Count; i++)
         {
             //PlayerPrefs.Haskey 這是判定如果當前的key存在的話
-            if (PlayerPrefs.HasKey("mybag_" + i + "itemName"))
+            if (PlayerPrefs.HasKey(Num + SaveNumSuffix + "mybag_" + i + "itemName"))
             {
-                string item = PlayerPrefs.GetString("mybag_" + i + "itemName");
+                string item = PlayerPrefs.GetString(Num + SaveNumSuffix + "mybag_" + i + "itemName");
                 for(int j = 0; j < ItemList.Instance.Item.Count; j++ )
                 {
                     if(item == ItemList.Instance.Item[j].itemName.ToString())
                     {
                         mybag.itemList[j] = ItemList.Instance.Item[j];
-                        mybag.itemList[j].itemHeld = PlayerPrefs.GetInt("mybag_" + j + "itemHeld");
+                        mybag.itemList[j].itemHeld = PlayerPrefs.GetInt(Num + SaveNumSuffix + "mybag_" + j + "itemHeld");
                     }
                 }
             }
@@ -129,9 +133,9 @@ public class FilleManager : MonoBehaviour
                 }
             }
         }*/
-        play.transform.position = new Vector3(PlayerPrefs.GetFloat("playerTransformX"), PlayerPrefs.GetFloat("playerTransformY"), play.transform.position.z);
-        damageable.health = PlayerPrefs.GetInt("health");
-        pMagic.P_Magic = PlayerPrefs.GetInt("MagicVar");
+        play.transform.position = new Vector3(PlayerPrefs.GetFloat(Num + SaveNumSuffix + "playerTransformX"), PlayerPrefs.GetFloat(Num + SaveNumSuffix + "playerTransformY"), play.transform.position.z);
+        damageable.health = PlayerPrefs.GetInt(Num + SaveNumSuffix + "health");
+        pMagic.P_Magic = PlayerPrefs.GetInt(Num + SaveNumSuffix + "MagicVar");
     }
 }
 
