@@ -220,11 +220,13 @@ public class AVGSystem : MonoBehaviour
         fs.RegisterCommand("FadeIn", (List<string> _params) => {
             //character_image.Instance.fade(0.5f, true);
             //character_image.Instance.StartCoroutine(character_image.Instance.color_A(0.5f, true));
+            //將IEnumerator放入列隊中
             character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.5f, true));
             character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, false));
             character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.4f, true));
             character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.2f, false));
             character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, true));
+            //然後再執行協程
             character_image.Instance.StartCoroutine(character_image.Instance.QueueExecute());
         });
         fs.RegisterCommand("FadeOut", (List<string> _params) => {
