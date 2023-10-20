@@ -100,7 +100,12 @@ public class AVGSystem : MonoBehaviour
         fs.SetupDialog();
         fs.ReadTextFromResource("npc_2");
     }
-
+    public void Dramtic_emotion_3()
+    {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource("npc_3");
+    }
     public void Commad()
     {
         //開啟與關閉玩家鎖定
