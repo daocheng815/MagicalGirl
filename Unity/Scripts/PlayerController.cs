@@ -345,6 +345,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetTrigger(AnimationStrings.attackTrigger);
             }
+        //呼叫攝影機控制的震動動畫
         VC2C.Instance.StartCoroutine(VC2C.Instance.CameraSize_Num());
     }
 
@@ -354,6 +355,7 @@ public class PlayerController : MonoBehaviour
             if (context.started)
             {
                 animator.SetTrigger(AnimationStrings.rangeaAttackTrigger);
+
             }
     }
 
@@ -372,11 +374,10 @@ public class PlayerController : MonoBehaviour
     private bool iss = false;
     public void OnSlide(InputAction.CallbackContext context)
     {
-            
+
         // 未完成 打算再做一條用來表示體力 與顯示冷卻時間
-        
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
-        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20))
+        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack))
         {
             
             CreateDust();

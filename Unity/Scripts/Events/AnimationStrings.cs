@@ -27,4 +27,5 @@ internal class AnimationStrings
     internal static string lockPlayer = "lockPlayer";
     internal static string Slide = "Slide";
     internal static string IsJump = "IsJump";
+    internal static string IsRangeAttack = "IsRangeAttack";
 }
