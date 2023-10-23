@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FollowObject : MonoBehaviour
 {
-    //¸òÀHª«¥ó ¥i¥H»s§@§ì¨ú¼Ä¤Hªº SKILL
+    //è·Ÿéš¨ç‰©ä»¶ å¯ä»¥è£½ä½œæŠ“å–æ•µäººçš„ SKILL
     public Transform target;
     public Vector3 offset;
     public bool SetFollowObject = false;

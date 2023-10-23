@@ -32,7 +32,7 @@ public class HealthPickup : MonoBehaviour
 
     private void Update()
     {
-        // ¥H¼Ú©Ô¨¤ªí¥Ü±ÛÂà
+        // ä»¥æ­æ‹‰è§’è¡¨ç¤ºæ—‹è½‰
         transform.eulerAngles += spinRotationSpeed * Time.deltaTime;
 
         if (IsUp)

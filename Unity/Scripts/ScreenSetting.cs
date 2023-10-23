@@ -22,7 +22,7 @@ public class ScreenSetting : MonoBehaviour
     {
         OnSL(LoadNum);
     }
-    void OnSL(int LoadNum = 0)
+    void OnSL(int LoadNum = 1)
     {
         GameLoadNum = LoadNum;
         SceneManager.LoadScene("SampleScene");

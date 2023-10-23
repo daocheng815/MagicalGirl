@@ -17,14 +17,14 @@ public class FilleManager : MonoBehaviour
     public Inventory mybag;
 
     public string SaveNumSuffix = "_SL";
-    //¤g¬¶ª««~³B²z
+    //åœŸç‚®ç‰©å“è™•ç†
     //public item RecoveryWater1;
     //public item RecoveryWater2;
 
     private void Update()
     {   
         /*
-        //PlayerPrefs Åª¨ú¦sÀx¨t²Î
+        //PlayerPrefs è®€å–å­˜å„²ç³»çµ±
         if (Input.GetKeyDown(KeyCode.S))
         {
             Save();
@@ -43,7 +43,7 @@ public class FilleManager : MonoBehaviour
     }
 
 
-    [ContextMenu("¦sÀÉ")]
+    [ContextMenu("å­˜æª”")]
     public void Save(int Num = 1)
     {
         
@@ -71,10 +71,10 @@ public class FilleManager : MonoBehaviour
         PlayerPrefs.SetInt(Num + SaveNumSuffix + "health", damageable.health);
         PlayerPrefs.SetFloat(Num + SaveNumSuffix + "playerTransformX", play.transform.position.x);
         PlayerPrefs.SetFloat(Num + SaveNumSuffix + "playerTransformY", play.transform.position.y);
-        Debug.Log("¦sÀÉ¦¨¥\");
+        Debug.Log("å­˜æª”æˆåŠŸ");
     }
 
-    [ContextMenu("ÅªÀÉ")]
+    [ContextMenu("è®€æª”")]
     public void Lord(int Num = 1)
     {
         /*
@@ -86,17 +86,17 @@ public class FilleManager : MonoBehaviour
         fs.Close();
         */
         AVGSystem.RemoveDialog_C();
-        //²M°£­I¥]List ¨Ã­«·s¥Í¦¨
+        //æ¸…é™¤èƒŒåŒ…List ä¸¦é‡æ–°ç”Ÿæˆ
 
         mybag.itemList.Clear();
         for (int i = 0; i < 18; i++)
         {
             mybag.itemList.Add(null);
         }
-        //¹M¾ú­I¥]Listªº¤º®e
+        //éæ­·èƒŒåŒ…Listçš„å…§å®¹
         for (int i = 0; i < mybag.itemList.Count; i++)
         {
-            //PlayerPrefs.Haskey ³o¬O§P©w¦pªG·í«eªºkey¦s¦bªº¸Ü
+            //PlayerPrefs.Haskey é€™æ˜¯åˆ¤å®šå¦‚æœç•¶å‰çš„keyå­˜åœ¨çš„è©±
             if (PlayerPrefs.HasKey(Num + SaveNumSuffix + "mybag_" + i + "itemName"))
             {
                 string item = PlayerPrefs.GetString(Num + SaveNumSuffix + "mybag_" + i + "itemName");
@@ -113,13 +113,13 @@ public class FilleManager : MonoBehaviour
         /*
         for (int i = 0; i < mybag.itemList.Count; i++)
         {
-            //PlayerPrefs.Haskey ³o¬O§P©w¦pªG·í«eªºkey¦s¦bªº¸Ü
+            //PlayerPrefs.Haskey é€™æ˜¯åˆ¤å®šå¦‚æœç•¶å‰çš„keyå­˜åœ¨çš„è©±
             if (PlayerPrefs.HasKey("mybag_" + i + "itemName"))
             {
                 string item = PlayerPrefs.GetString("mybag_" + i + "itemName");
                 switch (item)
                 {
-                    //§PÂ_ª««~¬O­ş­Ó
+                    //åˆ¤æ–·ç‰©å“æ˜¯å“ªå€‹
                     case "RecoveryWater1":
                         mybag.itemList[i] = RecoveryWater1;
                         mybag.itemList[i].itemHeld = PlayerPrefs.GetInt("mybag_" + i + "itemHeld");
@@ -149,11 +149,11 @@ public class FilleManager : MonoBehaviour
 //        FilleManager script = (FilleManager)target;
 
 //        GUILayout.Space(20);
-//        if (GUILayout.Button("¦sÀÉ"))
+//        if (GUILayout.Button("å­˜æª”"))
 //        {
 //            script.Save();
 //        }
-//        if (GUILayout.Button("ÅªÀÉ"))
+//        if (GUILayout.Button("è®€æª”"))
 //        {
 //            script.Lord();
 //        }

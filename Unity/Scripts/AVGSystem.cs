@@ -45,7 +45,6 @@ public class AVGSystem : MonoBehaviour
         }
         if (ScreenSetting.GameLoadNum == 0)
         {
-
             fs.ReadTextFromResource("start1");
         }
 
@@ -56,7 +55,6 @@ public class AVGSystem : MonoBehaviour
 
         Commad();
     }
-
     private void buttonreset()
     {
         NPC2 = GameObject.Find(_NPC2);
@@ -67,11 +65,11 @@ public class AVGSystem : MonoBehaviour
         fs.SetupButtonGroup();
     }
 
-    public void RemoveButtonGroup()
-    {
-        fs.Next();
+    //public void RemoveButtonGroup()
+    //{
+    //    fs.Next();
 
-    }
+    //}
 
     void Update()
     {
@@ -140,6 +138,7 @@ public class AVGSystem : MonoBehaviour
             NPC1 = GameObject.Find(_NPC1);
             NPC1.SetActive(false);
         });
+
         // 離開對話框
         fs.RegisterCommand("button_st_show", (List<string> _params) =>
         {
@@ -227,16 +226,16 @@ public class AVGSystem : MonoBehaviour
             //character_image.Instance.fade(0.5f, true);
             //character_image.Instance.StartCoroutine(character_image.Instance.color_A(0.5f, true));
             //將IEnumerator放入列隊中
-            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.5f, true));
-            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, false));
-            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.4f, true));
-            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.2f, false));
-            character_image.Instance.queue.Enqueue(character_image.Instance.color_A(0.3f, true));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.5f, true));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.3f, false));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.4f, true));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.2f, false));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.3f, true));
             //然後再執行協程
             character_image.Instance.StartCoroutine(character_image.Instance.QueueExecute());
         });
         fs.RegisterCommand("FadeOut", (List<string> _params) => {
-            character_image.Instance.fade(0.5f, false);
+            character_image.Instance.Fade(0.5f, false);
 
         });
         fs.RegisterCommand("Zoom", (List<string> _params) => {

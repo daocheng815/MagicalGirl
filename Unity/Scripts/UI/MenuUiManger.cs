@@ -31,7 +31,7 @@ public class MenuUiManger : MonoBehaviour
 
     private void Start()
     {
-        //­«»s­I¥]¤w§K¤£¥²­nªº°İÃD
+        //é‡è£½èƒŒåŒ…å·²å…ä¸å¿…è¦çš„å•é¡Œ
         mybag.SetActive(true);
         mybag.SetActive(false);
         Screen.SetActive(false);
@@ -73,7 +73,7 @@ public class MenuUiManger : MonoBehaviour
     {
         if (context.canceled && playerController.IsAlive && !AVGSystem.isDialog)
         {
-            //±NUIµJÂI²¾¦Ü·í«eª«¥ó¤W
+            //å°‡UIç„¦é»ç§»è‡³ç•¶å‰ç‰©ä»¶ä¸Š
             EventSystem.current.SetSelectedGameObject(mybagSelected);
             invventoryManger.RefreshItem();
             isOpenMybag = !isOpenMybag;
@@ -111,7 +111,7 @@ public class MenuUiManger : MonoBehaviour
         
         //GameObject ui = GameObject.Find("UIMager");
         //ui.GetComponent<UIManger>().SubscribeToEvents();
-        //¦]¬°¨Æ«e¤w¸g§R°£¹ï¸Ü®Ø ©Ò¥H­n¥[¦^¨Ó
+        //å› ç‚ºäº‹å‰å·²ç¶“åˆªé™¤å°è©±æ¡† æ‰€ä»¥è¦åŠ å›ä¾†
         AVGSystem.RemoveDialog_C();
         Time.timeScale = 1f;
         SceneManager.LoadScene("SampleScene");
@@ -124,11 +124,11 @@ public class MenuUiManger : MonoBehaviour
 
     public void QuitGame()
     {
-        // À³¥Îµ{¦¡°h¥X
+        // æ‡‰ç”¨ç¨‹å¼é€€å‡º
         Application.Quit();
 
-        // ª`·N¡G¦bUnity½s¿è¾¹¤¤°õ¦æ®É¡AQuit()¥i¯à¤£·|¥ß§Y¥Í®Ä
-        // ¦b½s¿è¾¹¤¤´ú¸Õ®É¡A§A¥i¥H¨Ï¥Î¨ä¥L¤è¦¡³B²zÂ÷¶}¹CÀ¸
+        // æ³¨æ„ï¼šåœ¨Unityç·¨è¼¯å™¨ä¸­åŸ·è¡Œæ™‚ï¼ŒQuit()å¯èƒ½ä¸æœƒç«‹å³ç”Ÿæ•ˆ
+        // åœ¨ç·¨è¼¯å™¨ä¸­æ¸¬è©¦æ™‚ï¼Œä½ å¯ä»¥ä½¿ç”¨å…¶ä»–æ–¹å¼è™•ç†é›¢é–‹éŠæˆ²
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif

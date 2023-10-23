@@ -65,7 +65,6 @@ public class PlayerController : MonoBehaviour
                             return airWalkSpeed;
                         }
                     }
-                    
                 }
                 else
                 {
@@ -77,9 +76,6 @@ public class PlayerController : MonoBehaviour
                 return 0;
             }
         }}
-    
-    
-
     [SerializeField]
     private bool _isMoving = false;
 
@@ -200,8 +196,8 @@ public class PlayerController : MonoBehaviour
                 if (!touchingDirections.IsOnwall)
                 {
                     is_Slide_up = false;
-                    Vector2 Np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
-                    rb.MovePosition(Np);
+                    Vector2 np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
+                    rb.MovePosition(np);
                 }
             }
         }
@@ -209,11 +205,12 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
         }
-     
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
         animator.SetFloat(AnimationStrings.xVelocity, rb.velocity.x);
-
-
+        
+        //如果玩家死亡且在地面上就將速度改為0
+        if (!IsAlive && touchingDirections.IsGrounded)
+            rb.velocity = Vector2.zero;
     }
     
     private int MoveCount = 0;
