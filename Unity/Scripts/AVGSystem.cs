@@ -1,3 +1,4 @@
+using System;
 using Flower;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,10 @@ public class AVGSystem : MonoBehaviour
 {
     FlowerSystem fs;
 
+    public GameObject player;
+    private Damageable playDamageable;
+    private TouchingDirections TouchingDirections;
+    
     // 任何物件都必須初始化這樣在重新開始遊戲時才不會產生尋找不到物件的情況
     public GameObject NPC1;
     private string _NPC1;
@@ -21,12 +26,18 @@ public class AVGSystem : MonoBehaviour
 
     public bool isDialog;
 
-    public FilleManager FilleManager;
+    private FilleManager FilleManager;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        playDamageable = player.GetComponent<Damageable>();
+        TouchingDirections = player.GetComponent<TouchingDirections>();
+        FilleManager = player.GetComponent<FilleManager>();
+    }
+
     void Start()
     {
-
         NPC1 = GameObject.Find("QB");
         _NPC1 = NPC1.name;
         NPC1.SetActive(false);
@@ -109,9 +120,37 @@ public class AVGSystem : MonoBehaviour
     {
         //開啟與關閉玩家鎖定
         fs.RegisterCommand("lock_player", (List<string> _params) => {
-            Time.timeScale = 0.5f;
-            PlayerController.lockplay = true;
             isDialog = true;
+            Time.timeScale = 0.5f;
+            //PlayerController.lockplay = true;
+            // 以下控制到地面才開始鎖住玩家
+            if (!TouchingDirections.IsGrounded)
+            {
+                playDamageable.LockVelocity = true;
+                StartCoroutine(Lock_player_timer());
+            }
+            else
+            {
+                PlayerController.lockplay = true;
+            }
+            IEnumerator Lock_player_timer()
+            {
+                var timer = 0f;
+                var timedelay = 5f;
+                while (timer < timedelay)
+                {
+                    timer += Time.deltaTime;
+                    
+                    if (TouchingDirections.IsGrounded)
+                    {
+                        PlayerController.lockplay = true;
+                        playDamageable.LockVelocity = false;
+                        //Debug.Log("落地");
+                        timer = timedelay;
+                    }
+                    yield return null;
+                }
+            }
         });
         fs.RegisterCommand("unlock_player", (List<string> _params) => {
             Time.timeScale = 1f;

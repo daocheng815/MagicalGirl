@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class NumValUIController : MonoBehaviour
 {
     public PlayerController pc;
+    [SerializeField]private bool timerBool = false;
+    [SerializeField]private int timer = 0;
+    public int timerDelay = 5;
     public float waitTime = 1f;
     public float animatorValNum = 100f;
     public AnimationCurve animatorcurve;
@@ -20,16 +23,16 @@ public class NumValUIController : MonoBehaviour
             rtV3[i] = rtList[i].position;
             rtList[i].position = new Vector3(rtV3[i].x,rtV3[i].y+animatorValNum,rtV3[i].z);
         }
-
-        StartCoroutine(AnimatorTimer(5f));
         Invoke("Fadeamimator",1f);
     }
     public void Fadeamimator()
     {
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0));
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1));
+        // 計時器
+        OnTimer();
     }
-    // 動畫效果
+    // 玩家數值條動畫效果
     public IEnumerator NumValAnimator(float val = 50f,float timeDelay = 1f,int NumVal = 0,bool fadeMod = true)
     {
         var timer = 0f;
@@ -50,7 +53,7 @@ public class NumValUIController : MonoBehaviour
         }
     }
 
-    public IEnumerator AnimatorTimer(float timedelay)
+    public IEnumerator AnimatorTimer_(float timedelay)
     {
         var timer = 0f;
         while (timer < timedelay)
@@ -62,9 +65,37 @@ public class NumValUIController : MonoBehaviour
         }
         Debug.Log("結束協程");
     }
+    // 計時器，未完成
+    //接下來要去做判定當玩家不動時啟動計時器，然後一段時間後就將UI縮上來，但如果在這途中又突然遭遇傷害或是移動及攻擊，就將UI放下來。
+    //應該會使用NumValAnimator的fadeMod
+    void AnimatorTimer()
+    {
+        timer++;
+        //Debug.Log("計時中:" + timer);
+    }
 
+    void OnTimer()
+    {
+        timerBool = true;
+        InvokeRepeating("AnimatorTimer",0f,1f);
+    }
+
+    void ExitTimer()
+    {
+        CancelInvoke("AnimatorTimer");
+        timerBool = false;
+        timer = 0;
+    }
     public void Update()
     {
         
+        if (timer > timerDelay && timerBool)
+        {
+            ExitTimer();
+        }
+        if (!timerBool)
+        {
+            OnTimer();
+        }
     }
 }

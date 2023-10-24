@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,6 +6,10 @@ using UnityEngine;
 
 public class FunctionMenuUIControl : MonoBehaviour
 {
+    public GameObject player;
+    private Damageable playDamageable;
+    private TouchingDirections TouchingDirections;
+    
     public GameObject Lord;
     public GameObject Save;
     public GameObject Menu;
@@ -24,6 +29,13 @@ public class FunctionMenuUIControl : MonoBehaviour
     public string mod;
     public int Num;
     public int NPCNum;
+
+    private void Awake()
+    {
+        playDamageable = player.GetComponent<Damageable>();
+        TouchingDirections = player.GetComponent<TouchingDirections>();
+    }
+
     public void Update()
     {
         if (mod == "save")
@@ -39,7 +51,39 @@ public class FunctionMenuUIControl : MonoBehaviour
     }
     public void PCLP(bool _switch)
     {
-        PlayerController.lockplay = _switch;
+        if(_switch == false)
+            PlayerController.lockplay = _switch;
+        else
+        {
+            // 以下控制到地面才開始鎖住玩家
+            if (!TouchingDirections.IsGrounded)
+            {
+                playDamageable.LockVelocity = true;
+                StartCoroutine(Lock_player_timer());
+            }
+            else
+            {
+                PlayerController.lockplay = true;
+            }
+            IEnumerator Lock_player_timer()
+            {
+                var timer = 0f;
+                var timedelay = 5f;
+                while (timer < timedelay)
+                {
+                    timer += Time.deltaTime;
+                    
+                    if (TouchingDirections.IsGrounded)
+                    {
+                        PlayerController.lockplay = true;
+                        playDamageable.LockVelocity = false;
+                        //Debug.Log("落地");
+                        timer = timedelay;
+                    }
+                    yield return null;
+                }
+            }
+        }
     }
     public void Load_switch(bool _switch)
     {

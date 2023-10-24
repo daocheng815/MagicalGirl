@@ -660,6 +660,7 @@ public class PlayerController : MonoBehaviour
     private bool SYD_on = false;
     private void Update()
     {
+        animator.SetBool("lockPlayer",lockplay);
         slide_wall = slide_wall_DetectionZone.detectColliders.Count > 0;
         rb.gravityScale = !isJump && !touchingDirections.IsGrounded ?  1.2f : 1f;
         if (lockplay)
