@@ -59,18 +59,33 @@ public class VC2C : Singleton<VC2C>
     //攝影機大小抖動
     public IEnumerator CameraSize(float size ,float delaytime)
     {
-        float ord_size = CV.m_Lens.OrthographicSize;
+        float ordSize = CV.m_Lens.OrthographicSize;
         float timer = 0f;
         while(timer < delaytime)
         {
-            float Osize = Mathf.Lerp(ord_size, size, (timer / delaytime));
-            CV.m_Lens.OrthographicSize = Osize;
+            float osize = Mathf.Lerp(ordSize, size, (timer / delaytime));
+            CV.m_Lens.OrthographicSize = osize;
             timer += Time.deltaTime;
             yield return null;
         }
     }
-
-
+    //攝影機偏移(用於腳色翻轉)
+    public void CameraOffset(float offsetVar,float timeDelay)
+    {
+        if (!CFT.enabled) return;
+        StartCoroutine(CameraOffsetSet(offsetVar, timeDelay));
+        return;
+        IEnumerator CameraOffsetSet(float offsetVarVar ,float timeDelayOld)
+        {
+            var timer = 0f;
+            while (timer<timeDelayOld)
+            {
+                timer += Time.deltaTime;
+                CFT.m_TrackedObjectOffset.x = Mathf.Lerp(0f, offsetVarVar, MyCyrve.Evaluate(timer / timeDelayOld));
+                yield return null;
+            }
+        }
+    }
     /// <summary>
     /// 控制攝影機的YDamping值，當值為Treu執行IN_OYD TO 0f，為False執行0f TO N_OYD。
     /// </summary>
@@ -83,19 +98,19 @@ public class VC2C : Singleton<VC2C>
         {
             SYD_IE = true;
             StartCoroutine(S_YDF(FD, timedelay));
-            IEnumerator S_YDF(bool FD , float timedelay)
+            IEnumerator S_YDF(bool FD , float timeDelay)
             {
                 float timer = 0f;
-                while (timer < timedelay)
+                while (timer < timeDelay)
                 {
                     timer += Time.deltaTime;
                     if (FD)
                     {
-                        CFT.m_YDamping = Mathf.Lerp(IN_OYD, OT_OYD, MyCyrve.Evaluate(timer / timedelay));
+                        CFT.m_YDamping = Mathf.Lerp(IN_OYD, OT_OYD, MyCyrve.Evaluate(timer / timeDelay));
                     }
                     else
                     {
-                        CFT.m_YDamping = Mathf.Lerp(OT_OYD, IN_OYD, MyCyrve.Evaluate(timer / timedelay));
+                        CFT.m_YDamping = Mathf.Lerp(OT_OYD, IN_OYD, MyCyrve.Evaluate(timer / timeDelay));
                     }
                     yield return null;
                 }

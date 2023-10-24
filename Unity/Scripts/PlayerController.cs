@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
             if (_isFacingRight != value)
             {
                 transform.localScale *= new Vector2(-1, 1);
+                VC2C.Instance.CameraOffset(value ? 0.5f:-0.5f,0.3f);
             }
             _isFacingRight=value;
         } 

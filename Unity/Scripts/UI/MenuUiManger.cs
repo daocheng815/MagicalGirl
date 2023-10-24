@@ -25,8 +25,9 @@ public class MenuUiManger : MonoBehaviour
 
     public GameObject Screen;
     public GameObject ScreenSelected;
-    public Material [] screemMaterial;
-    public float screemMaterial_BW = 1f;
+    
+    //public Material [] screemMaterial;
+    //public float screemMaterial_BW = 1f;
 
 
     private void Start()
@@ -35,15 +36,25 @@ public class MenuUiManger : MonoBehaviour
         mybag.SetActive(true);
         mybag.SetActive(false);
         Screen.SetActive(false);
-
+        /*
         foreach (var screemMaterial in screemMaterial)
         {
             screemMaterial.SetFloat("_TimE", screemMaterial_BW);
+        }*/
+    }
+
+    private void Update()
+    {
+        if (!damageable.IsAlive)
+        {
+            //將UI焦點移至當前物件上
+            EventSystem.current.SetSelectedGameObject(ScreenSelected);
+            GlobalVolumeManger.Instance.NewSaturation(-100f, 1f);
+            Screen.SetActive(true);
         }
     }
 
-    
-
+    /*
     private void Update()
     {
         if (!damageable.IsAlive)
@@ -68,7 +79,7 @@ public class MenuUiManger : MonoBehaviour
             screemMaterial.SetFloat("_TimE", screemMaterial_BW);
         }
     }
-
+    */
     public void OnOpenMyBag(InputAction.CallbackContext context)
     {
         if (context.canceled && playerController.IsAlive && !AVGSystem.isDialog)
@@ -88,12 +99,14 @@ public class MenuUiManger : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(escMenuSelected);
             isOpenEscMenu = !isOpenEscMenu;
-            if (isOpenEscMenu){
+            if (isOpenEscMenu)
+            {
                 PlayerController.lockplay = true;
-                }
-            else{
+            }
+            else
+            {
                 PlayerController.lockplay = false;
-                }
+            }
             escMenu.SetActive(isOpenEscMenu);
             mybag.SetActive(false);
             isOpenMybag= false;
