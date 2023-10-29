@@ -8,6 +8,7 @@ using UnityEngine;
 // Invoke("RemoveButtonGroup", 0.4f);這一段在之後必須要修改
 public class AVGSystem : MonoBehaviour
 {
+    public bool isOn = true;
     FlowerSystem fs;
 
     public GameObject player;
@@ -43,20 +44,30 @@ public class AVGSystem : MonoBehaviour
         NPC1.SetActive(false);
         NPC2 = GameObject.Find("NPC1_0");
         _NPC2 = NPC2.name;
-
+        
         //呼叫對話系統
         fs = FlowerManager.Instance.CreateFlowerSystem("FlowerSample", false);
-
+        if (!isOn)
+            fs.SetupDialog();
         fs.Stop();
         fs.Resume();
-        fs.SetupDialog();
         if (ScreenSetting.GameLoadNum == 1)
         {
             FilleManager.Lord(1);
         }
         if (ScreenSetting.GameLoadNum == 0)
         {
-            fs.ReadTextFromResource("start1");
+            if (isOn)
+            {
+                fs.RemoveDialog();
+                fs.SetupDialog("DefaultDialogPrefab1", true);
+                fs.ReadTextFromResource("Open_1");
+                //fs.ReadTextFromResource("start1");
+            }
+            else
+            {
+                fs.ReadTextFromResource("start1");
+            }
         }
 
         fs.SetVariable("p", "常");
@@ -118,6 +129,11 @@ public class AVGSystem : MonoBehaviour
     }
     public void Commad()
     {
+        fs.RegisterCommand("start1", (List<string> _params) => {
+            fs.RemoveDialog();
+            fs.SetupDialog();
+            fs.ReadTextFromResource("start1");
+        });
         //開啟與關閉玩家鎖定
         fs.RegisterCommand("lock_player", (List<string> _params) => {
             isDialog = true;
@@ -251,31 +267,44 @@ public class AVGSystem : MonoBehaviour
             fs.Stop();
             IsFsStop = true;
         });
+        fs.RegisterCommand("image_B_show", (List<string> _params) => {
+            character_image.Instance.ImageActive(true,1);
+            character_image.Instance.AddImage("black",1,1, 1, 1, 0, 0);
+            
+        });
+        fs.RegisterCommand("image_B_hide", (List<string> _params) => {
+            character_image.Instance.ImageActive(false,1);
+        });
+        fs.RegisterCommand("image_B_FadeOut", (List<string> _params) => {
+            character_image.Instance.Fade(0,0.5f, false);
+        });
+        fs.RegisterCommand("image_B_FadeIn", (List<string> _params) => {
+            character_image.Instance.Fade(0,0.5f, true);
+        });
         fs.RegisterCommand("image_1_show", (List<string> _params) => {
-            character_image.Instance.ImageActive(true);
-            character_image.Instance.AddImage("player_idle", 20, 20, 190, -220);
+            character_image.Instance.ImageActive(true,0);
+            character_image.Instance.AddImage("player_idle",0,0, 1, 1, 190, -220);
         });
         fs.RegisterCommand("image_1_hide", (List<string> _params) => {
-            character_image.Instance.ImageActive(false);
+            character_image.Instance.ImageActive(false,0);
         });
         fs.RegisterCommand("image_1_offset", (List<string> _params) => {
-            character_image.Instance.Offset(0.5f, 100f, 0f);
+            character_image.Instance.Offset(0,0.5f, 100f, 0f);
         });
         fs.RegisterCommand("FadeIn", (List<string> _params) => {
             //character_image.Instance.fade(0.5f, true);
             //character_image.Instance.StartCoroutine(character_image.Instance.color_A(0.5f, true));
             //將IEnumerator放入列隊中
-            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.5f, true));
-            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.3f, false));
-            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.4f, true));
-            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.2f, false));
-            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0.3f, true));
+            character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0,0.5f, true));
+            //character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0,0.3f, false));
+            //character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0,0.4f, true));
+            //character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0,0.2f, false));
+            //character_image.Instance.Queue.Enqueue(character_image.Instance.color_A(0,0.3f, true));
             //然後再執行協程
             character_image.Instance.StartCoroutine(character_image.Instance.QueueExecute());
         });
         fs.RegisterCommand("FadeOut", (List<string> _params) => {
-            character_image.Instance.Fade(0.5f, false);
-
+            character_image.Instance.Fade(0,0.5f, false);
         });
         fs.RegisterCommand("Zoom", (List<string> _params) => {
             //character_image.Instance.Zoom(0.5f, 1.2f, 1.2f);

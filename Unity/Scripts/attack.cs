@@ -14,8 +14,9 @@ public class attack : MonoBehaviour
     private int orgdamage;
     private bool IsCrit = false;
     public Vector2 knockback = Vector2.zero;
-    // Start is called before the first frame update
-
+    
+    //  傷害方式就是傷害本身是個碰撞體，當傷害本身碰撞到帶有damageable腳本的物體時會去使用該物體上的hit，並且將傷害腳本的值傳遞給被碰撞物體的damageable上。
+    
     private void OnParticleCollision(GameObject other)
     {
         orgdamage = attackDamage;

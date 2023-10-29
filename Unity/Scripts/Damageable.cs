@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,7 +9,7 @@ public class Damageable : MonoBehaviour
     public UnityEvent<int, Vector2> damagableHit;
 
     Animator animator;
-
+    
     [SerializeField]
     private int _MaxHealth;
     public int MaxHealth 
@@ -73,6 +73,7 @@ public class Damageable : MonoBehaviour
         }
         set
         {
+
             animator.SetBool(AnimationStrings.lockVelocity, value);
         }
     }
@@ -111,7 +112,6 @@ public class Damageable : MonoBehaviour
         {
             health -= damage;
             isInvincible = true;
-
             animator.SetTrigger(AnimationStrings.hitTrigger);
             LockVelocity = true; 
             damagableHit?.Invoke(damage, knockback);

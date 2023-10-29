@@ -38,7 +38,6 @@ public class NumValUIController : MonoBehaviour
         OnTimer();
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0));
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1));
-        // 計時器
     }
     // 玩家數值條動畫效果
     public IEnumerator NumValAnimator(float val = 50f,float timeDelay = 1f,int NumVal = 0,bool fadeMod = true)

@@ -9,10 +9,12 @@ public class GlobalVolumeManger : Singleton<GlobalVolumeManger>
     public AnimationCurve myCurve;
     Volume _myVolume;
     private ColorAdjustments _colorAdjustments;
+    private MotionBlur _motionBlur;
     private void Start()
     {   
         _myVolume = GetComponent<Volume>();
         _myVolume.profile.TryGet(out _colorAdjustments);
+        _myVolume.profile.TryGet(out _motionBlur);
     }
     public void NewSaturation(float defNum,float timeDelay)
     {
@@ -28,4 +30,10 @@ public class GlobalVolumeManger : Singleton<GlobalVolumeManger>
             }
         }
     }
+
+    public void motionBlurSt(float var)
+    {
+        _motionBlur.intensity.Override(var);
+    }
+    
 }

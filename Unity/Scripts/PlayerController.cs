@@ -4,20 +4,22 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-
 // 玩家行為控制
-
+[RequireComponent(typeof(Detection))]
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(Damageable))]
 public class PlayerController : MonoBehaviour
 {
     public ParticleSystem dast;
+    public ParticleSystem Slide_R;
+    public ParticleSystem Slide_L;
+    
     public PMagic pmagic;
     public float walkSpeed = 5f ;
     public float runspeed = 8f;
     public float airWalkSpeed = 3f ;
     public float airrunkSpeed = 5f;
     public float jumpImpulse = 10f ;
+    public float jumpImpulse2 = 11f;
     public static bool lockplay = false;
 
     private float currentSpeed = 0f;
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 moveInput;
     TouchingDirections touchingDirections;
+    Detection detection;
     Damageable damageable;
 
     public Rigidbody2D rb;
@@ -76,12 +79,9 @@ public class PlayerController : MonoBehaviour
                 return 0;
             }
         }}
-    [SerializeField]
-    private bool _isMoving = false;
-
+    [SerializeField]private bool _isMoving = false;
     public bool IsMoving { get
         {
-            
             return _isMoving;
         }
         set
@@ -91,11 +91,8 @@ public class PlayerController : MonoBehaviour
         }
     }
     public bool isJump {  get {return animator.GetBool(AnimationStrings.IsJump); }  }
-
-
     [SerializeField]
     private bool _isRunning = false;
-
     public bool IsRunning{ get 
         { 
             return _isRunning;
@@ -106,10 +103,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(AnimationStrings.isRunning, value);
         }
     }
-
-
-    [SerializeField]
-    private bool _isSlide = false;
+    [SerializeField]private bool isSlideAir;
+    [SerializeField]private bool _isSlide = false;
     public bool IsSlide
     {
         get { return _isSlide;}
@@ -119,10 +114,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool(AnimationStrings.Slide, value);
         }
     }
-
-
     public bool _isFacingRight = true;
-
     public bool IsFacingRight { get 
         { 
             return _isFacingRight; 
@@ -137,45 +129,37 @@ public class PlayerController : MonoBehaviour
             _isFacingRight=value;
         } 
     }
-
     public bool canMove { get
         {
             return animator.GetBool(AnimationStrings.canMove);
         } }
-    
     public bool IsAlive { 
         get
         {
             return animator.GetBool(AnimationStrings.IsAlive);
         } 
     }
-
-
-    
-
-
     // Start is called before the first frame update
     private void Awake()
     {
-        Transform gameObject = transform.Find("setMenu");
+        //Transform gameObject = transform.Find("setMenu");
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         touchingDirections = GetComponent<TouchingDirections>();
+        detection = GetComponent<Detection>();
         damageable = GetComponent<Damageable>();
         
     }
-
     void Start()
     {
 
         if (ScreenSetting.GameLoadNum == 0)
             invventoryManger.deltbag();
     }
-
     private bool is_Slide_up;
+    private Vector2 PlayerSlidePosition; 
     private void FixedUpdate()
     {
-        
         if (!lockplay)
         {
             if (!IsSlide)
@@ -190,16 +174,23 @@ public class PlayerController : MonoBehaviour
                     rb.velocity = new Vector2(moveInput.x * currentSpeed, rb.velocity.y);
                 }
             }
+            //IsSlide 滑行動作Slide 滑行動作有可能分為在地面上，與在空中的，這裡需要分開來判定
+            //但是造成判定失誤定並不是有沒有進入牆面 而是 MovePosition 直接造成的BUG
             //else if (!damageable.LockVelocity && touchingDirections.IsGrounded)
-            else if (!damageable.LockVelocity)
+            //不在空中isSlideAir
+            if (IsSlide && !damageable.LockVelocity)
             {
-
                 if (!touchingDirections.IsOnwall)
                 {
+                    Debug.Log("yes");
                     is_Slide_up = false;
                     Vector2 np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
                     rb.MovePosition(np);
+                    //is_Slide_up = false;
+                    //float horizontalInput = IsFacingRight ? 1.0f : -1.0f; // 根据朝向确定水平方向
+                    //targetPosition = rb.position + new Vector2(horizontalInput, moveInput.y) * 25f * Time.deltaTime;
                 }
+                //rb.position = Vector2.Lerp(rb.position, targetPosition, 0.5f);
             }
         }
         else
@@ -208,16 +199,12 @@ public class PlayerController : MonoBehaviour
         }
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
         animator.SetFloat(AnimationStrings.xVelocity, rb.velocity.x);
-        
         //如果玩家死亡且在地面上就將速度改為0
         if (!IsAlive && touchingDirections.IsGrounded)
             rb.velocity = Vector2.zero;
     }
-    
     private int MoveCount = 0;
-
     public void ReMoveCount(){MoveCount = 0;}
-
     public void OnMove(InputAction.CallbackContext context)
     {
         if (!lockplay)
@@ -241,11 +228,9 @@ public class PlayerController : MonoBehaviour
                     case 2:
                         MoveCount = 0;
                         break;
-
                 }
                 MoveCount++;
             }
-
             moveInput = context.ReadValue<Vector2>();
             if (IsAlive)
             {
@@ -259,8 +244,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    
     private void SetFacingDirection(Vector2 moveInput)
     {
         if(moveInput.x >0 && !IsFacingRight)
@@ -279,7 +262,6 @@ public class PlayerController : MonoBehaviour
     }
     public void OnRun(InputAction.CallbackContext context) 
     {
-
         if (!lockplay)
         {
             if (context.started)
@@ -291,11 +273,8 @@ public class PlayerController : MonoBehaviour
                 IsRunning = false;
             }
         }
-            
-        
     }
-    private int jumpCount = 0;
-    
+    [SerializeField]private int jumpCount = 0;
     public void OnJump(InputAction.CallbackContext context)
     {
         if (!lockplay)
@@ -305,37 +284,51 @@ public class PlayerController : MonoBehaviour
                 {
                     if (touchingDirections.IsGrounded)
                     {
-                    
                         jumpCount = 1;
                         PerformJump();
                     }
                     else if (jumpCount < 2)
                     {
-                    
                         jumpCount = 2;
                         PerformJump();
                     }
-               
                 }
             }
     }
-
     private void PerformJump()
     {
         CreateDust();
         animator.SetTrigger(AnimationStrings.jumpTrigger);
-        rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
+        rb.velocity = new Vector2(rb.velocity.x, WallClimbIdleCountDelay ? jumpImpulse2 : jumpImpulse);
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (touchingDirections.IsGrounded)
+        if (touchingDirections.IsGrounded && !touchingDirections.IsOnwall)
         {
             animator.ResetTrigger(AnimationStrings.jumpTrigger);
             jumpCount = 0; 
         }
     }
-
+//抓牆
+    [SerializeField]private bool WallClimbIdleCountDelay = false;
+    [SerializeField]private bool WallClimbIdleCount = false;
+    public void OnWallClimbIdle(InputAction.CallbackContext context)
+    {
+        if (!lockplay && detection.isWall)
+        {
+            if (context.started)
+            {
+                WallClimbIdleCountDelay = !WallClimbIdleCount;
+                WallClimbIdleCount = !WallClimbIdleCount;
+                animator.SetBool(AnimationStrings.IsWallClimb,WallClimbIdleCount);
+            }
+            //else if (context.canceled)
+            //{
+            //    animator.SetBool(AnimationStrings.IsWallClimb,false);
+            //   Debug.Log("放開");
+            //}
+        }
+    }
     public void OnAttack(InputAction.CallbackContext context)
     {
         if (!lockplay)
@@ -346,17 +339,14 @@ public class PlayerController : MonoBehaviour
         //呼叫攝影機控制的震動動畫
         VC2C.Instance.StartCoroutine(VC2C.Instance.CameraSize_Num());
     }
-
     public void OnRangeAttack(InputAction.CallbackContext context)
     {
         if (!lockplay && pmagic.IsMagic(20))
             if (context.started)
             {
                 animator.SetTrigger(AnimationStrings.rangeaAttackTrigger);
-
             }
     }
-
     public void OnHit(int damage, Vector2 knockback)
     {
         if (!lockplay)
@@ -366,24 +356,30 @@ public class PlayerController : MonoBehaviour
         VC2C.Instance.StartCoroutine(VC2C.Instance.CameraShock_Num());
         //VC2C.Instance.CameraShock(0.1f, 1f, true, false);
     }
-
     // 閃避
-
     private bool iss = false;
     public void OnSlide(InputAction.CallbackContext context)
     {
-
         // 未完成 打算再做一條用來表示體力 與顯示冷卻時間
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
-        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack))
+        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack) && !detection.isWall)
         {
-            
+            //PlayerSlidePosition = rb.position;
+            //Debug.Log(PlayerSlidePosition);
+            //判定開始滑行時是否在空中
+            isSlideAir = !touchingDirections.IsGrounded;
+            //開啟動態模糊
+            GlobalVolumeManger.Instance.motionBlurSt(1f);
+            //開啟粒子效果
             CreateDust();
+            if(IsFacingRight)
+                Slide_R.Play();
+            if(!IsFacingRight)
+                Slide_L.Play();
             iss = true;
             IsSlide = true;
             pmagic.OnMagic(20);
             StartCoroutine(slide(0.3f));
-            
             //Debug.Log("閃避");
         }
         //協程方式不太好，之後記得改成Invoke方法。
@@ -393,6 +389,7 @@ public class PlayerController : MonoBehaviour
             
             IsSlide = false;
             //Debug.Log("閃避完成");
+            GlobalVolumeManger.Instance.motionBlurSt(0f);
             StartCoroutine(FadeSlide(0.3f));
         }
         //冷卻時間
@@ -402,12 +399,11 @@ public class PlayerController : MonoBehaviour
             iss = false;
         }
     }
-
     // 牆跳
     private bool IsScratch;
     public void OnScratch(InputAction.CallbackContext context)
     {
-        if(!lockplay&&pmagic.IsMagic(45))
+        if(!lockplay&&pmagic.IsMagic(45)&& false)
             if (context.started && touchingDirections.IsOnwall && IsScratch )
             {   
                 if (!(touchingDirections.IsGrounded && touchingDirections.IsOnwall))
@@ -426,11 +422,8 @@ public class PlayerController : MonoBehaviour
     // 牆跳 結束
     // 玩家身上的UI
     //魔法選單
-
     public Transform MagicUI_launchPoint;
     public GameObject MagicUI_projectilePrefad;
-    
-
     private bool ISMagicUI = false;
     public void OnMagicUI(InputAction.CallbackContext context)
     {   
@@ -607,7 +600,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public GameObject BPrefad;
     public void OnMagic_A()
     {
@@ -658,18 +650,54 @@ public class PlayerController : MonoBehaviour
     }
 
     private bool SYD_on = false;
+    
+    private IEnumerator WallClimbIdleCountDelaytime(float deltime)
+    {
+        yield return new WaitForSecondsRealtime(deltime);
+        WallClimbIdleCountDelay = false;
+    }
     private void Update()
     {
         animator.SetBool("lockPlayer",lockplay);
         slide_wall = slide_wall_DetectionZone.detectColliders.Count > 0;
+        //調整墜落時重力
         rb.gravityScale = !isJump && !touchingDirections.IsGrounded ?  1.2f : 1f;
         if (lockplay)
         {
             IsRunning = false;
             IsMoving = false;
         }
+        // 當在牆壁時直接將IsSlide狀態關閉
+        IsSlide = IsSlide ? !detection.isWall : IsSlide;
+        // 由於停止動作，所以關閉粒子效果
+        if (!IsSlide && detection.isWall)
+        {
+            Slide_R.Stop();
+            Slide_L.Stop();
+        }
+        // 如果不在牆上或是在地面就跳出抓牆的動作
+        if (!detection.isWall)
+        {
+            animator.SetBool(AnimationStrings.IsWallClimb,false);
+            WallClimbIdleCount = false;
+        }
+        // 落下到地面時的狀態
+        if (detection.isWall && touchingDirections.IsGrounded)
+        {
+            animator.SetBool(AnimationStrings.IsWallClimb,false);
+            WallClimbIdleCount = false;
+        }
+        if (!detection.isWall && WallClimbIdleCountDelay)
+            StartCoroutine(WallClimbIdleCountDelaytime(0.5f));
+        if (detection.isWall && touchingDirections.IsGrounded && WallClimbIdleCountDelay)
+            StartCoroutine(WallClimbIdleCountDelaytime(0.5f));
+        //
+        if (WallClimbIdleCount)
+        {
+            jumpCount = 0;
+            rb.velocity = Vector2.zero;
+        }
         //UI_Test.Instance.text = rb.velocity.y.ToString() +"   "+　VC2C.Instance.CFT.m_YDamping.ToShortString();
-        
         if (!VC2C.Instance.SYD_IE)
         {
             // 墜落距離大於10
