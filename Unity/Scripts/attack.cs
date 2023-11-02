@@ -77,14 +77,14 @@ public class attack : MonoBehaviour
         float critChanceProbability = critChance / 100f;
         if (randomProbability <= critChanceProbability)
         {
-            attackDamage = attackDamage * ((critDamage + 100) / 100);
-            Debug.Log("ÃzÀ»");
+            attackDamage = attackDamage * ((critDamage + 100) / 100); 
+            //Debug.Log("ÃzÀ»");
             IsCrit = true;
         }
         else
         {
             IsCrit = false;
-            Debug.Log("´¶³q§ðÀ»");
+            //Debug.Log("´¶³q§ðÀ»");
         }
 
         Damageable damageable = collision.GetComponent<Damageable>();

@@ -10,7 +10,8 @@ public class ScreenSetting : MonoBehaviour
 {
     //靜態
     public static int GameLoadNum;
-
+    
+    //ui控制
     [SerializeField]private bool isLordMenuOn = false;
     [SerializeField]private bool isSettingsMenuOn = false;
     
@@ -21,23 +22,28 @@ public class ScreenSetting : MonoBehaviour
     private GameObject logo;
     private GameObject menuButton;
     private GameObject lordMenu;
-    private GameObject settingsMenu;
+    private GameObject SettingsMenu;
     
     private Vector2 logoMenuShaft;
     private Vector2 menuButtonShaft;
     private Vector2 lordMenuShaft;
+    private Vector2 SettingsMenuShaft;
     private void Start()
     {
         GameLoadNum = 0;
-        //取得物件的原始位置
+        //取得遊戲物件內的RectTransform原始位置
         logoMenuShaft = logo.GetComponent<RectTransform>().anchoredPosition;
         menuButtonShaft = menuButton.GetComponent<RectTransform>().anchoredPosition;
         lordMenuShaft = lordMenu.GetComponent<RectTransform>().anchoredPosition;
+        SettingsMenuShaft = SettingsMenu.GetComponent<RectTransform>().anchoredPosition;
 
         lordMenu.SetActive(false);
+        SettingsMenu.SetActive(false);
+
     }
     private void Awake()
     {
+        SettingsMenu = GameObject.Find("SettingsMenu");
         logo = GameObject.Find("LogoMenu");
         menuButton = GameObject.Find("ButtonMenu");
         lordMenu = GameObject.Find("LordMenu");
@@ -60,6 +66,17 @@ public class ScreenSetting : MonoBehaviour
             StartCoroutine(OnLoadUiMenuIe(menuButton,myCurve,900,menuButtonShaft.y,0.5f,swap));
             StartCoroutine(OnLoadUiMenuIe(lordMenu,myCurve,930,lordMenuShaft.y,0.6f,swap));
             isLordMenuOn = swap;
+        }
+    }
+    public void OnSettingsUiMenu(bool swap)
+    {
+        SettingsMenu.SetActive(swap);
+        if (swap ? !isSettingsMenuOn : isSettingsMenuOn)
+        {
+            StartCoroutine(OnLoadUiMenuIe(logo,myCurve,-200,logoMenuShaft.y,0.4f,swap));
+            StartCoroutine(OnLoadUiMenuIe(menuButton,myCurve,900,menuButtonShaft.y,0.5f,swap));
+            StartCoroutine(OnLoadUiMenuIe(SettingsMenu,myCurve,930,SettingsMenuShaft.y,0.6f,swap));
+            isSettingsMenuOn = swap;
         }
     }
     /// <summary>
