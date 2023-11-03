@@ -4,9 +4,8 @@
     {
         public enum EnemyState
         {
-            
             Idle,//等待
-            Patrol,//巡邏 
+            Patrol,//巡邏
             Pursue,//追擊玩家
             Attack,//攻擊
             Hit,//受傷

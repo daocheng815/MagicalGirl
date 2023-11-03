@@ -1,31 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using EnemyState;
+
+
 public class KinghtEnemy : MonoBehaviour
 {
-    //創建實例
+    // 創建實例
     EnemyStateManager enemyStateManager = new EnemyStateManager();
-    //巡邏點陣列
+    // 巡邏點陣列
     public Transform[] patrolposition;
     private int currentPatrolIndex = 0;
-    //Enemy移動速度
+    // Enemy移動速度
     public float walkAccleration = 3f;
     public float maxSpeed = 3f;
     public float walkSpeed = 3f;
     public float walkStopRat = 0.6f;
+    // 等待狀態時間
+    public float idleDelayTime = 0.5f;
+    public float randomIdleDelayTime = 2f;
     // 搜索玩家範圍(敵人視野)
     public float pursueDistance = 12;
     // 攻擊距離
     public float attackDistance = 6;
     // 攻擊後追擊距離
     public float hitPursueDistance = 16;
-    //追擊延遲距離
+    // 追擊延遲距離
     public float pursueDelayDistance = 2;
     [SerializeField]private Damageable playDamageble;
-    //玩家是否在敵人正面
+    // 玩家是否在敵人正面
     private bool detectionFront =>
         WalkDirection == WalkableDirection.Right ?
         enemySearchToPlayers.direction.x < 0.9 && WalkDirection == WalkableDirection.Right:
@@ -141,6 +145,8 @@ public class KinghtEnemy : MonoBehaviour
             }
         }
     }
+
+    private bool isIdleDelayTime = false;
     private void FixedUpdate()
     {
         if (!detectionFront)
@@ -149,10 +155,49 @@ public class KinghtEnemy : MonoBehaviour
         if(touchingDirections.IsOnwall && touchingDirections.IsGrounded)
             FlipCharacter();
         //============
+        //等待狀態機
+        //============
+        if (enemyStateManager.IsCurrentState((ES.Idle)))
+        {
+            animator.SetBool(AnimationStrings.isMoving,false);
+            rb.velocity = Vector2.zero;
+            var delayTime = UnityEngine.Random.Range(idleDelayTime,randomIdleDelayTime);
+            if (!isIdleDelayTime)
+                StartCoroutine(IdleDelayTime(delayTime, EnemyStateManager.EnemyState.Patrol));
+            //等待狀態機協程
+            IEnumerator IdleDelayTime(float delayTime,EnemyStateManager.EnemyState EnemyState)
+            {
+                //正在等待
+                isIdleDelayTime = true;
+                //計時器
+                float timer = 0f;
+                while (timer < delayTime)
+                {
+                    timer += Time.deltaTime;
+                    //等待時間內若是靠近就進入追擊
+                    if (enemySearchToPlayers.distance < pursueDistance)
+                    {
+                        enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Pursue;
+                        break;
+                    }
+                    yield return null;
+                }
+                //回復運動狀態
+                animator.SetBool(AnimationStrings.isMoving,true);
+                //等待結束
+                isIdleDelayTime = false;
+                //設定下一個狀態
+                if (!(enemySearchToPlayers.distance < pursueDistance))
+                    enemyStateManager.CurrentState = EnemyState;
+
+            }
+        }
+        //============
         //巡邏狀態機
         //============
         if (enemyStateManager.IsCurrentState(ES.Patrol))
         {
+            //狀態機判定 === 判定如果距離在視野內進行追擊
             if (enemySearchToPlayers.distance < pursueDistance)
             {
                 
@@ -160,6 +205,7 @@ public class KinghtEnemy : MonoBehaviour
                 return;
                 
             }
+            //狀態邏輯
             if (!damageable.LockVelocity)
             {
                 if (CanMove && touchingDirections.IsGrounded)
@@ -178,8 +224,10 @@ public class KinghtEnemy : MonoBehaviour
                     }
                     if (Vector2.Distance(transform.position, patrolposition[currentPatrolIndex].position) < 0.1f)
                     {
-                        FlipCharacter();
+                        //FlipCharacter();
                         currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
+                        enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Idle;
+                        
                     }
                     
                 }
@@ -194,7 +242,7 @@ public class KinghtEnemy : MonoBehaviour
         //====================================
         if (enemyStateManager.IsCurrentState(ES.Pursue) || enemyStateManager.IsCurrentState(ES.Hit))
         {
-            
+            //狀態機判定
             switch (enemyStateManager.CurrentState)
             {
                 case EnemyStateManager.EnemyState.Pursue:
@@ -214,12 +262,12 @@ public class KinghtEnemy : MonoBehaviour
                     }
                     break;
             }
-            
+            //狀態邏輯
             if (!damageable.LockVelocity)
             {
                 if (CanMove && touchingDirections.IsGrounded)
                 {
-                    //敵人需要超出追擊玩家點一定的距離這樣才有時間攻擊
+                    //敵人需要超出追擊玩家點一定的距離這樣才有時間攻擊，做個距離修正
                     Vector2 playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x , transform.position.y);
                     if(WalkDirection == WalkableDirection.Left)
                         playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x + pursueDelayDistance , transform.position.y);
@@ -237,9 +285,6 @@ public class KinghtEnemy : MonoBehaviour
                 }
             }
         }
-        //============
-        //距離修正
-        //============
     }
     public void OnHit(int damage, Vector2 knockback)
     {

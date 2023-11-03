@@ -157,7 +157,8 @@ public class PlayerController : MonoBehaviour
             invventoryManger.deltbag();
     }
     private bool is_Slide_up;
-    private Vector2 PlayerSlidePosition; 
+    private Vector2 PlayerSlidePosition;
+    private Vector2 targetPosition;
     private void FixedUpdate()
     {
         if (!lockplay)
@@ -185,6 +186,7 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("yes");
                     is_Slide_up = false;
                     Vector2 np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
+                    
                     rb.MovePosition(np);
                     //is_Slide_up = false;
                     //float horizontalInput = IsFacingRight ? 1.0f : -1.0f; // 根据朝向确定水平方向

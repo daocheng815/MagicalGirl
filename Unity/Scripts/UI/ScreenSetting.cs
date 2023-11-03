@@ -13,6 +13,7 @@ public class ScreenSetting : MonoBehaviour
     
     //ui控制
     [SerializeField]private bool isLordMenuOn = false;
+    [SerializeField]private bool isAboutMenuOn = false;
     [SerializeField]private bool isSettingsMenuOn = false;
     
     public AnimationCurve myCurve;
@@ -22,31 +23,38 @@ public class ScreenSetting : MonoBehaviour
     private GameObject logo;
     private GameObject menuButton;
     private GameObject lordMenu;
+    private GameObject AboutMenu;
     private GameObject SettingsMenu;
     
     private Vector2 logoMenuShaft;
     private Vector2 menuButtonShaft;
     private Vector2 lordMenuShaft;
+    private Vector2 AboutMenuShaft;
     private Vector2 SettingsMenuShaft;
     private void Start()
     {
         GameLoadNum = 0;
-        //取得遊戲物件內的RectTransform原始位置
-        logoMenuShaft = logo.GetComponent<RectTransform>().anchoredPosition;
-        menuButtonShaft = menuButton.GetComponent<RectTransform>().anchoredPosition;
-        lordMenuShaft = lordMenu.GetComponent<RectTransform>().anchoredPosition;
-        SettingsMenuShaft = SettingsMenu.GetComponent<RectTransform>().anchoredPosition;
-
         lordMenu.SetActive(false);
         SettingsMenu.SetActive(false);
-
+        AboutMenu.SetActive(false);
     }
     private void Awake()
     {
-        SettingsMenu = GameObject.Find("SettingsMenu");
         logo = GameObject.Find("LogoMenu");
         menuButton = GameObject.Find("ButtonMenu");
+        
         lordMenu = GameObject.Find("LordMenu");
+        AboutMenu = GameObject.Find("AboutMenu");
+        SettingsMenu = GameObject.Find("SettingsMenu");
+        
+        //取得遊戲物件內的RectTransform原始位置
+        logoMenuShaft = logo.GetComponent<RectTransform>().anchoredPosition;
+        menuButtonShaft = menuButton.GetComponent<RectTransform>().anchoredPosition;
+        
+        lordMenuShaft = lordMenu.GetComponent<RectTransform>().anchoredPosition;
+        AboutMenuShaft = AboutMenu.GetComponent<RectTransform>().anchoredPosition;
+        SettingsMenuShaft = SettingsMenu.GetComponent<RectTransform>().anchoredPosition;
+        
         DontDestroyOnLoad(this.gameObject);
     }
     public void OnStartGame()
@@ -68,6 +76,17 @@ public class ScreenSetting : MonoBehaviour
             isLordMenuOn = swap;
         }
     }
+    public void OnAboutUiMenu(bool swap)
+    {
+        AboutMenu.SetActive(swap);
+        if (swap ? !isAboutMenuOn : isAboutMenuOn)
+        {
+            StartCoroutine(OnLoadUiMenuIe(logo,myCurve,-200,logoMenuShaft.y,0.4f,swap));
+            StartCoroutine(OnLoadUiMenuIe(menuButton,myCurve,900,menuButtonShaft.y,0.5f,swap));
+            StartCoroutine(OnLoadUiMenuIe(AboutMenu,myCurve,930,AboutMenuShaft.y,0.6f,swap));
+            isAboutMenuOn = swap;
+        }
+    }
     public void OnSettingsUiMenu(bool swap)
     {
         SettingsMenu.SetActive(swap);
@@ -79,6 +98,7 @@ public class ScreenSetting : MonoBehaviour
             isSettingsMenuOn = swap;
         }
     }
+    
     /// <summary>
     /// UI Offset Animator
     /// </summary>
