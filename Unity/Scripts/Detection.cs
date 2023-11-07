@@ -63,7 +63,7 @@ public class
         var newPosition = new Vector2(transform.position.x , transform.position.y + VerticalrayLengthDown) ;
         Debug.DrawRay(newPosition, _rayDirectionDownVertical * rayLengthDown, Color.yellow);
         //判定是否垂直於地面上
-        isSlope = _rayDirectionDownVertical == VectorHorizontal;
+        isSlope = !(_rayDirectionDownVertical == VectorHorizontal);
         
         // 這個判定向量的方式可以利用在許多的地方，例如:斜坡時移動的向量，但目前還沒製作。
     }

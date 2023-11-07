@@ -69,8 +69,8 @@ public class AVGSystem : MonoBehaviour
                 fs.ReadTextFromResource("start1");
             }
         }
-
-        fs.SetVariable("p", "常");
+        
+        fs.SetVariable("p", "<color=#EA4B4E><size=30><b>常</b></size></color>");
         fs.SetVariable("p_0", "???");
         fs.SetVariable("o_0", "奇怪的生物");
         fs.SetVariable("o", "OS");

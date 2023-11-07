@@ -8,7 +8,7 @@ public class PenetrableObjects : MonoBehaviour
     TilemapCollider2D col;
     public TouchingDirections touchingDirections;
     public PlayerController playerController;
-
+    
     public bool UP_isTrigeer;
     public float UP_delayTime = 0.5f;
     public float _UP_delayTime = 0f;
@@ -20,31 +20,36 @@ public class PenetrableObjects : MonoBehaviour
     [SerializeField]
     private bool _isColliding = false;
 
+    public LayerMask layerMask;
+
     private void Awake()
     {
         col = GetComponent<TilemapCollider2D>();
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-    
-        
-        foreach (ContactPoint2D contact in collision.contacts)
+
+        if ((layerMask.value & (1 << collision.gameObject.layer)) != 0)
         {
-            
-            if (contact.normal.y > 0.5f )
+            foreach (ContactPoint2D contact in collision.contacts)
             {
-                if(!DO_isTrigeer)
-                    UP_isTrigeer = true;
-            }
-            if (contact.normal.y < 0.5f)
-            {
-                _isColliding = true;
+                if (contact.normal.y > 0.5f )
+                {
+                    if(!DO_isTrigeer)
+                        UP_isTrigeer = true;
+                }
+                if (contact.normal.y < 0.5f)
+                {
+                    _isColliding = true;
+                }
             }
         }
+        
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        _isColliding = false;
+        if ((layerMask.value & (1 << collision.gameObject.layer)) != 0)
+            _isColliding = false;
     }
     void Update()
     {

@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using EnemyState;
+using Unity.VisualScripting;
 
-
-public class KinghtEnemy : MonoBehaviour
+public class HeadlessAssassin : MonoBehaviour
 {
     // 創建實例
     EnemyStateManager enemyStateManager = new EnemyStateManager();
@@ -42,12 +41,14 @@ public class KinghtEnemy : MonoBehaviour
     /// 搜尋玩家位置
     /// </summary>
     EnemySearchToPlayers enemySearchToPlayers;
+    Detection detection;
     Animator animator;
     Damageable damageable;
+    
     //翻轉方向列舉
-    public enum WalkableDirection { Left, Right }
+    public enum WalkableDirection {Right,Left}
     private WalkableDirection _WalkDirection;
-    private Vector2 WalkDirectionVector = Vector2.left;
+    private Vector2 WalkDirectionVector = Vector2.right;
     public WalkableDirection WalkDirection
     {
         get { return _WalkDirection; }
@@ -100,6 +101,7 @@ public class KinghtEnemy : MonoBehaviour
         animator = GetComponent<Animator>();
         damageable = GetComponent<Damageable>();
         enemySearchToPlayers = GetComponent<EnemySearchToPlayers>();
+        detection = GetComponent<Detection>();
     }
     private void Start()
     {
@@ -130,6 +132,7 @@ public class KinghtEnemy : MonoBehaviour
     /// </summary>
     public void FlipCharacter()
     {
+        Debug.Log("翻轉");
         if(!animator.GetBool("isattack"))
         {
             if (AttackCooldown == 0)
@@ -147,20 +150,41 @@ public class KinghtEnemy : MonoBehaviour
     }
 
     private bool isIdleDelayTime = false;
+    private int jumpcount = 0;
+    private bool isjump = false;
+    public float jumpY = 6.5f;
+    public float jumpX = 6.5f;
+    private float jump_x;
+    public float jumpDelayTime = 0.3f;
+    
+    /// <summary>
+    /// 跳躍
+    /// </summary>
+    /// <param name="DirectionX">傳遞X軸方向</param>
+    private void Jump()
+    {
+        isjump = false;
+        jumpcount = 0;
+        jump_x = Mathf.Sign(rb.velocity.x) * 1f;
+        enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Jump;
+    }
+
+    private void  Junpdelaytime()
+    {
+        isjump = true;
+    }
     private void FixedUpdate()
     {
+        Debug.Log(enemyStateManager.GetCurrentStateString());
+        //如果玩家不在正面且在視野範圍內翻轉
         if (!detectionFront)
             if(enemySearchToPlayers.distance < pursueDistance)
                 FlipCharacter();
-        if(touchingDirections.IsOnwall && touchingDirections.IsGrounded)
-            FlipCharacter();
+        //if(touchingDirections.IsOnwall && touchingDirections.IsGrounded && detection.isSlope)
+        //    FlipCharacter();
         //============
         //等待狀態機
         //============
-        if (enemyStateManager.CurrentState == EnemyStateManager.EnemyState.Idle)
-        {
-            
-        }
         if (enemyStateManager.IsCurrentState((ES.Idle)))
         {
             animator.SetBool(AnimationStrings.isMoving,false);
@@ -175,6 +199,7 @@ public class KinghtEnemy : MonoBehaviour
                 isIdleDelayTime = true;
                 //計時器
                 float timer = 0f;
+                
                 while (timer < delayTime)
                 {
                     timer += Time.deltaTime;
@@ -197,6 +222,36 @@ public class KinghtEnemy : MonoBehaviour
             }
         }
         //============
+        //跳躍狀態機
+        //============
+        if (enemyStateManager.IsCurrentState(ES.Jump))
+        {
+            animator.SetBool(AnimationStrings.isMoving,false);
+            Debug.Log("跳躍");
+            if (jumpcount == 0)
+            {
+                //rb.velocity = new Vector2(jump_x * maxSpeed * jumpX, jumpY);
+                rb.velocity = new Vector2(jump_x * maxSpeed , jumpY);
+                Debug.Log(rb.velocity);
+                if(!isjump)
+                    Invoke("Junpdelaytime",0.3f);
+                jumpcount++;
+                
+            }
+           
+            else if (jumpcount != 0 && isjump)
+            {
+                animator.SetBool(AnimationStrings.isMoving,true);
+                enemyStateManager.CurrentState = enemyStateManager.previousState;
+            }
+            //if (CanMove && touchingDirections.IsGrounded && jumpcount == 0)
+            //{
+            //    jumpcount += 1;
+            //    rb.velocity = new Vector2( jumpX, jumpY);
+
+            //}
+        }
+        //============
         //巡邏狀態機
         //============
         if (enemyStateManager.IsCurrentState(ES.Patrol))
@@ -204,10 +259,8 @@ public class KinghtEnemy : MonoBehaviour
             //狀態機判定 === 判定如果距離在視野內進行追擊
             if (enemySearchToPlayers.distance < pursueDistance)
             {
-                
                 enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Pursue;
                 return;
-                
             }
             //狀態邏輯
             if (!damageable.LockVelocity)
@@ -216,20 +269,28 @@ public class KinghtEnemy : MonoBehaviour
                 {
                     Vector2 directionToPatrol = (patrolposition[currentPatrolIndex].position - transform.position).normalized;
                     rb.velocity = new Vector2(directionToPatrol.x * maxSpeed, rb.velocity.y);
+                    //如果撞到牆壁且不在斜坡上
+                    if (detection.isWall && !detection.isSlope)
+                    {
+                        //rb.velocity = new Vector2(rb.velocity.x + 6.5f, rb.velocity.y  + 6.5f);
+                        Jump();
+                    }
                     //移動方向與敵人方向藕同
                     if(rb.velocity.x > 0)
                         WalkDirection = WalkableDirection.Left;
                     if(rb.velocity.x < 0)
                         WalkDirection = WalkableDirection.Right;
-                    if (touchingDirections.IsOnwall && touchingDirections.IsGrounded)
-                    {
-                        FlipCharacter();
-                        currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
-                    }
-                    if (Vector2.Distance(transform.position, patrolposition[currentPatrolIndex].position) < 0.1f)
+                    //if (touchingDirections.IsOnwall && touchingDirections.IsGrounded)
+                    //{
+                    //    FlipCharacter();
+                    //    currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
+                    //}
+                    if(Mathf.Abs(transform.position.x - patrolposition[currentPatrolIndex].position.x) < 0.1f)
+                    //if (Vector2.Distance(transform.position, patrolposition[currentPatrolIndex].position) < 0.1f)
                     {
                         //FlipCharacter();
                         currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
+                        Debug.Log("到達");
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Idle;
                         
                     }
@@ -271,6 +332,7 @@ public class KinghtEnemy : MonoBehaviour
             {
                 if (CanMove && touchingDirections.IsGrounded)
                 {
+                    
                     //敵人需要超出追擊玩家點一定的距離這樣才有時間攻擊，做個距離修正
                     Vector2 playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x , transform.position.y);
                     if(WalkDirection == WalkableDirection.Left)
@@ -278,6 +340,12 @@ public class KinghtEnemy : MonoBehaviour
                     if(WalkDirection == WalkableDirection.Right)
                         playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x - pursueDelayDistance , transform.position.y);
                     rb.velocity = (playWorldLocation - (Vector2)transform.position).normalized * maxSpeed;
+                    //如果撞到牆壁且不在斜坡上
+                    if (detection.isWall && !detection.isSlope)
+                    {
+                        //rb.velocity = new Vector2(rb.velocity.x + 6.5f, rb.velocity.y  + 6.5f);
+                        Jump();
+                    }
                     if(rb.velocity.x > 0)
                         WalkDirection = WalkableDirection.Left;
                     if(rb.velocity.x < 0)

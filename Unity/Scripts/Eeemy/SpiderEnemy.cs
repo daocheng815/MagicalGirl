@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SpiderEnemy : MonoBehaviour
 {
+    
     Animator animator;
     Damageable damageable;
     public DetectionZone cliffDetetionZoon;

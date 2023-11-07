@@ -17,7 +17,7 @@ public class MoveObj : MonoBehaviour
     public float waypointReachedDistance = 0.1f;
     private float playtPosition_x;
     private float playtPosition_y;
-    
+    public LayerMask LayerMask;
 
     Transform nextWaypoint;
     int waypointNum = 0;
@@ -30,15 +30,24 @@ public class MoveObj : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        playtPosition_x = playerController.transform.position.x - transform.position.x;
-        isonTruee = true; 
-        ison = true;
+        if ((LayerMask.value & (1 << collision.gameObject.layer)) != 0)
+        {
+            Debug.Log("Ä²µo¥Ø¼Ð:"+ collision.gameObject.layer);
+            playtPosition_x = playerController.transform.position.x - transform.position.x;
+            isonTruee = true; 
+            ison = true;
+        }
+       
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        isonTruee = false;
-        ison = false;
+        if ((LayerMask.value & (1 << collision.gameObject.layer)) != 0)
+        {
+            isonTruee = false;
+            ison = false;
+        }
+        
     }
     void Update()
     {

@@ -9,6 +9,7 @@
         internal static readonly string Hit = EnemyStateManager.EnemyState.Hit.ToString();
         internal static readonly string Pursue = EnemyStateManager.EnemyState.Pursue.ToString();
         internal static readonly string Patrol = EnemyStateManager.EnemyState.Patrol.ToString();
+        internal static readonly string Jump = EnemyStateManager.EnemyState.Jump.ToString();
     }
 }
 
