@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+//DoTweeningµ{¦¡®w
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -65,14 +67,18 @@ public class ScreenSetting : MonoBehaviour
     {
         OnSL(loadNum);
     }
+    
     public void OnLoadUiMenu(bool swap)
     {
         lordMenu.SetActive(swap);
         if (swap ? !isLordMenuOn : isLordMenuOn)
         {
-            StartCoroutine(OnLoadUiMenuIe(logo,myCurve,-200,logoMenuShaft.y,0.4f,swap));
-            StartCoroutine(OnLoadUiMenuIe(menuButton,myCurve,900,menuButtonShaft.y,0.5f,swap));
-            StartCoroutine(OnLoadUiMenuIe(lordMenu,myCurve,930,lordMenuShaft.y,0.6f,swap));
+            GameObject.Find("Test").transform.DOLocalMoveY(swap ? -300: GameObject.Find("Test").GetComponent<RectTransform>().localScale.y,1).SetEase(Ease.OutQuart);
+            logo.transform.DOLocalMoveY(swap ? 200 : logo.GetComponent<RectTransform>().localScale.y ,1);
+            //StartCoroutine(OnLoadUiMenuIe(logo,myCurve,-200,logoMenuShaft.y,0.4f,swap));
+            menuButton.transform.DOLocalMoveY(swap ? 300 : menuButton.GetComponent<RectTransform>().localScale.y ,1).SetEase(Ease.OutQuart);
+            //StartCoroutine(OnLoadUiMenuIe(menuButton,myCurve,900,menuButtonShaft.y,0.5f,swap));
+            //StartCoroutine(OnLoadUiMenuIe(lordMenu,myCurve,930,lordMenuShaft.y,0.6f,swap));
             isLordMenuOn = swap;
         }
     }
