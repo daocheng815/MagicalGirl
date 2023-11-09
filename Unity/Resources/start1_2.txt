@@ -5,6 +5,7 @@
 
 
 [hide]
+[OnUiShowAndHide]
 [button_st_hide]
 [unlock_player]
 

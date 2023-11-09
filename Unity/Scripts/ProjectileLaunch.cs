@@ -12,6 +12,7 @@ public class ProjectileLaunch : MonoBehaviour
     public void FireProjectile()
     {
         pmagic.OnMagic(20);
+        CoolingUI.Instance.CoolingTime(1,0.75f,0.3f);
         GameObject projectlie = Instantiate(projectilePrefad, launchPoint.position,projectilePrefad.transform.rotation * Quaternion.Euler(0, 0, -180));
         
         Vector3 origScale = projectlie.transform.localScale;

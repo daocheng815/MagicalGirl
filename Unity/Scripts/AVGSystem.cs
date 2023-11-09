@@ -47,13 +47,18 @@ public class AVGSystem : MonoBehaviour
         
         //呼叫對話系統
         fs = FlowerManager.Instance.CreateFlowerSystem("FlowerSample", false);
-        if (!isOn)
+        if(isOn)
             fs.SetupDialog();
         fs.Stop();
         fs.Resume();
-        if (ScreenSetting.GameLoadNum == 1)
+        for (int i = 1; i < 3; i++)
         {
-            FilleManager.Lord(1);
+            if (ScreenSetting.GameLoadNum == i)
+            {
+                fs.RemoveDialog();
+                fs.SetupDialog();
+                FilleManager.Lord(i);
+            }
         }
         if (ScreenSetting.GameLoadNum == 0)
         {
@@ -66,6 +71,8 @@ public class AVGSystem : MonoBehaviour
             }
             else
             {
+                fs.RemoveDialog();
+                fs.SetupDialog();
                 fs.ReadTextFromResource("start1");
             }
         }
@@ -193,7 +200,9 @@ public class AVGSystem : MonoBehaviour
             NPC1 = GameObject.Find(_NPC1);
             NPC1.SetActive(false);
         });
-
+        fs.RegisterCommand("OnUiShowAndHide", (List<string> _params) => {
+            CurrentLevel.Instance.OnUiShowAndHide(3.5f);
+        });
         // 離開對話框
         fs.RegisterCommand("button_st_show", (List<string> _params) =>
         {
@@ -206,10 +215,11 @@ public class AVGSystem : MonoBehaviour
             {
 
                 Time.timeScale = 1f;
-                PlayerController.lockplay = false;
-
+                
+                CurrentLevel.Instance.OnUiShowAndHide(3.5f);
 
                 fs.ReadTextFromResource("hide");
+                PlayerController.lockplay = false;
                 fs.RemoveButtonGroup();
                 //因為無法調用此函數，所以暫時關閉
                 //Invoke("RemoveButtonGroup", 0.4f);

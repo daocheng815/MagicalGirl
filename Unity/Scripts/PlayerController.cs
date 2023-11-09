@@ -387,11 +387,13 @@ public class PlayerController : MonoBehaviour
         //協程方式不太好，之後記得改成Invoke方法。
         IEnumerator slide(float time)
         {
+            CoolingUI.Instance.CoolingTime(0,0.6f,0.3f);
             yield return new WaitForSeconds(time);
             
             IsSlide = false;
             //Debug.Log("閃避完成");
             GlobalVolumeManger.Instance.motionBlurSt(0f);
+            
             StartCoroutine(FadeSlide(0.3f));
         }
         //冷卻時間
