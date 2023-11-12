@@ -154,7 +154,11 @@ public class PlayerController : MonoBehaviour
     {
 
         if (ScreenSetting.GameLoadNum == 0)
-            invventoryManger.deltbag();
+        {
+            invventoryManger.Instance.deltbag( 0);
+            invventoryManger.Instance.deltbag( 1);
+        }
+            
     }
     private bool is_Slide_up;
     private Vector2 PlayerSlidePosition;
@@ -183,7 +187,6 @@ public class PlayerController : MonoBehaviour
             {
                 if (!touchingDirections.IsOnwall)
                 {
-                    Debug.Log("yes");
                     is_Slide_up = false;
                     Vector2 np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
                     

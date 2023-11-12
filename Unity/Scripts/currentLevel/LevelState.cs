@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EnemyCurrentLevel
+namespace currentLevel
 {
     public class LevelState
     {

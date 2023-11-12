@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class ItemList : Singleton<ItemList>
 {
-    [SerializeField]
-    private item[] Nitem;
+    public item[] Nitem;
     public List<item> Item = new List<item>();
 
     private void Start()
@@ -13,6 +12,11 @@ public class ItemList : Singleton<ItemList>
         foreach (item item in Nitem)
         {
             Item.Add(item);
+        }
+        // ³Ð«ØIID
+        for (int i = 0 ; i < Item.Count ; i++)
+        {
+            Item[i].itemID = i;
         }
     }
 }

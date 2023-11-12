@@ -47,8 +47,8 @@ public class
         _hitRight = Physics2D.Raycast(position, _rayDirectionRight, rayLengthRight, wallLayer);
         if (_hitRight.collider != null)
         {
-            if(rayShow)
-                Debug.Log("¸I¼²¨ìÀð¾À¡I");
+            //if(rayShow)
+                //Debug.Log("¸I¼²¨ìÀð¾À¡I");
         }
         //§P©w¬O¸I¼²¨ìÀð¾À
         isWall = _hitRight.collider;

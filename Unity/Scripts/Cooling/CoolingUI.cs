@@ -76,8 +76,8 @@ public class CoolingUI : Singleton<CoolingUI>
         }));
     }
 }
-
-[CustomEditor(typeof(CoolingUI))] 
+/*
+[CustomEditor(typeof(CoolingUI))]
 public class CoolingUIEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -92,3 +92,4 @@ public class CoolingUIEditor : Editor
         }
     }
 }
+*/

@@ -57,6 +57,7 @@ public class ScreenSetting : MonoBehaviour
             }
         }
     }
+    
     public void OnLoadUiMenu(bool swap)
     {
        

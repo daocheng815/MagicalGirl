@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Singleton單例模式
-//但如使用複數物件腳本，不可繼承Singleton，免致問題。
 public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
     

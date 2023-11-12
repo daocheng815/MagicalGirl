@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c94b3170ed4fb4c44bcee37566ec3a82, type: 3}
   m_Name: RecoveryWater1
   m_EditorClassIdentifier: 
+  itemID: 2
+  itemType: 1
   itemName: RecoveryWater1
   itemImaage: {fileID: 21300000, guid: 85dfdf9db3e7b2a40b43f3399258b9e6, type: 3}
   itemHeld: 1
-  iteminfo: "\u56DE\u5FA9\u85E5\u6C34(\u5C0F)"
+  iteminfo: "\u56DE\u5FA9\u85E5\u6C34(\u5C0F)\uFF0C\u8ACB\u653E\u5165\u5FEB\u6377\u80CC\u5305\u4E2D\u4F7F\u7528\u3002"
   available: 1
+  isCoolingTime: 1
+  coolingTime: 1
   Healnum: 15

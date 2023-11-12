@@ -86,7 +86,7 @@ public class MenuUiManger : MonoBehaviour
         {
             //將UI焦點移至當前物件上
             EventSystem.current.SetSelectedGameObject(mybagSelected);
-            invventoryManger.RefreshItem();
+            //invventoryManger.RefreshItem();
             isOpenMybag = !isOpenMybag;
             mybag.SetActive(isOpenMybag);
             escMenu.SetActive(false);

@@ -175,7 +175,7 @@ public class HeadlessAssassin : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Debug.Log(enemyStateManager.GetCurrentStateString());
+        //Debug.Log(enemyStateManager.GetCurrentStateString());
         //如果玩家不在正面且在視野範圍內翻轉
         if (!detectionFront)
             if(enemySearchToPlayers.distance < pursueDistance)
@@ -290,7 +290,7 @@ public class HeadlessAssassin : MonoBehaviour
                     {
                         //FlipCharacter();
                         currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
-                        Debug.Log("到達");
+                        //Debug.Log("到達");
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Idle;
                         
                     }

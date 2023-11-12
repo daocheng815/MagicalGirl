@@ -19,6 +19,18 @@ public class HealthBarW : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healtbar.fillAmount = HeaithCurrent / HeaithMax;
+        if (HeaithCurrent / HeaithMax == 0)
+        {
+            healtbar.fillAmount = 0f;
+        }
+        else if (HeaithCurrent / HeaithMax <= 0.033f)
+        {
+            healtbar.fillAmount = 0.033f;
+        }
+        else
+        {
+            healtbar.fillAmount = HeaithCurrent / HeaithMax;
+        }
+        
     }
 }

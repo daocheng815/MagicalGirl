@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using currentLevel;
 using DG.Tweening;
 using UnityEngine;
 //地圖等級狀態機
-using EnemyCurrentLevel;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -88,7 +88,7 @@ public class CurrentLevel : Singleton<CurrentLevel>
         }
     }
 }
-
+/*
 [CustomEditor(typeof(CurrentLevel))]
 public class CurrentLevelEditor : Editor
 {
@@ -112,3 +112,4 @@ public class CurrentLevelEditor : Editor
         }
     }
 }
+*/

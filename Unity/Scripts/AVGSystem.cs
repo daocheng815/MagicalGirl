@@ -184,9 +184,9 @@ public class AVGSystem : MonoBehaviour
         //開啟與關閉NPC物件
         fs.RegisterCommand("showNPC1", (List<string> _params) => {
             //搜尋物件時必須先讓物件可見，才可以搜尋的到物件，這樣才能重新更新畫面
-            NPC1.SetActive(true);
-            NPC1 = GameObject.Find(_NPC1);
-            NPC1.SetActive(false);
+            //NPC1.SetActive(true);
+            //NPC1 = GameObject.Find(_NPC1);
+            //NPC1.SetActive(false);
             if (NPC1 != null)
             {
                 NPC1.SetActive(true);
@@ -259,11 +259,11 @@ public class AVGSystem : MonoBehaviour
             fs.SetupButtonGroup();
             fs.Stop();
             fs.SetupButton("藥水(小)", () => {
-                invventoryManger.AddNewItem(thisItem1);
+                invventoryManger.Instance.AddNewItem(thisItem1,0);
                 buttonreset();
             });
             fs.SetupButton("藥水(中)", () => {
-                invventoryManger.AddNewItem(thisItem2);
+                invventoryManger.Instance.AddNewItem(thisItem2,0);
                 buttonreset();
             });
             fs.SetupButton("取消購買", () => {

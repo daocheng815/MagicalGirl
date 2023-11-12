@@ -1,34 +1,37 @@
 
+
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 
-public class invventoryManger : MonoBehaviour
+public class invventoryManger : Singleton<invventoryManger>
 {
-    static invventoryManger instance;
-
-    public Inventory myBag;
-    public GameObject slotGrid;
-    public GameObject emptySlot;
-    //public slot slotPrefab;
-    public TextMeshProUGUI itemInfromation;
-    public List<GameObject> slots = new List<GameObject>();
     
-
-    void Awake()
+    [Header("背包")]
+    public Inventory[] Bag;
+    public GameObject[] slotGrid;
+    public GameObject[] emptySlot;
+    //public slot slotPrefab;
+    //showInfromation
+    public TextMeshProUGUI[] itemInfromation;
+    
+    //public List<GameObject> slots_0 = new List<GameObject>();
+    //public List<GameObject> slots_1 = new List<GameObject>();
+    
+    public Dictionary<string, List<GameObject>> slotsDictionary = new Dictionary<string, List<GameObject>>()
     {
-        if (instance!=null)
-            Destroy(this);
-        instance = this;
-    }
-
+        { "slots_0",  new List<GameObject>() },
+        { "slots_1",  new List<GameObject>() }
+    };
+    
+    
     private void OnEnable()
     {
-        RefreshItem();
-        instance.itemInfromation.text = "";
+        RefreshItem(0);
+        RefreshItem(1);
+        itemInfromation[0].text = "";
         PlayerController.lockplay = true;
-        
     }
     private void OnDisable()
     {
@@ -36,43 +39,48 @@ public class invventoryManger : MonoBehaviour
     }
     private void Start()
     {
-        RefreshItem();
+        
+        //
+        RefreshItem(0);
+        RefreshItem(1);
     }
     /// <summary>
     /// 更新物品描述
     /// </summary>
-    public static void UpdateItemInfo(string itemDescription)
+    public void UpdateItemInfo(string itemDescription)
     {
-        instance.itemInfromation.text = itemDescription;
+        
+        //slotGrid.SetActive(false);
+        itemInfromation[0].text = itemDescription;
     }
     /// <summary>
     /// 移除全部的物品
     /// </summary>
-    public static void RemoveAllItem()
+    public void RemoveAllItem(int bagNum)
     {
-        for (int i = 0; i < instance.myBag.itemList.Count; i++)
+        for (int i = 0; i < Bag[bagNum].itemList.Count; i++)
         {
-            if(instance.myBag.itemList[i] != null)
+            if(Bag[bagNum].itemList[i] != null)
             {
-                instance.myBag.itemList[i].itemHeld = 1;
-                instance.myBag.itemList[i] = null;
+                Bag[bagNum].itemList[i].itemHeld = 1;
+                Bag[bagNum].itemList[i] = null;
             }
         }
     }
     /// <summary>
     /// 新增物品
     /// </summary>
-    public static void AddNewItem(item thisItem)
+    public void AddNewItem(item thisItem,int bagNum)
     {
         // 判斷這個列表(背包)中是否已經沒有這個物品
-        if (!instance.myBag.itemList.Contains(thisItem))
+        if (!Bag[bagNum].itemList.Contains(thisItem))
         {
             //判定在背包的18格中是否有空位
-            for (int i = 0; i < instance.myBag.itemList.Count; i++)
+            for (int i = 0; i < Bag[bagNum].itemList.Count; i++)
             {
-                if (instance.myBag.itemList[i] == null)
+                if (Bag[bagNum].itemList[i] == null)
                 {
-                    instance.myBag.itemList[i] = thisItem;
+                    Bag[bagNum].itemList[i] = thisItem;
                     break;
                 }
             }
@@ -81,21 +89,22 @@ public class invventoryManger : MonoBehaviour
         {
             thisItem.itemHeld += 1;
         }
-        RefreshItem();
+        RefreshItem(0);
     }
     /// <summary>
     /// 移除物品。
     /// </summary>
-    public static void Deleteitems(int slotID)
+    public void Deleteitems(int slotID,int bagNum)
     {
-        if (instance.myBag.itemList[slotID].itemHeld > 1)
-            instance.myBag.itemList[slotID].itemHeld -= 1;
+        if (Bag[bagNum].itemList[slotID].itemHeld > 1)
+            Bag[bagNum].itemList[slotID].itemHeld -= 1;
         else
         {
-            instance.itemInfromation.text = "";
-            instance.myBag.itemList[slotID] = null;
+            if(bagNum != 1)
+                itemInfromation[bagNum].text = "";
+            Bag[bagNum].itemList[slotID] = null;
         }
-        RefreshItem();
+        RefreshItem(0);
     }
 
     /// <summary>
@@ -103,14 +112,16 @@ public class invventoryManger : MonoBehaviour
     /// </summary>
     /// <param name="playerObject">藥水回復對象。</param>
     /// <param name="slotID">物品所在的槽位 ID。</param>
-    public static void potion(GameObject playerObject,int slotID)
+    /// <param name="bag">目前背包</param>
+    public void Potion(GameObject playerObject,int slotID,int bagNum)
     {
-        if (instance.myBag.itemList[slotID].available)
+        if (Bag[bagNum].itemList[slotID].available)
         {
-            bool isHeal = playerObject.GetComponent<Damageable>().Heal(instance.myBag.itemList[slotID].Healnum);
+            bool isHeal = playerObject.GetComponent<Damageable>().Heal(Bag[bagNum].itemList[slotID].Healnum);
             if (isHeal)
             {
-                Deleteitems(slotID);
+                Deleteitems(slotID,bagNum);
+                RefreshItem(bagNum);
             }
         }
         Debug.Log(playerObject.GetComponent<Damageable>().health);
@@ -118,50 +129,53 @@ public class invventoryManger : MonoBehaviour
     /// <summary>
     /// 刪除背包，並且重新生成
     /// </summary>
-    public static void RefreshItem()
+    public void RefreshItem(int bagNum)
     {
         //銷毀背包物件並重新生成
-        for (int i=0; i< instance.slotGrid.transform.childCount;i++)
+        for (int i=0 ; i < slotGrid[bagNum].transform.childCount ; i++)
         {
-            if (instance.slotGrid.transform.childCount == 0)
+            if (slotGrid[bagNum].transform.childCount == 0)
                 break;
-            Destroy(instance.slotGrid.transform.GetChild(i).gameObject);
-            instance.slots.Clear();
+            Destroy(slotGrid[bagNum].transform.GetChild(i).gameObject);
+            slotsDictionary["slots_"+bagNum].Clear();
         }
-        for (int i = 0; i<instance.myBag.itemList.Count;i++)
+        for (int i = 0; i < Bag[bagNum].itemList.Count; i++)
         {
             //CreateNewItem(instance.myBag.itemList[i]);
-            instance.slots.Add(Instantiate(instance.emptySlot));
-            instance.slots[i].transform.SetParent(instance.slotGrid.transform);
-            instance.slots[i].GetComponent<slot>().slotID = i;
-            instance.slots[i].GetComponent<slot>().SetupSlot(instance.myBag.itemList[i]);
+            slotsDictionary["slots_"+bagNum].Add(Instantiate(emptySlot[bagNum]));
+            slotsDictionary["slots_"+bagNum][i].transform.SetParent(slotGrid[bagNum].transform);
+            slotsDictionary["slots_"+bagNum][i].GetComponent<slot>().slotID = i;
+            slotsDictionary["slots_"+bagNum][i].GetComponent<slot>().SetupSlot(Bag[bagNum].itemList[i]);
             //將背包列表中的物件傳遞回來
+            slotsDictionary["slots_"+bagNum][i].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         }
     }
     /// <summary>
     /// 刪除背包List，並且重新生成List
     /// </summary>
-    public static void resetbag() 
+    public void resetbag(int bagNum) 
     {
-        for(int i = 0;i < instance.myBag.itemList.Count;i++)
+        for(int i = 0;i < Bag[bagNum].itemList.Count;i++)
         {
-            if(instance.myBag.itemList[i] != null)
+            if(Bag[bagNum].itemList[i] != null)
             {
-                instance.myBag.itemList[i].itemHeld = 1;
+                Bag[bagNum].itemList[i].itemHeld = 1;
             }
         }
-        instance.myBag.itemList.Clear();
-        for (int i = 0; i <18; i++)
+
+        var orgItemListNum = Bag[bagNum].itemList.Count;
+        Bag[bagNum].itemList.Clear();
+        for (int i = 0; i <orgItemListNum; i++)
         {
-            instance.myBag.itemList.Add(null);
+            Bag[bagNum].itemList.Add(null);
         }
     }
 
     [ContextMenu("銷毀背包")]
-    public static void deltbag()
+    public void deltbag(int bagNum)
     {
-        invventoryManger.resetbag();
-        invventoryManger.RefreshItem();
+        resetbag(bagNum);
+        RefreshItem(bagNum);
     }
 }
 

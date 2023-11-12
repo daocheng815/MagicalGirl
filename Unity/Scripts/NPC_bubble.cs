@@ -30,7 +30,7 @@ public class NPC_bubble : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Z) && istrue)
             {
                 
-                bubbleCommand.Invoke();
+                bubbleCommand.Invoke(); 
             }
 
         }

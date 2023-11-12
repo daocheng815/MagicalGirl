@@ -16,6 +16,8 @@ public class slot : MonoBehaviour
     public GameObject itemInSlot;
 
     GameObject playerObject;
+    public Inventory bag;
+    
 
     private void Awake()
     {
@@ -23,9 +25,11 @@ public class slot : MonoBehaviour
     }
     public void ItemOnClicked()
     {
-        invventoryManger.UpdateItemInfo(slotInfo);
-        invventoryManger.potion(playerObject, slotID);
-
+        invventoryManger.Instance.UpdateItemInfo(slotInfo);
+        if (bag.name == "mybag")
+            invventoryManger.Instance.Potion(playerObject, slotID,0);
+        if (bag.name == "shortcut")
+            invventoryManger.Instance.Potion(playerObject, slotID,1);
     }
 
 
