@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ItemTypeEnum;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,10 +27,21 @@ public class slot : MonoBehaviour
     public void ItemOnClicked()
     {
         invventoryManger.Instance.UpdateItemInfo(slotInfo);
-        if (bag.name == "mybag")
-            invventoryManger.Instance.Potion(playerObject, slotID,0);
-        if (bag.name == "shortcut")
-            invventoryManger.Instance.Potion(playerObject, slotID,1);
+        //先判定物品Type是否正確
+        if (slotItem.itemType == ItemType.Potion)
+        {
+            if (bag.name == "mybag")
+                invventoryManger.Instance.Potion(playerObject, slotID,0);
+            if (bag.name == "shortcut")
+                invventoryManger.Instance.Potion(playerObject, slotID,1);
+        }
+        else if (slotItem.itemType == ItemType.purify)
+        {
+            if (bag.name == "mybag")
+                invventoryManger.Instance.Purify(playerObject, slotID,0);
+            if (bag.name == "shortcut")
+                invventoryManger.Instance.Purify(playerObject, slotID,1);
+        }
     }
 
 
@@ -40,7 +52,8 @@ public class slot : MonoBehaviour
             itemInSlot.SetActive(false);
             return;
         }
-        
+
+        slotItem = item;
         slotImage.sprite = item.itemImaage;
         slotNum.text = item.itemHeld.ToString();
         slotInfo = item.iteminfo;

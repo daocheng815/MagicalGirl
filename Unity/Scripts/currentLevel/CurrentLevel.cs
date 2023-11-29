@@ -18,21 +18,22 @@ public class CurrentLevel : Singleton<CurrentLevel>
     
     [SerializeField]private GameObject image;
     private RectTransform imageRT;
-    
-    protected void Awake()
-    {
-        base.Awake();
-        textUGUI = text.GetComponent<TextMeshProUGUI>();
-        textRI = text.GetComponent<RectTransform>();
-        imageRT = image.GetComponent<RectTransform>();
-    }
 
     private void Start()
     {
+        ReadObj();
+    }
+
+    void ReadObj()
+    {
+        text.SetActive(true);
+        image.SetActive(true);
+        textUGUI = text.GetComponent<TextMeshProUGUI>();
+        textRI = text.GetComponent<RectTransform>();
+        imageRT = image.GetComponent<RectTransform>();
         text.SetActive(false);
         image.SetActive(false);
     }
-
     protected bool isanimator = false;
     public void OnUiShow(bool index = false)
     {

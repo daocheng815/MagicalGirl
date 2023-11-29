@@ -10,6 +10,12 @@ public class VC2C : Singleton<VC2C>
     public float O_YD = 2f;
     public bool SYD_IE = false;
     public AnimationCurve MyCyrve;
+
+    public Vector3 cftMTof
+    {
+        get => CV.GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset;
+        set => CV.GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset = value;
+    }
     void Update()
     {
         //CFT.m_YDamping = 0;

@@ -38,6 +38,7 @@ public class NumValUIController : MonoBehaviour
         OnTimer();
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0));
         StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1));
+        StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2));
     }
     // 玩家數值條動畫效果
     public IEnumerator NumValAnimator(float val = 50f,float timeDelay = 1f,int NumVal = 0,bool fadeMod = true)
@@ -129,6 +130,7 @@ public class NumValUIController : MonoBehaviour
                     isExitUi = true;
                     StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,false));
                     StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,false));
+                    StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,false));
                 }
             }
             //如果UI已經關閉，且玩家有在移動
@@ -138,6 +140,7 @@ public class NumValUIController : MonoBehaviour
                 OnTimer();
                 StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,true));
                 StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,true));
+                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,true));
             }
             //如果玩家死亡也要縮上去
             if (!pc.IsAlive)
@@ -145,6 +148,7 @@ public class NumValUIController : MonoBehaviour
                 isExitUi = true;
                 StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,false));
                 StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,false));
+                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,false));
             }
         }
     }

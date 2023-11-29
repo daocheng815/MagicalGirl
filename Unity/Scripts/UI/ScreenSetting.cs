@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-//DoTweeningµ{¦¡®w
+//DoTweeningç¨‹å¼åº«
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class ScreenSetting : MonoBehaviour
 {
-    //ÀRºA
+    //éœæ…‹
     public static int GameLoadNum;
     
     public GameObject loadingScreen;
@@ -90,7 +90,7 @@ public class ScreenSetting : MonoBehaviour
             {
                 loadingSlidle.value = progress;
             }
-            Debug.Log("¸ü¤J¤¤");
+            Debug.Log("è¼‰å…¥ä¸­");
             yield return null;
         }
     }
@@ -98,11 +98,11 @@ public class ScreenSetting : MonoBehaviour
     
     public void QuitGame()
     {
-        // À³¥Îµ{¦¡°h¥X
+        // æ‡‰ç”¨ç¨‹å¼é€€å‡º
         Application.Quit();
 
-        // ª`·N¡G¦bUnity½s¿è¾¹¤¤°õ¦æ®É¡AQuit()¥i¯à¤£·|¥ß§Y¥Í®Ä
-        // ¦b½s¿è¾¹¤¤´ú¸Õ®É¡A§A¥i¥H¨Ï¥Î¨ä¥L¤è¦¡³B²zÂ÷¶}¹CÀ¸
+        // æ³¨æ„ï¼šåœ¨Unityç·¨è¼¯å™¨ä¸­åŸ·è¡Œæ™‚ï¼ŒQuit()å¯èƒ½ä¸æœƒç«‹å³ç”Ÿæ•ˆ
+        // åœ¨ç·¨è¼¯å™¨ä¸­æ¸¬è©¦æ™‚ï¼Œä½ å¯ä»¥ä½¿ç”¨å…¶ä»–æ–¹å¼è™•ç†é›¢é–‹éŠæˆ²
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif

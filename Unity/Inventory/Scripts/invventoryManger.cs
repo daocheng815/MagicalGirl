@@ -106,7 +106,25 @@ public class invventoryManger : Singleton<invventoryManger>
         }
         RefreshItem(0);
     }
-
+    /// <summary>
+    /// 這個方法用於處理淨化藥水的使用。
+    /// </summary>
+    /// <param name="playerObject">藥水回復對象。</param>
+    /// <param name="slotID">物品所在的槽位 ID。</param>
+    /// <param name="bag">目前背包</param>
+    public void Purify(GameObject playerObject,int slotID,int bagNum)
+    {
+        if (Bag[bagNum].itemList[slotID].available)
+        {
+            if (!PlayerVar.Instance.shuDyeingVar.TestFilthyVar(0))
+            {
+                PlayerVar.Instance.shuDyeingVar.FilthySub(Bag[bagNum].itemList[slotID].purifyNum);
+                Deleteitems(slotID,bagNum);
+                RefreshItem(bagNum);
+            }
+        }
+    }
+    /// <summary>
     /// <summary>
     /// 這個方法用於處理藥水的使用。
     /// </summary>
@@ -145,6 +163,7 @@ public class invventoryManger : Singleton<invventoryManger>
             slotsDictionary["slots_"+bagNum].Add(Instantiate(emptySlot[bagNum]));
             slotsDictionary["slots_"+bagNum][i].transform.SetParent(slotGrid[bagNum].transform);
             slotsDictionary["slots_"+bagNum][i].GetComponent<slot>().slotID = i;
+            //slotsDictionary["slots_" + bagNum][i].GetComponent<slot>().slotItem = Bag[bagNum].itemList[i];
             slotsDictionary["slots_"+bagNum][i].GetComponent<slot>().SetupSlot(Bag[bagNum].itemList[i]);
             //將背包列表中的物件傳遞回來
             slotsDictionary["slots_"+bagNum][i].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);

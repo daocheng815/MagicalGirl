@@ -43,17 +43,18 @@ public class CoolingUI : Singleton<CoolingUI>
         }
     }
 
-    private bool isFadeAnimator;
+    private bool _isFadeAnimator;
+    // ReSharper disable Unity.PerformanceAnalysis
     public void CoolingTime(int num, float time , float fadeTime)
     {
         
         var back = prefad[num].transform.Find("back").GetComponent<Image>();
         var skill = prefad[num].transform.Find("skill").GetComponent<Image>();
-        if (isFadeAnimator)
+        if (_isFadeAnimator)
         {
             DOTween.Kill(back);
             DOTween.Kill(skill);
-            isFadeAnimator = false;
+            _isFadeAnimator = false;
         }
         back.color = new Color(1, 1, 1, 0);
         skill.color = new Color(1, 1, 1, 0);
@@ -66,12 +67,12 @@ public class CoolingUI : Singleton<CoolingUI>
         coolingImage[num].DOFillAmount(0f, time).OnComplete((() =>
         {
             coolingImage[num].fillAmount = 0f;
-            isFadeAnimator = true;
+            _isFadeAnimator = true;
             back.DOColor(Color.clear,fadeTime);
             skill.DOColor(Color.clear,fadeTime).OnComplete((() =>
             {
                 prefad[num].SetActive(false);
-                isFadeAnimator = false;
+                _isFadeAnimator = false;
             }));
         }));
     }

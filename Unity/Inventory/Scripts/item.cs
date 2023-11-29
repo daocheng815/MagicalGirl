@@ -32,5 +32,7 @@ public class item : ScriptableObject
     public float coolingTime;
     [Header("回血血量")]
     public int Healnum;
+    [Header("淨化汙染量")]
+    public int purifyNum;
 }
 

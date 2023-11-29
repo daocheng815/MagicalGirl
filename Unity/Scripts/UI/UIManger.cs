@@ -10,6 +10,9 @@ public class UIManger : MonoBehaviour
     public GameObject healthTextPrefab;
     public GameObject critDamageTextPrefab;
     public GameObject critText;
+    public GameObject ShuDyeing;
+    public GameObject crit;
+    public GameObject text;
 
 
     public Canvas gameCanvas;
@@ -29,7 +32,9 @@ public class UIManger : MonoBehaviour
         CharacterEvents.characterHealed += CharrctedHealed;
         CharacterEvents.characterCritDamaged += CharrctedTookCritDamage;
         CharacterEvents.characterText += CharrctedText;
-
+        CharacterEvents.characterShuDyeing += CharacterShuDyeing;
+        CharacterEvents.characterCrit += CharacterCrit;
+        CharacterEvents.characterTextW += CharacterTextW;
     }
    
     private void OnDisable()
@@ -38,6 +43,9 @@ public class UIManger : MonoBehaviour
         CharacterEvents.characterHealed -= CharrctedHealed;
         CharacterEvents.characterCritDamaged -= CharrctedTookCritDamage;
         CharacterEvents.characterText -= CharrctedText;
+        CharacterEvents.characterShuDyeing -= CharacterShuDyeing;
+        CharacterEvents.characterCrit -= CharacterCrit;
+        CharacterEvents.characterTextW -= CharacterTextW;
     }
 
     public void CharrctedTookDamage(GameObject character, int damageReceived)
@@ -79,6 +87,34 @@ public class UIManger : MonoBehaviour
             .GetComponent<TMP_Text>();
         tmpText.text = Text;
     }
+    public void CharacterShuDyeing(GameObject character, string Text)
+    {
+
+        Vector3 spawnPosition = Camera.main.WorldToScreenPoint(character.transform.position);
+
+        TMP_Text tmpText = Instantiate(ShuDyeing, spawnPosition, Quaternion.identity, gameCanvas.transform)
+            .GetComponent<TMP_Text>();
+        tmpText.text = Text;
+    }
     
+    public void CharacterCrit(GameObject character, string Text)
+    {
+
+        Vector3 spawnPosition = Camera.main.WorldToScreenPoint(character.transform.position);
+
+        TMP_Text tmpText = Instantiate(crit, spawnPosition, Quaternion.identity, gameCanvas.transform)
+            .GetComponent<TMP_Text>();
+        tmpText.text = Text;
+    }
+    
+    public void CharacterTextW(GameObject character, string Text)
+    {
+
+        Vector3 spawnPosition = Camera.main.WorldToScreenPoint(character.transform.position);
+
+        TMP_Text tmpText = Instantiate(text, spawnPosition, Quaternion.identity, gameCanvas.transform)
+            .GetComponent<TMP_Text>();
+        tmpText.text = Text;
+    }
 
 }
