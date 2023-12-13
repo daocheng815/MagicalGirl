@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class FollowObject : MonoBehaviour
 {
     //跟隨物件 可以製作抓取敵人的 SKILL

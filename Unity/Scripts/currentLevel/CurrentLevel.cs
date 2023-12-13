@@ -1,13 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using currentLevel;
 using DG.Tweening;
 using UnityEngine;
-//地圖等級狀態機
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
-
 public class CurrentLevel : Singleton<CurrentLevel>
 {
     public LevelState levelState = new LevelState();

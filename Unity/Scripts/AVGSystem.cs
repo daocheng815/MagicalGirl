@@ -1,10 +1,7 @@
-using System;
 using Flower;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
 // Invoke("RemoveButtonGroup", 0.4f);這一段在之後必須要修改
 public class AVGSystem : MonoBehaviour
 {
@@ -22,8 +19,6 @@ public class AVGSystem : MonoBehaviour
     private string _NPC2;
     //判定是否暫停系統
     bool IsFsStop = false;
-    public item thisItem1;
-    public item thisItem2;
 
     public bool isDialog;
 
@@ -51,15 +46,15 @@ public class AVGSystem : MonoBehaviour
             fs.SetupDialog();
         fs.Stop();
         fs.Resume();
-        for (int i = 1; i < 3; i++)
-        {
-            if (ScreenSetting.GameLoadNum == i)
-            {
-                fs.RemoveDialog();
-                fs.SetupDialog();
-                FilleManager.Lord(i);
-            }
-        }
+        //for (int i = 1; i < 3; i++)
+        //{
+        //    if (ScreenSetting.GameLoadNum == i)
+        //    {
+        //        fs.RemoveDialog();
+        //        fs.SetupDialog();
+        //        FilleManager.Lord(i);
+        //    }
+        //}
         if (ScreenSetting.GameLoadNum == 0)
         {
             if (isOn)
@@ -74,7 +69,12 @@ public class AVGSystem : MonoBehaviour
                 fs.RemoveDialog();
                 fs.SetupDialog();
                 fs.ReadTextFromResource("start1");
+                //fs.ReadTextFromResource("hide");
             }
+        }
+        else
+        {
+            fs.ReadTextFromResource("hide");
         }
         
         fs.SetVariable("p", "<color=#EA4B4E><size=30><b>常</b></size></color>");
@@ -84,11 +84,14 @@ public class AVGSystem : MonoBehaviour
 
         Commad();
     }
-    private void buttonreset()
+    private void buttonreset(bool index)
     {
         NPC2 = GameObject.Find(_NPC2);
         Debug.Log("物件名稱:" + NPC2);
-        CharacterEvents.characterText.Invoke(NPC2, "購買成功");
+        if(index)
+            CharacterEvents.characterText.Invoke(NPC2, "購買成功");
+        else
+            CharacterEvents.characterText.Invoke(NPC2, "購買失敗");
         fs.Resume();
         fs.RemoveButtonGroup();
         fs.SetupButtonGroup();
@@ -258,13 +261,14 @@ public class AVGSystem : MonoBehaviour
             fs.RemoveButtonGroup();
             fs.SetupButtonGroup();
             fs.Stop();
-            fs.SetupButton("藥水(小)", () => {
-                invventoryManger.Instance.AddNewItem(thisItem1,0);
-                buttonreset();
+            fs.SetupButton("藥水(小)", () =>
+            {
+                bool index = invventoryManger.Instance.AddNewItem(4,0,1);
+                buttonreset(index);
             });
             fs.SetupButton("藥水(中)", () => {
-                invventoryManger.Instance.AddNewItem(thisItem2,0);
-                buttonreset();
+                bool index = invventoryManger.Instance.AddNewItem(4,0,1);
+                buttonreset(index);
             });
             fs.SetupButton("取消購買", () => {
                 fs.Resume();

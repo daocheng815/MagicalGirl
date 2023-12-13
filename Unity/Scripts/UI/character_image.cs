@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class character_image : Singleton<character_image>

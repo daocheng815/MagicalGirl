@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Events;
 using ItemTypeEnum;
 using TMPro;
 using UnityEngine;
@@ -13,35 +12,25 @@ public class slot : MonoBehaviour
     public TextMeshProUGUI slotNum;
     public string slotInfo;
     
-
     public GameObject itemInSlot;
 
     GameObject playerObject;
     public Inventory bag;
-    
 
+    private RectTransform rt;
+    
+    public TextMeshProUGUI tmp;
     private void Awake()
     {
         playerObject = GameObject.Find("player");
+        rt = GetComponent<RectTransform>();
     }
     public void ItemOnClicked()
     {
         invventoryManger.Instance.UpdateItemInfo(slotInfo);
         //先判定物品Type是否正確
-        if (slotItem.itemType == ItemType.Potion)
-        {
-            if (bag.name == "mybag")
-                invventoryManger.Instance.Potion(playerObject, slotID,0);
-            if (bag.name == "shortcut")
-                invventoryManger.Instance.Potion(playerObject, slotID,1);
-        }
-        else if (slotItem.itemType == ItemType.purify)
-        {
-            if (bag.name == "mybag")
-                invventoryManger.Instance.Purify(playerObject, slotID,0);
-            if (bag.name == "shortcut")
-                invventoryManger.Instance.Purify(playerObject, slotID,1);
-        }
+        //監聽，顯示快捷物品選單
+        BagFuncMenu.ItemOnClicked.Invoke(slotID, slotItem,bag, rt.localPosition);
     }
 
 

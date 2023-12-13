@@ -1,5 +1,5 @@
 [lock_player]
-[show,500]
+[show,100]
 [button_st_show]
 [#p_0][r]......[w]
 [#p_0][r]這裡是哪裡?[w][image_1_show][FadeIn]

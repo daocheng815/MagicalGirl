@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Events;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,7 +12,9 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public GameObject itemPrefab;
 
     public void OnBeginDrag(PointerEventData eventData)
-    {  
+    {
+        BagFuncMenu.IsItemOnDrag.Invoke(true);
+        Debug.Log("拖動開始");
         //原始父級
         originalparent = transform.parent;
         //當前物品ID
@@ -29,6 +28,7 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnDrag(PointerEventData eventData)
     {
+        
         transform.position = eventData.position;
         //拖動(Drag)時回傳當前滑鼠映射的物件名稱
         if(eventData.pointerCurrentRaycast.gameObject != null)
@@ -48,6 +48,8 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             {
                 
                 Debug.Log("碰到");
+                BagFuncMenu.IsItemOnDrag(false);
+                
                 transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);
                 transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;
                 //itemList的物品儲存位置置換
@@ -65,6 +67,8 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             if (eventData.pointerCurrentRaycast.gameObject.name == "itemImage")
             {
                 Debug.Log("滑鼠鼠標下沒有任何物件");
+                BagFuncMenu.IsItemOnDrag(false);
+                
                 transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);
                 transform.position = eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.position;
 
@@ -85,8 +89,9 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             if (eventData.pointerCurrentRaycast.gameObject.name == itemPrefab.name && mybag[0].itemList[eventData.pointerCurrentRaycast.gameObject.GetComponent<slot>().slotID] == null)
             {
                 Debug.Log("交換");
-                //直接掛在slot下
+                BagFuncMenu.IsItemOnDrag(false);
                 
+                //直接掛在slot下
                 transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);
                 transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;
                 //itemList的物品儲存位置置換
@@ -104,10 +109,11 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             
         }
         Debug.Log("歸位");
+        BagFuncMenu.IsItemOnDrag(false);
+        
         //其他任何物件都得歸位
         transform.SetParent(originalparent);
         transform.position = originalparent.position;
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
-    
 }

@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
 using SaveLord;
 
@@ -42,7 +40,17 @@ public class FilleManager : MonoBehaviour
         if(ScreenSetting.GameLoadNum == 1)
         {
             ScreenSetting.GameLoadNum = 0;
-            Lord();
+            Lord(1);
+        }
+        if(ScreenSetting.GameLoadNum == 2)
+        {
+            ScreenSetting.GameLoadNum = 0;
+            Lord(2);
+        }
+        if(ScreenSetting.GameLoadNum == 3)
+        {
+            ScreenSetting.GameLoadNum = 0;
+            Lord(3);
         }
     }
 
@@ -181,7 +189,7 @@ public class FilleManager : MonoBehaviour
                 //數值為114514時是空值
                 if (loadedData.mybag_item_ID[i] != 114514)
                 {
-                    mybag.itemList[i] = ItemList.Instance.Nitem[loadedData.mybag_item_ID[i]];
+                    mybag.itemList[i] = ItemList.Instance.Item[loadedData.mybag_item_ID[i]];
                     mybag.itemList[i].itemHeld = loadedData.mybag_item_itemHeld[i];
                 }
                 else
@@ -201,7 +209,7 @@ public class FilleManager : MonoBehaviour
                 //數值為114514時是空值
                 if (loadedData.shortcutbag_item_ID[i] != 114514)
                 {
-                    shortcutbag.itemList[i] = ItemList.Instance.Nitem[loadedData.shortcutbag_item_ID[i]];
+                    shortcutbag.itemList[i] = ItemList.Instance.Item[loadedData.shortcutbag_item_ID[i]];
                     shortcutbag.itemList[i].itemHeld = loadedData.shortcutbag_item_itemHeld[i];
                 }
                 else
@@ -214,10 +222,10 @@ public class FilleManager : MonoBehaviour
         {
             Debug.LogWarning("File does not exist: " + filePath);
         }
-
+        
         invventoryManger.Instance.RefreshItem(0);
         invventoryManger.Instance.RefreshItem(1);
-        AVGSystem.RemoveDialog_C();
+       
 
 
 

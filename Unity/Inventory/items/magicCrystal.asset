@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c94b3170ed4fb4c44bcee37566ec3a82, type: 3}
   m_Name: magicCrystal
   m_EditorClassIdentifier: 
-  itemID: 6
+  itemID: 2
   itemType: 2
   itemName: magicCrystal
+  itemNameNbt: "\u7834\u788E\u9748\u9B42"
   itemImaage: {fileID: 74701017, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
   itemHeld: 1
   iteminfo: "\u7834\u788E\u9748\u9B42( <color=#FF466D><b><font=\"GenWanMin-R SDF
@@ -22,6 +23,6 @@ MonoBehaviour:
     ) "
   available: 1
   isCoolingTime: 1
-  coolingTime: 0
+  coolingTime: 0.5
   Healnum: 0
   purifyNum: 20

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
-
+﻿using UnityEngine;
 
 //創建一個抽象類
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(Damageable))]

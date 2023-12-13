@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
 using currentLevel;
 using UnityEngine;
-using Unity.VisualScripting;
-
 public class InLevel : MonoBehaviour
 {
     [SerializeField] private LayerMask layerMask;

@@ -2,9 +2,10 @@
 {
     public enum ItemType
     {
-        material,//材料
+        Material,//材料
         Potion,//血藥水
-        purify,//淨化
+        Purify,//淨化
+        Buff,//buff
     }
 }
 

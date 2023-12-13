@@ -1,67 +1,73 @@
-using System;
 using System.Collections;
 using DG.Tweening;
-using UnityEngine;
 using Events;
+using UnityEngine;
+
 public class itemOnWorld : MonoBehaviour
 {
     public item thisItem;
-    public Inventory[] playinventory;
+    [Range(1,100)]
+    public int itemAddNum = 1;
+    public CircleCollider2D col;
     private SpriteRenderer sr;
     private bool hasTriggered = false;
+    private bool isPlayerInside = false;
+    public float delayTime = 0.3f;
+    public float FadeTime = 0.2f;
+    public float destroyTime = 0.2f;
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.CompareTag("Player") && !hasTriggered)
         {
-            hasTriggered = true;
-            AddNewItem();
-            sr.DOFade(0f, 0.3f).OnComplete((() => Destroy(gameObject,0.3f)));
+            isPlayerInside = true;
+            StartCoroutine(WaitAndTrigger(delayTime));
         }
     }
-    public void AddNewItem()
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        //檢查背包陣列中是否有這個物品了
-        bool isItem = false;
-        int isitem = 0;
-        for (int i = 0; i < playinventory.Length; i++)
+        if(collision.gameObject.CompareTag("Player"))
         {
-            isItem = playinventory[i].itemList.Contains(thisItem);
-            if (isItem)
-                isitem = i;
+            isPlayerInside = false;
         }
-        //如果背包陣列中有
-        if (isItem)
+    }
+    private IEnumerator WaitAndTrigger(float time)
+    {
+        float timer = 0f;
+        while (timer < time)
         {
-            thisItem.itemHeld += 1;
-        }
-        else
-        {
-            if (!playinventory[0].itemList.Contains(thisItem))
+            if(CheckCollisionWithGround())
+                timer += Time.deltaTime;
+            if (!isPlayerInside)
             {
-                //判定在背包的18格中是否有空位
-                for (int i = 0; i < playinventory[0].itemList.Count;i++)
-                {
-                    if (playinventory[0].itemList[i] == null)
-                    {
-                        playinventory[0].itemList[i] = thisItem;
-                        break;
-                    }
-                }
+                break;
             }
-            else
+            yield return null;
+        }
+        if (isPlayerInside)
+        {
+            hasTriggered = true;
+            //AddNewItem();
+            if(invventoryManger.Instance.AddNewItem(thisItem.itemID, 0,itemAddNum))
+                sr.DOFade(0f, FadeTime).OnComplete(() => Destroy(gameObject, destroyTime));
+        }
+    }
+
+    private bool CheckCollisionWithGround()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(col.transform.position, col.radius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                thisItem.itemHeld += 1;
+                return true; // 如果碰撞到地面，返回true
             }
         }
-        //更新背包容易卡頓，替換成如果某個間距時間內只會更新一次。
-        //invventoryManger.Instance.RefreshItem(1);
-        //invventoryManger.Instance.RefreshItem(0);
-        //紀錄獲取物品
-        ItemDropsEvents.DropsSuccess();
+
+        return false; // 如果?有碰撞到地面，返回false
     }
 }

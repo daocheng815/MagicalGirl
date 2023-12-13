@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
             invventoryManger.Instance.deltbag( 0);
             invventoryManger.Instance.deltbag( 1);
         }
-            
+        
     }
     private bool is_Slide_up;
     private Vector2 PlayerSlidePosition;

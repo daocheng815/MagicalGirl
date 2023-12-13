@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using ItemTypeEnum;
 
@@ -17,6 +14,8 @@ public class item : ScriptableObject
     public ItemType itemType = new ItemType();
     [Header("物品名稱")]
     public string itemName;
+    [Header("物品中文名稱")]
+    public string itemNameNbt;
     [Header("物品圖示")]
     public Sprite itemImaage;
     [Header("物品數量")]

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c94b3170ed4fb4c44bcee37566ec3a82, type: 3}
   m_Name: RedPotion_1
   m_EditorClassIdentifier: 
-  itemID: 4
+  itemID: 5
   itemType: 1
   itemName: RedPotion_1
+  itemNameNbt: "\u56DE\u5FA9\u85E5\u6C341"
   itemImaage: {fileID: 1808769367, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
   itemHeld: 1
   iteminfo: "\u56DE\u5FA9\u85E5\u6C34 ( \u54C1\u8CEA : <color=#48CF59><b><font=\"GenWanMin-R
@@ -23,3 +24,4 @@ MonoBehaviour:
   isCoolingTime: 1
   coolingTime: 3
   Healnum: 40
+  purifyNum: 0

@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 0
   itemType: 1
   itemName: BluePotion_1
+  itemNameNbt: "\u88DC\u9B54\u5291"
   itemImaage: {fileID: -1650487396, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
   itemHeld: 1
   iteminfo: "\u88DC\u9B54\u5291(\u76EE\u524D\u672A\u555F\u7528)"
@@ -22,3 +23,4 @@ MonoBehaviour:
   isCoolingTime: 0
   coolingTime: 0
   Healnum: 0
+  purifyNum: 0

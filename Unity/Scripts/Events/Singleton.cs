@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 //Singleton³æ¨Ò¼Ò¦¡
 public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
