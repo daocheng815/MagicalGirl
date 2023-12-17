@@ -16,5 +16,8 @@ namespace Events
         /// 移除BUFF
         /// </summary>
         public static UnityAction<GameObject, int> DelBuff;
+
+        public static UnityAction<string,Vector2> BuffUIFloatingWindowOn;
+        public static UnityAction BuffUIFloatingWindowOff;
     }
 }

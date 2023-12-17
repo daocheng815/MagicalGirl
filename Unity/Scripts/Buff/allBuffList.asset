@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 892c29685dcf4e91a017333b290ad496, type: 3}
   m_Name: allBuffList
   m_EditorClassIdentifier: 
-  buffs: []
+  buffs:
+  - {fileID: 11400000, guid: 784cd5758fc4b54469de7806815bbb37, type: 2}
+  - {fileID: 11400000, guid: ae4ae285128fd654abf7f2d9c76e61fb, type: 2}
+  - {fileID: 11400000, guid: 8be12f945bc868b479d5f122e7128761, type: 2}

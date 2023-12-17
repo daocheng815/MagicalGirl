@@ -66,6 +66,10 @@ public class itemOnWorld : MonoBehaviour
             {
                 return true; // 如果碰撞到地面，返回true
             }
+            if (collider.gameObject.layer == LayerMask.NameToLayer("item"))
+            {
+                return true; // 如果碰撞到地面，返回true
+            }
         }
 
         return false; // 如果?有碰撞到地面，返回false

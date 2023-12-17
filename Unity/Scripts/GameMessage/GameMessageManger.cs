@@ -14,31 +14,9 @@ public class GameMessageManger : MonoBehaviour
     {
         GameMessageEvents.AddMessage += AddMessage;
     }
-
     private void OnDisable()
     {
         GameMessageEvents.AddMessage -= AddMessage;
-    }
-    private void Start()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            Invoke("A1",0.07f + i);
-            Invoke("A2",0.37f + i);
-            Invoke("A3",0.53f + i);
-        }
-    }
-    private void A1()
-    {
-        GameMessageEvents.AddMessage.Invoke("abb",3f);
-    }
-    private void A2()
-    {
-        GameMessageEvents.AddMessage.Invoke("12312313",3f);
-    }
-    private void A3()
-    {
-        GameMessageEvents.AddMessage.Invoke("誰你啊??",3f);
     }
     public void AddMessage(string text,float destroyTime = 3f)
     {
@@ -48,6 +26,7 @@ public class GameMessageManger : MonoBehaviour
         message.GetComponent<RectTransform>().localScale = Vector3.one;
         _messagesQueue.Enqueue(message);
         Invoke("DelayMessage",destroyTime);
+        Debug.Log("訊息系統 : " + text);
     }
     private void DelayMessage()
     {

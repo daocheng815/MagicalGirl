@@ -64,7 +64,8 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             
             }
             //判定目前滑鼠映射的遊戲物件名稱是itemImage
-            if (eventData.pointerCurrentRaycast.gameObject.name == "itemImage")
+            if (eventData.pointerCurrentRaycast.gameObject.name == "itemImage" && itemPrefab.name == "itemPrefab(Clone)"||
+                eventData.pointerCurrentRaycast.gameObject.name == "shortcutitemImage" && itemPrefab.name == "shortcutItemPrefab(Clone)")
             {
                 Debug.Log("滑鼠鼠標下沒有任何物件");
                 BagFuncMenu.IsItemOnDrag(false);
@@ -80,6 +81,25 @@ public class itemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 eventData.pointerCurrentRaycast.gameObject.transform.parent.position = originalparent.position;
                 eventData.pointerCurrentRaycast.gameObject.transform.parent.SetParent(originalparent);
                 
+                GetComponent<CanvasGroup>().blocksRaycasts = true;
+                invventoryManger.Instance.RefreshItem(0);
+                invventoryManger.Instance.RefreshItem(1);
+                
+                return;
+            }
+            if (eventData.pointerCurrentRaycast.gameObject.name == "itemImage" && itemPrefab.name == "shortcutItemPrefab(Clone)"||
+                eventData.pointerCurrentRaycast.gameObject.name == "shortcutitemImage" && itemPrefab.name == "itemPrefab(Clone)")
+            {
+                Debug.Log("碰到");
+                BagFuncMenu.IsItemOnDrag(false);
+                
+                transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);
+                transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;
+                //itemList的物品儲存位置置換
+                var temp = mybag[1].itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<slot>().slotID];
+                mybag[1].itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<slot>().slotID] = mybag[0].itemList[currentItemID];
+                mybag[0].itemList[currentItemID] = temp;
+
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
                 invventoryManger.Instance.RefreshItem(0);
                 invventoryManger.Instance.RefreshItem(1);

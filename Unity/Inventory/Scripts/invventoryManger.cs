@@ -25,8 +25,7 @@ public class invventoryManger : Singleton<invventoryManger>
         { "slots_0",  new List<GameObject>() },
         { "slots_1",  new List<GameObject>() }
     };
-
-    public bool[] Dlelay;
+    
     private void OnEnable()
     {
         itemInfromation[0].text = "";
@@ -36,14 +35,7 @@ public class invventoryManger : Singleton<invventoryManger>
     {
         PlayerController.lockplay = false;
     }
-    private void Start()
-    {
-        Dlelay = new bool[3];
-        for (int i = 0; i < Dlelay.Length; i++)
-        {
-            Dlelay[i] = false;
-        }
-    }
+
     /// <summary>
     /// 更新物品描述
     /// </summary>
@@ -76,7 +68,7 @@ public class invventoryManger : Singleton<invventoryManger>
         if (ItemExistenceCheckerAllBag(itemID))
         {
             item.itemHeld += addNum;
-            ItemEvents.DropsSuccess(item.itemNameNbt,addNum);
+            ItemEvents.ItemDropsTheSuccess(item.itemNameNbt,addNum,item);
         }
         else
         {
@@ -86,11 +78,12 @@ public class invventoryManger : Singleton<invventoryManger>
                 Debug.Log(nullBag);
                 Bag[bagNum].itemList[(int)nullBag] = item;
                 item.itemHeld += addNum - 1 ;
-                ItemEvents.DropsSuccess(item.itemNameNbt,addNum);
+                ItemEvents.ItemDropsTheSuccess(item.itemNameNbt,addNum,item);
             }
             else
             {
                 Debug.Log("背包中沒有可添加的空位，無法添加物品");
+                GameMessageEvents.AddMessage("背包中沒有可添加的空位，無法獲取物品",3f);
                 index = false;
             }
         }
@@ -165,22 +158,31 @@ public class invventoryManger : Singleton<invventoryManger>
         bool index = false;
         if (!ItemExistenceChecker(bagNum,slotID))
             return false;
-        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Buff && !Dlelay[2])
+        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Buff)
         {
             if (Bag[bagNum].itemList[slotID].available)
             {
                 //物件身上是否有某個BUFF
-                if (BuffManger.Instance.ExamineBuff(playerObject, 1))
+                if (BuffManger.Instance.ExamineBuff(playerObject, Bag[bagNum].itemList[slotID].buffID))
                 {
                     index = false;
                 }
                 else
                 {
-                    StartCoroutine(DelayTime(Bag[bagNum].itemList[slotID].coolingTime, 2));
-                    BuffEvents.AddBuff(playerObject, 1);
-                    Deleteitems(slotID,bagNum);
-                    RefreshItem(bagNum);
-                    index = true;
+                    //判定物品目前是否還可以疊加使用
+                    if (BuffManger.Instance.ExamineBuffOverlay(playerObject, Bag[bagNum].itemList[slotID].buffID))
+                    {
+                        BuffEvents.AddBuff(playerObject, Bag[bagNum].itemList[slotID].buffID);
+                        Deleteitems(slotID,bagNum);
+                        RefreshItem(bagNum);
+                        index = true;
+                    }
+                    else
+                    {
+                        index = false;
+                        GameMessageEvents.AddMessage("效果已疊滿",3f);
+                    }
+                    
                 }
             }
         }
@@ -197,17 +199,17 @@ public class invventoryManger : Singleton<invventoryManger>
         bool index = false;
         if (!ItemExistenceChecker(bagNum,slotID))
             return false;
-        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Purify && !Dlelay[0])
+        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Purify)
         {
             if (Bag[bagNum].itemList[slotID].available)
             {
                 if (PlayerVar.Instance.shuDyeingVar.TestFilthyVar(0))
                 {
                     Debug.Log("當前沒有汙染值");
+                    GameMessageEvents.AddMessage("汙染值為零，無須使用淨化。",3f);
                 }
                 else
                 {
-                    StartCoroutine(DelayTime(Bag[bagNum].itemList[slotID].coolingTime, 0));
                     PlayerVar.Instance.shuDyeingVar.FilthySub(Bag[bagNum].itemList[slotID].purifyNum);
                     Deleteitems(slotID,bagNum);
                     RefreshItem(bagNum);
@@ -230,7 +232,7 @@ public class invventoryManger : Singleton<invventoryManger>
         bool index = false;
         if (!ItemExistenceChecker(bagNum,slotID))
             return false;
-        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Potion && !Dlelay[1])
+        if (Bag[bagNum].itemList[slotID].itemType == ItemType.Potion)
         {
             if (Bag[bagNum].itemList[slotID].available )
             {
@@ -238,11 +240,11 @@ public class invventoryManger : Singleton<invventoryManger>
                 if (!isHeal)
                 {
                     Debug.Log("當前血量已滿");
+                    GameMessageEvents.AddMessage("血量已滿",3f);
                 }
                 else
                 {
                     index = true;
-                    StartCoroutine(DelayTime(Bag[bagNum].itemList[slotID].coolingTime, 1));
                     Debug.Log(Bag[bagNum].itemList[slotID].coolingTime);
                     //如果是最後一個物品也返回否，為了冷卻時間的UI正常運作
                     if (Bag[bagNum].itemList[slotID].itemHeld == 1)
@@ -256,11 +258,15 @@ public class invventoryManger : Singleton<invventoryManger>
 
         return index;
     }
-    IEnumerator DelayTime(float delayTime,int index)
+    /// <summary>
+    /// 獲取某背包儲存格數量
+    /// </summary>
+    /// <param name="bagNum"></param>
+    /// <returns></returns>
+    public int BagCount(int bagNum)
     {
-        Dlelay[index] = true;
-        yield return new WaitForSeconds(delayTime);
-        Dlelay[index] = false;
+        bagNum = Mathf.Clamp(bagNum, 0, Bag.Length);
+        return Bag[bagNum].itemList.Count;
     }
     /// <summary>
     /// 刪除背包，並且重新生成
@@ -273,8 +279,8 @@ public class invventoryManger : Singleton<invventoryManger>
             if (slotGrid[bagNum].transform.childCount == 0)
                 break;
             Destroy(slotGrid[bagNum].transform.GetChild(i).gameObject);
-            slotsDictionary["slots_"+bagNum].Clear();
         }
+        slotsDictionary["slots_"+bagNum].Clear();
         for (int i = 0; i < Bag[bagNum].itemList.Count; i++)
         {
             
@@ -293,7 +299,10 @@ public class invventoryManger : Singleton<invventoryManger>
             }
         }
         Debug.Log("更新背包完成");
-        ItemUpDate.BagUpData.Invoke();
+        if (bagNum == 1)
+        {
+            ItemUpDate.BagUpData.Invoke();
+        }
     }
     /// <summary>
     /// 刪除背包List，並且重新生成List

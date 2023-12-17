@@ -21,7 +21,7 @@ public class item : ScriptableObject
     [Header("物品數量")]
     public int itemHeld;
     [Header("物品描述")]
-    [TextArea]
+    [TextArea(10, 10)]
     public string iteminfo;
     [Header("可使用物品")]
     public bool available;
@@ -33,5 +33,7 @@ public class item : ScriptableObject
     public int Healnum;
     [Header("淨化汙染量")]
     public int purifyNum;
+    [Header("BUFFID")]
+    public int buffID;
 }
 

@@ -24,7 +24,7 @@ public class DeathDrops : MonoBehaviour
                 for (int i = 0; i < itemID.Length; i++)
                 {
                     ItemEvents.
-                        ItemDropsWorld.Invoke(gameObject.transform.position,dropsChance[i],itemID[i],dropOffsetAndDelayTime);
+                        ItemDropsTheWorld.Invoke(gameObject.transform.position,dropsChance[i],itemID[i],dropOffsetAndDelayTime);
                     isDrops = true;
                 }
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Events;
@@ -7,10 +8,32 @@ using UnityEngine;
 public class shortcutKeyManger : MonoBehaviour
 {
     public GameObject player;
+    public GameObject grid;
 
+    public GameObject shortcutPrefab;
+    public GameObject sGrid;
+    public List<coolingItmeFadeUI> coolingItmeFadeUIList = new List<coolingItmeFadeUI>();
+    public bool[] delay;
+    
+    
     public List<coolingItmeUI> coolingItemUIList = new List<coolingItmeUI>();
 
     public bool isUpData = false;
+
+    private void Start()
+    {
+        for (int i = 0; i < invventoryManger.Instance.BagCount(1); i++)
+        {
+            GameObject prefab =  Instantiate(shortcutPrefab, transform.position, Quaternion.identity);
+            prefab.transform.SetParent(sGrid.transform);
+            coolingItmeFadeUI c = prefab.gameObject.GetComponent<coolingItmeFadeUI>();
+            c.slotID = i;
+            coolingItmeFadeUIList.Add(c);
+            prefab.gameObject.GetComponent<RectTransform>().localScale = Vector2.one;
+        }
+        delay = new bool[coolingItmeFadeUIList.Count];
+    }
+
     private void OnEnable()
     {
         ItemUpDate.BagUpData += UpDates;
@@ -21,19 +44,18 @@ public class shortcutKeyManger : MonoBehaviour
         ItemUpDate.BagUpData -= UpDates;
     }
 
-    void UpDates()
+    private void UpDates()
     { 
+        Debug.Log("更新");
         coolingItemUIList.Clear();
+        coolingItmeUI[] coolingItmeUis = grid.GetComponentsInChildren<coolingItmeUI>();
         
-        GameObject Grid = GameObject.Find("Grid");
-
-        coolingItmeUI[] coolingItmeUis = Grid.GetComponentsInChildren<coolingItmeUI>();
         foreach (coolingItmeUI coolingItemUI in coolingItmeUis)
         {
             coolingItemUIList.Add(coolingItemUI);
         }
     }
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -57,7 +79,7 @@ public class shortcutKeyManger : MonoBehaviour
     }
 
     
-    void Action(int bag , int slot)
+    private void Action(int bag , int slot)
     {
         var item = invventoryManger.ReturnBagSlotItem(bag, slot);
         if (item != null)
@@ -65,24 +87,23 @@ public class shortcutKeyManger : MonoBehaviour
             
             Debug.Log("1  :" + item.itemNameNbt);
             ItemType tpye = item.itemType;
-            if (tpye == ItemType.Purify)
+            switch (tpye)
             {
-                //給使用物品一個回傳值(這個值用來表示是否真的使用)
-                bool index = invventoryManger.Instance.Purify(player,slot, bag);
-                if(index)
-                    type(tpye,item);
-            }
-            if (tpye == ItemType.Potion)
-            { 
-                bool index =  invventoryManger.Instance.Potion(player,slot, bag);
-                if(index)
-                    type(tpye,item);
-            }
-            if (tpye == ItemType.Buff)
-            { 
-                bool index =  invventoryManger.Instance.Buff(player,slot, bag);
-                if(index)
-                    type(tpye,item);
+                case ItemType.Purify:
+                    if(!delay[slot])
+                        if (invventoryManger.Instance.Purify(player, slot, bag))
+                            Fade(item, slot);
+                    break;
+                case ItemType.Potion:
+                    if(!delay[slot])
+                        if (invventoryManger.Instance.Potion(player, slot, bag))
+                            Fade(item, slot);
+                    break;
+                case ItemType.Buff:
+                    if(!delay[slot])
+                        if (invventoryManger.Instance.Buff(player, slot, bag))
+                            Fade(item, slot);
+                    break;
             }
         }
         else
@@ -90,7 +111,24 @@ public class shortcutKeyManger : MonoBehaviour
             Debug.Log("當前沒有物品");
         }
     }
-    void type(ItemType type , item item)
+
+    private void Fade(item item,int slot)
+    {
+        if (!delay[slot])
+        {
+            var delayTime = item.coolingTime;
+            StartCoroutine(DelayFadTime(delayTime, slot));
+            coolingItmeFadeUIList[slot].Fade(delayTime);
+        }
+    }
+
+    private IEnumerator DelayFadTime(float time , int slot)
+    {
+        delay[slot] = true;
+        yield return new WaitForSeconds(time);
+        delay[slot] = false;
+    }
+    private void type(ItemType type , item item)
     {
         foreach (var i in coolingItemUIList)
         {

@@ -1,13 +1,22 @@
+using System;
 using System.Collections;
 using Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ItemDropsWorldManger : MonoBehaviour
 {
-    [SerializeField]private int dropsSuccessNum = 0;
+    public GameObject player;
+    public float audioVolume = 1f;
+    public AudioClip pickUpSource;
+    private AudioSource _audioSource;
+    public float sourceDelayTime = 0.1f;
+    [Space(5)]
+    
+    [SerializeField]private int dropsSuccessNum;
     [SerializeField]private float dropsSuccessDelayTime = 0.5f;
-    private bool successDelayTime = false;
+    private bool _successDelayTime;
     
     public GameObject drop;
     public Vector2 randomOffset = new Vector2(0,0);
@@ -20,49 +29,90 @@ public class ItemDropsWorldManger : MonoBehaviour
     [Range(0,7)]
     public int itemID;
     public Vector3 test;
+
+    private int[] _itemDragNum ;
+
+    
     private void OnEnable()
     {
         //註冊監聽事件
-        ItemEvents.ItemDropsWorld += ItemDropsWorld;
-        ItemEvents.DropsSuccess += DropsSuccess;
+        ItemEvents.ItemDropsTheWorld += ItemDropsTheWorld;
+        ItemEvents.ItemDropsTheSuccess += Drops_Success;
     }
     private void OnDisable()
     {
         //註消監聽事件
-        ItemEvents.ItemDropsWorld -= ItemDropsWorld;
-        ItemEvents.DropsSuccess -= DropsSuccess;
+        ItemEvents.ItemDropsTheWorld -= ItemDropsTheWorld;
+        ItemEvents.ItemDropsTheSuccess -= Drops_Success;
     }
+
+    private void Start()
+    {
+        StartCoroutine(WaitForitemListUpData());
+        IEnumerator WaitForitemListUpData()
+        {
+            //等待ItemList更新完成
+            yield return new WaitUntil((() => ItemUpDate.ItemListUpDate));
+            _itemDragNum = new int[ItemList.Instance.Item.Count];
+        }
+    }
+
     //更新背包需要在間距時間內只會更新一次，以減少卡頓。
     //等待更新背包
     private IEnumerator BagUpdataCoroutine()
     {
-        successDelayTime = true;
+        _successDelayTime = true;
         yield return new WaitForSeconds(dropsSuccessDelayTime);
         if (dropsSuccessNum > 0)
         {
-            invventoryManger.Instance.RefreshItem(1);
             invventoryManger.Instance.RefreshItem(0);
+            invventoryManger.Instance.RefreshItem(1);
             dropsSuccessNum = 0;
+
+            for (int i = 0; i < _itemDragNum.Length; i++)
+            {
+                if (_itemDragNum[i] != 0)
+                {
+                    GameMessageEvents.AddMessage("獲得"+ItemList.Instance.Item[i].itemNameNbt+"，數量:"+_itemDragNum[i] +"個",3f);
+                    Invoke("AudioPlay",sourceDelayTime);
+                    _itemDragNum[i] = 0;
+                }
+            }
+            
         }
-        successDelayTime = false;
+        _successDelayTime = false;
     }
-    private void DropsSuccess(string itemName,int itemNum)
+    /// <summary>
+    /// 播放物品獲取音效
+    /// </summary>
+    private void AudioPlay()
     {
-        GameMessageEvents.AddMessage("獲取"+itemName+"，數量:"+itemNum +"個",3f);
+        _audioSource = player.AddComponent<AudioSource>();
+        _audioSource.clip = pickUpSource;
+        _audioSource.loop = false;
+        _audioSource.volume = audioVolume;
+        _audioSource.Play();
+    }
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void Drops_Success(string itemName,int itemNum,item item)
+    {
+        _itemDragNum[item.itemID]++;
         dropsSuccessNum ++;
-        if(!successDelayTime)
+        if(!_successDelayTime)
             StartCoroutine(BagUpdataCoroutine());
     }
-    private void ItemDropsWorld(Vector3 pos, Vector2 dropsChance, int itemID,Vector3 offset)
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void ItemDropsTheWorld(Vector3 pos, Vector2 dropsChance, int itemID,Vector3 offset)
     {
         //如果還沒更新就等待執行
         if(!ItemUpDate.ItemListUpDate)
-            StartCoroutine(WaitForItemUpData(pos, dropsChance, itemID,offset));
+            StartCoroutine(WaitItemUpData(pos, dropsChance, itemID,offset));
         else
             Idw114514(pos,dropsChance,itemID,offset);
     }
     //等待更新後執行
-    private IEnumerator WaitForItemUpData(Vector3 pos, Vector2 dropsChance, int itemID, Vector3 offset)
+    // ReSharper disable Unity.PerformanceAnalysis
+    private IEnumerator WaitItemUpData(Vector3 pos, Vector2 dropsChance, int itemid, Vector3 offset)
     {
         while (!ItemUpDate.ItemListUpDate)
         {
@@ -70,6 +120,7 @@ public class ItemDropsWorldManger : MonoBehaviour
         }
         Idw114514(pos,dropsChance,itemID,offset);
     }
+    
     private void Idw114514(Vector3 pos, Vector2 dropsChance, int itemID,Vector3 offset)
     {
         //掉落物品事件等待時間為offset.z
@@ -92,8 +143,9 @@ public class ItemDropsWorldManger : MonoBehaviour
                 Vector3 rangeOffset = new Vector3(Random.Range(-randomOffset.x,randomOffset.x), Random.Range(-randomOffset.y,randomOffset.y),0);
                 GameObject drops = Instantiate(drop, pos + (Vector3)offsets + rangeOffset, Quaternion.identity);
                 drops.gameObject.GetComponent<Rigidbody2D>().velocity = Random.Range(0f,1f) <= 0.5f ? Vector2.one : -Vector2.one;
-                drops.gameObject.GetComponent<itemOnWorld>().thisItem = ItemList.Instance.Item[itemID];
-                drops.gameObject.GetComponent<itemOnWorld>().itemAddNum = (int)dropsChance.y;
+                itemOnWorld itemOnWorld = drops.gameObject.GetComponent<itemOnWorld>();
+                itemOnWorld.thisItem = ItemList.Instance.Item[itemID];
+                itemOnWorld.itemAddNum = (int)dropsChance.y;
                 drops.gameObject.GetComponent<SpriteRenderer>().sprite = ItemList.Instance.Item[itemID].itemImaage;
             }
         }

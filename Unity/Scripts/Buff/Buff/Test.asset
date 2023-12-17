@@ -15,7 +15,8 @@ MonoBehaviour:
   buffID: 0
   buffName: text
   buffNameNbt: "\u6E2C\u8A66"
-  buffInfo: 
+  buffInfo:
+  - 2
   buffType: 0
   buffImage: {fileID: 21300000, guid: cbd59b29c94e22342a14834b5efadd01, type: 3}
   buffBackGround: {fileID: 21300000, guid: 369535fd3f68af640a5d3f10171a8df6, type: 3}

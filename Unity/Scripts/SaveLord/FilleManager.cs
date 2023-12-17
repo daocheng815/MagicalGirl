@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using SaveLord;
-
+using Events;
 public class FilleManager : MonoBehaviour
 {
     private PlayerData[] playerData = new PlayerData[4];
@@ -225,9 +225,6 @@ public class FilleManager : MonoBehaviour
         
         invventoryManger.Instance.RefreshItem(0);
         invventoryManger.Instance.RefreshItem(1);
-       
-
-
 
         /*
         play.transform.position = new Vector3(PlayerPrefs.GetFloat(Num + SaveNumSuffix + "playerTransformX"), PlayerPrefs.GetFloat(Num + SaveNumSuffix + "playerTransformY"), play.transform.position.z);

@@ -17,10 +17,11 @@ MonoBehaviour:
   itemName: buff114514
   itemNameNbt: buff114514
   itemImaage: {fileID: 360708868, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
-  itemHeld: 1
+  itemHeld: 9
   iteminfo: "\u4F86\u81EA\u67D0\u8F1B\u9ED1\u8272\u8F4E\u8ECA\u7684\u907A\u7559\u7269\uFF0C\u6478\u8D77\u4F86\u71B1\u71B1\u7684\uFF0C\u6709\u9EDE\u5947\u602A......\n\u597D\u50CF\u662F\u53EF\u4EE5\u4F7F\u7528\u7269\u54C1......"
   available: 1
   isCoolingTime: 0
   coolingTime: 1
   Healnum: 0
   purifyNum: 0
+  buffID: 2

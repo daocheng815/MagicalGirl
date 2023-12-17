@@ -1,4 +1,5 @@
 using Events;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class BuffManger : Singleton<BuffManger>
@@ -37,6 +38,37 @@ public class BuffManger : Singleton<BuffManger>
         }
     }
     /// <summary>
+    /// 判定目前是Buff否還可以疊加使用
+    /// </summary>
+    /// <param name="obj0"></param>
+    /// <param name="buffID"></param>
+    /// <returns></returns>
+    public bool ExamineBuffOverlay(GameObject obj0, int buffID)
+    {
+        bool index = false;
+        buffEffect obj = obj0.GetComponent<buffEffect>();
+        if (obj != null && !obj.isUpData)
+        {
+            //設置buffID的最小值
+            buffID = Mathf.Clamp(buffID, 0, buffs.Length - 1);
+            Buff buff = allBuffList.buffs[buffID];
+            //判定目前是Buff否還可以疊加使用，可以是True
+            if (buff.buffOverlay)
+            {
+                index = obj.buffOverlayNum[buffID] != buff.maxBuffOverlayNum;
+            }
+            else
+            {
+                index = false;
+            }
+        }
+        else
+        {
+            index = false;
+        }
+        return index;
+    }
+    /// <summary>
     /// 檢查某物件身上是否有某個BUFF，如果物件身上沒有buffEffect也是回傳False
     /// </summary>
     /// <param name="obj0"></param>
@@ -52,6 +84,7 @@ public class BuffManger : Singleton<BuffManger>
             Buff buff = allBuffList.buffs[buffID];
             //檢查BUFF列表中是否存在效果了
             index = obj.buffList.Contains(buff);
+            
             if(buff.buffOverlay)
                 index = false;
         }

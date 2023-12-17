@@ -1,4 +1,6 @@
+using System;
 using buff;
+using Unity.VisualScripting;
 using UnityEngine;
 [CreateAssetMenu(fileName = "New Buff",menuName = "Buff/New Buff")]
 public class Buff : ScriptableObject
@@ -7,48 +9,49 @@ public class Buff : ScriptableObject
     /// </summary>
     [Header("Buff ID")] public int buffID;
     /// <summary>
-    /// Buff ¦WºÙ
+    /// Buff åç¨±
     /// </summary>
-    [Header("Buff ¦WºÙ")] public string buffName;
+    [Header("Buff åç¨±")] public string buffName;
     /// <summary>
-    /// Buff ¤¤¤å¦WºÙ
+    /// Buff ä¸­æ–‡åç¨±
     /// </summary>
-    [Header("Buff ¤¤¤å¦WºÙ")] public string buffNameNbt;
+    [Header("Buff ä¸­æ–‡åç¨±")] public string buffNameNbt;
     /// <summary>
-    /// Buff ¸Ô²Ó¸ê°T
+    /// Buff è©³ç´°è³‡è¨Š
     /// </summary>
-    [Header("Buff ¸Ô²Ó¸ê°T"),TextArea] public string buffInfo;
+    [Header("Buff è©³ç´°è³‡è¨Š"),TextArea(10, 10)] public string[] buffInfo = new string[1];
     /// &lt;summary&gt;
-    /// Buff Ãş§O
+    /// Buff é¡åˆ¥ 
     /// &lt;/summary&gt;
-    [Header("Buff Ãş§O")] public BuffType buffType;
+    [Header("Buff é¡åˆ¥")] public BuffType buffType;
     /// <summary>
-    /// Buff ¹Ï¥Ü
+    /// Buff åœ–ç¤º
     /// </summary>
-    [Header("Buff ¹Ï¥Ü")] public Sprite buffImage;
+    [Header("Buff åœ–ç¤º")] public Sprite buffImage;
     /// <summary>
-    /// Buff ­I´º¹Ï¤ù
+    /// Buff èƒŒæ™¯åœ–ç‰‡
     /// </summary>
-    [Header("Buff ­I´º¹Ï¤ù")] public Sprite buffBackGround;
+    [Header("Buff èƒŒæ™¯åœ–ç‰‡")] public Sprite buffBackGround;
     /// &lt;summary&gt;
-    /// Buff ¬O§_¥iÅ|¥[
+    /// Buff æ˜¯å¦å¯ç–ŠåŠ 
     /// &lt;/summary&gt;
-    [Header("Buff ¬O§_¥iÅ|¥[")] public bool buffOverlay;
+    [Header("Buff æ˜¯å¦å¯ç–ŠåŠ ")] public bool buffOverlay;
     /// <summary>
-    /// Buff ³Ì¤jÅ|¥[¼Æ
+    /// Buff æœ€å¤§ç–ŠåŠ æ•¸
     /// </summary>
-    [Header("Buff ³Ì¤jÅ|¥[¼Æ")] public int maxBuffOverlayNum;
+    [Header("Buff æœ€å¤§ç–ŠåŠ æ•¸")] public int maxBuffOverlayNum;
     /// <summary>
-    /// Buff ®ÄªG®É¶¡
+    /// Buff æ•ˆæœæ™‚é–“
     /// </summary>
-    [Header("Buff ®ÄªG®É¶¡")] public float buffTime;
+    [Header("Buff æ•ˆæœæ™‚é–“")] public float buffTime;
     /// <summary>
-    /// Buff ¬O§_¦³§N«o®É¶¡
+    /// Buff æ˜¯å¦æœ‰å†·å»æ™‚é–“
     /// </summary>
-    [Header("Buff ¬O§_¦³§N«o®É¶¡")] public bool buffCooling;
+    [Header("Buff æ˜¯å¦æœ‰å†·å»æ™‚é–“")] public bool buffCooling;
     /// <summary>
-    /// Buff §N«o®É¶¡
+    /// Buff å†·å»æ™‚é–“
     /// </summary>
-    [Header("Buff §N«o®É¶¡")] public float buffCoolingTime;
+    [Header("Buff å†·å»æ™‚é–“")] public float buffCoolingTime;
+    
 }
 
