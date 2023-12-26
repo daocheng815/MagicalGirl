@@ -1,5 +1,6 @@
 using Cinemachine;
 using System.Collections;
+using Events;
 using UnityEngine;
 
 public class VC2C : Singleton<VC2C>

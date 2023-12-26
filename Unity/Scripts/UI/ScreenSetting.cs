@@ -1,18 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
-//DoTweening程式庫
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Events;
 using UnityEngine.UI;
+using System.IO;
+using SaveLord;
+using TMPro;
+using currentLevel;
 
 public class ScreenSetting : MonoBehaviour
 {
-    //靜態
-    public static int GameLoadNum;
-    
     public GameObject loadingScreen;
-    public Slider loadingSlidle;
+
+    [SerializeField]private TextMeshProUGUI[] loadText; 
     
     private GameObject TillImage;
     private GameObject logo;
@@ -25,7 +25,7 @@ public class ScreenSetting : MonoBehaviour
         logo = GameObject.Find("LogoMenu");
         menuButton = GameObject.Find("ButtonMenu");
         
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
@@ -59,7 +59,13 @@ public class ScreenSetting : MonoBehaviour
     
     public void OnLoadUiMenu(bool swap)
     {
-       
+        //更新UI描述
+        for (int i = 1; i < 4; i++)
+        {
+            PlayerData pd = ArchiveSystemManager.Instance.Lord(i);
+            if (pd != null) loadText[i - 1].text = LevelName.LevelNames[pd.myLevelState] + " " + pd.saveIsTime;
+            else loadText[i - 1].text = "無";
+        }
         OnUI(swap,uiList[0]);
     }
     public void OnAboutUiMenu(bool swap)
@@ -73,27 +79,19 @@ public class ScreenSetting : MonoBehaviour
 
     public void OnSL(int loadNum = 0)
     {   
-        GameLoadNum = loadNum;
-        loadingScreen.SetActive(true);
-        StartCoroutine(LoadLevelAsync("SampleScene"));
-        //SceneManager.LoadScene("SampleScene");
-    }
-    IEnumerator LoadLevelAsync(string levelToLoad)
-    {
-        yield return new WaitForSeconds(1f);
-        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(levelToLoad);
-        while (!loadOperation.isDone)
-        {   
-            float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-            if (progress != loadingSlidle.value) 
-            {
-                loadingSlidle.value = progress;
-            }
-            Debug.Log("載入中");
-            yield return null;
+        // 检查文件是否存在
+        if (File.Exists(Path.Combine(Application.dataPath, "playerDataSave_" + loadNum + ".json"))||loadNum==0)
+        {
+            Persistence.GameLoadNum = loadNum;
+            loadingScreen.SetActive(true);
+        
+            LodingManger.Instance.LodingScene("SampleScene");
+        }
+        else
+        {
+            Debug.Log("該存檔不存在");
         }
     }
-    
     
     public void QuitGame()
     {

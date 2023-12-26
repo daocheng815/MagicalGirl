@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 public class SpiderEnemy : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class SpiderEnemy : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected void Awake()
     {
         damageable = GetComponent<Damageable>();
         animator = GetComponent<Animator>();

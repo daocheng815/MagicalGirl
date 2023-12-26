@@ -1,12 +1,18 @@
 using System.Collections;
 using currentLevel;
 using DG.Tweening;
+using Events;
 using UnityEngine;
 using TMPro;
 public class CurrentLevel : Singleton<CurrentLevel>
 {
     public LevelState levelState = new LevelState();
 
+    
+    public LevelState.LevelStateEnum intCurrentState;
+    private const int Bex = 5;
+    private const float Box = Bex + 5;
+    
     [SerializeField]private GameObject text;
     private TextMeshProUGUI textUGUI;
     private RectTransform textRI;
@@ -16,6 +22,9 @@ public class CurrentLevel : Singleton<CurrentLevel>
 
     private void Start()
     {
+        levelState.CurrentState = intCurrentState;
+        Persistence.IsLevel = intCurrentState;
+        Debug.Log(LevelName.LevelNames[levelState.CurrentState]);
         ReadObj();
     }
 
@@ -32,7 +41,8 @@ public class CurrentLevel : Singleton<CurrentLevel>
     protected bool isanimator = false;
     public void OnUiShow(bool index = false)
     {
-        textUGUI.text = levelState.LevelName[levelState.CurrentState];
+        textUGUI.text = LevelName.LevelNames[levelState.CurrentState];
+        Debug.Log(LevelName.LevelNames[levelState.CurrentState]);
         if (isanimator)
         {
             DOTween.Kill(imageRT);

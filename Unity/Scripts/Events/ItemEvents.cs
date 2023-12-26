@@ -12,7 +12,7 @@ namespace Events
         /// Vector3 : x,y為掉落初始位置偏移(Vector2)， z值是掉落延遲時間。
         /// </summary>
         public static UnityAction<Vector3, Vector2, int, Vector3> ItemDropsTheWorld;
-        public static UnityAction<string,int,item> ItemDropsTheSuccess;
+        public static UnityAction<int,item> ItemDropsTheSuccess;
     }
     public abstract class ItemUpDate
     {

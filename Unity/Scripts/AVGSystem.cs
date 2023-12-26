@@ -1,6 +1,8 @@
+using System;
 using Flower;
 using System.Collections;
 using System.Collections.Generic;
+using Events;
 using UnityEngine;
 // Invoke("RemoveButtonGroup", 0.4f);這一段在之後必須要修改
 public class AVGSystem : MonoBehaviour
@@ -32,6 +34,11 @@ public class AVGSystem : MonoBehaviour
         FilleManager = player.GetComponent<FilleManager>();
     }
 
+    private void OnDisable()
+    {
+        fs.RemoveDialog();
+    }
+
     void Start()
     {
         NPC1 = GameObject.Find("QB");
@@ -55,7 +62,8 @@ public class AVGSystem : MonoBehaviour
         //        FilleManager.Lord(i);
         //    }
         //}
-        if (ScreenSetting.GameLoadNum == 0)
+        fs.SetupDialog("DefaultDialogPrefab1", true);
+        if (Persistence.GameLoadNum == 0)
         {
             if (isOn)
             {

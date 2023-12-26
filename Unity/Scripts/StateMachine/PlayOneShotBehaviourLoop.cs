@@ -15,7 +15,7 @@ public class PlayOneShotBehaviourLoop : StateMachineBehaviour
     private AudioSource audioSource;
     
 
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+    // OnStateEnter is called when a transition starts and the States machine starts to evaluate this States
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (playOnEnter)
@@ -52,7 +52,7 @@ public class PlayOneShotBehaviourLoop : StateMachineBehaviour
         isPlayingAnimation = !animator.IsInTransition(layerIndex);
     }
 
-    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
+    // OnStateExit is called when a transition ends and the States machine finishes evaluating this States
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (playOnExit && !isPlayingAnimation)

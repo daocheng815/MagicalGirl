@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using EnemyState;
+using State;
+using Events;
 
 public class HeadlessAssassin : MonoBehaviour
 {
@@ -183,7 +184,7 @@ public class HeadlessAssassin : MonoBehaviour
         //============
         //等待狀態機
         //============
-        if (enemyStateManager.IsCurrentState((ES.Idle)))
+        if (enemyStateManager.IsCurrentState((EneyStates.Idle)))
         {
             animator.SetBool(AnimationStrings.isMoving,false);
             rb.velocity = Vector2.zero;
@@ -222,7 +223,7 @@ public class HeadlessAssassin : MonoBehaviour
         //============
         //跳躍狀態機
         //============
-        if (enemyStateManager.IsCurrentState(ES.Jump))
+        if (enemyStateManager.IsCurrentState(EneyStates.Jump))
         {
             animator.SetBool(AnimationStrings.isMoving,false);
             Debug.Log("跳躍");
@@ -252,7 +253,7 @@ public class HeadlessAssassin : MonoBehaviour
         //============
         //巡邏狀態機
         //============
-        if (enemyStateManager.IsCurrentState(ES.Patrol))
+        if (enemyStateManager.IsCurrentState(EneyStates.Patrol))
         {
             //狀態機判定 === 判定如果距離在視野內進行追擊
             if (enemySearchToPlayers.distance < pursueDistance)
@@ -303,7 +304,7 @@ public class HeadlessAssassin : MonoBehaviour
         //====================================
         //追擊狀態機 與 受傷害後的追擊狀態機
         //====================================
-        if (enemyStateManager.IsCurrentState(ES.Pursue) || enemyStateManager.IsCurrentState(ES.Hit))
+        if (enemyStateManager.IsCurrentState(EneyStates.Pursue) || enemyStateManager.IsCurrentState(EneyStates.Hit))
         {
             //狀態機判定
             switch (enemyStateManager.CurrentState)

@@ -1,3 +1,5 @@
+using System;
+using Events;
 using TMPro;
 using UnityEngine;
 public class UIManger : MonoBehaviour
@@ -12,14 +14,6 @@ public class UIManger : MonoBehaviour
 
 
     public Canvas gameCanvas;
-
-    private void Awake()
-    {
-        //gameCanvas = FindObjectOfType<Canvas>();
-        GameObject foundCanvasObject = GameObject.Find("Canvas");
-        gameCanvas = foundCanvasObject.GetComponent<Canvas>();
-    
-    }
 
     private void OnEnable()
     {

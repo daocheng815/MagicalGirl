@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Audio;
 using Events;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -7,12 +8,6 @@ using Random = UnityEngine.Random;
 
 public class ItemDropsWorldManger : MonoBehaviour
 {
-    public GameObject player;
-    public float audioVolume = 1f;
-    public AudioClip pickUpSource;
-    private AudioSource _audioSource;
-    public float sourceDelayTime = 0.1f;
-    [Space(5)]
     
     [SerializeField]private int dropsSuccessNum;
     [SerializeField]private float dropsSuccessDelayTime = 0.5f;
@@ -74,30 +69,20 @@ public class ItemDropsWorldManger : MonoBehaviour
                 if (_itemDragNum[i] != 0)
                 {
                     GameMessageEvents.AddMessage("獲得"+ItemList.Instance.Item[i].itemNameNbt+"，數量:"+_itemDragNum[i] +"個",3f);
-                    Invoke("AudioPlay",sourceDelayTime);
+                    //Invoke("AudioPlay",sourceDelayTime);
+                    AudioMange.Instance.AudioPlay("pickUpSource");
                     _itemDragNum[i] = 0;
                 }
             }
-            
         }
         _successDelayTime = false;
     }
-    /// <summary>
-    /// 播放物品獲取音效
-    /// </summary>
-    private void AudioPlay()
-    {
-        _audioSource = player.AddComponent<AudioSource>();
-        _audioSource.clip = pickUpSource;
-        _audioSource.loop = false;
-        _audioSource.volume = audioVolume;
-        _audioSource.Play();
-    }
+    
     // ReSharper disable Unity.PerformanceAnalysis
-    private void Drops_Success(string itemName,int itemNum,item item)
+    private void Drops_Success(int addItemNum,item item)
     {
-        _itemDragNum[item.itemID]++;
-        dropsSuccessNum ++;
+        _itemDragNum[item.itemID] += addItemNum;
+        dropsSuccessNum += addItemNum;
         if(!_successDelayTime)
             StartCoroutine(BagUpdataCoroutine());
     }

@@ -1,8 +1,8 @@
+#if UNITY_EDITOR
 using Events;
 using UnityEngine;
 using UnityEditor;
 
-#if UNITY_EDITOR
 [CustomEditor(typeof(ItemDropsWorldManger))]
 public class ItemDropsWorldMangerEditor : Editor
 {

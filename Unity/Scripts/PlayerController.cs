@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
+using Events;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -153,7 +154,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 
-        if (ScreenSetting.GameLoadNum == 0)
+        if (Persistence.GameLoadNum == 0)
         {
             invventoryManger.Instance.deltbag( 0);
             invventoryManger.Instance.deltbag( 1);

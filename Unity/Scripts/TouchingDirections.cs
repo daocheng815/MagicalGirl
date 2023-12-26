@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 // 檢測玩家下方時是否有碰撞
 public class TouchingDirections : MonoBehaviour

@@ -1,3 +1,4 @@
+using Events;
 using TMPro;
 
 public class UI_Test : Singleton<UI_Test>

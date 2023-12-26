@@ -1,15 +1,25 @@
 ﻿using System.Collections.Generic;
+using currentLevel;
+
+namespace Events
+{
+    internal class LevelName
+    {
+        //地圖名稱
+        public static Dictionary<LevelState.LevelStateEnum, string> LevelNames = new
+            Dictionary<LevelState.LevelStateEnum, string>()
+            {
+                { LevelState.LevelStateEnum.Ruinesremains, "廢棄廢墟" },
+                { LevelState.LevelStateEnum.EnchantedForest, "魔法之森" },
+                { LevelState.LevelStateEnum.UndergroundCave, "地下洞窟" }
+            };
+    }
+}
+
 namespace currentLevel
 {
     public class LevelState
     {
-        //地圖名稱
-        public Dictionary<LevelStateEnum, string> LevelName = new Dictionary<LevelStateEnum, string>()
-        {
-            {LevelStateEnum.Ruinesremains,"廢棄廢墟"},
-            {LevelStateEnum.EnchantedForest,"魔法之森"},
-            {LevelStateEnum.UndergroundCave, "地下洞窟"}
-        };
         
         //地圖狀態
         public enum LevelStateEnum

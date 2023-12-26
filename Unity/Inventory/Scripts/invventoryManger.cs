@@ -68,7 +68,7 @@ public class invventoryManger : Singleton<invventoryManger>
         if (ItemExistenceCheckerAllBag(itemID))
         {
             item.itemHeld += addNum;
-            ItemEvents.ItemDropsTheSuccess(item.itemNameNbt,addNum,item);
+            ItemEvents.ItemDropsTheSuccess(addNum,item);
         }
         else
         {
@@ -78,7 +78,7 @@ public class invventoryManger : Singleton<invventoryManger>
                 Debug.Log(nullBag);
                 Bag[bagNum].itemList[(int)nullBag] = item;
                 item.itemHeld += addNum - 1 ;
-                ItemEvents.ItemDropsTheSuccess(item.itemNameNbt,addNum,item);
+                ItemEvents.ItemDropsTheSuccess(addNum,item);
             }
             else
             {

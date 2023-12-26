@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 public class PlayerVar : Singleton<PlayerVar>
 {

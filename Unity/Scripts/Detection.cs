@@ -38,7 +38,8 @@ public class
         //牆壁
         _rayDirectionRight = new Vector2(scaleX, 0f);
         var position = new Vector2(transform.position.x  ,transform.position.y+ scaleXOffset) ;
-        Debug.DrawRay(position, _rayDirectionRight * rayLengthRight, Color.blue);
+        if (rayShow)
+            Debug.DrawRay(position, _rayDirectionRight * rayLengthRight, Color.blue);
         _hitRight = Physics2D.Raycast(position, _rayDirectionRight, rayLengthRight, wallLayer);
         if (_hitRight.collider != null)
         {
@@ -48,7 +49,8 @@ public class
         //判定是碰撞到牆壁
         isWall = _hitRight.collider;
         //玩垂直地面的位置
-        Debug.DrawRay(position, _rayDirectionDown * rayLengthDown, Color.red);
+        if (rayShow)
+            Debug.DrawRay(position, _rayDirectionDown * rayLengthDown, Color.red);
         _hitDown = Physics2D.Raycast(position, _rayDirectionDown, rayLengthDown, wallLayer);
         //碰撞的話抓取對象物件的法線(normal)向量，也剛好等於對目前的角色底下的斜率。
         if (_hitDown.collider != null)
@@ -56,7 +58,8 @@ public class
             _rayDirectionDownVertical = _hitDown.normal;
         }
         var newPosition = new Vector2(transform.position.x , transform.position.y + VerticalrayLengthDown) ;
-        Debug.DrawRay(newPosition, _rayDirectionDownVertical * rayLengthDown, Color.yellow);
+        if (rayShow)
+            Debug.DrawRay(newPosition, _rayDirectionDownVertical * rayLengthDown, Color.yellow);
         //判定是否垂直於地面上
         isSlope = !(_rayDirectionDownVertical == VectorHorizontal);
         

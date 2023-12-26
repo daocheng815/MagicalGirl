@@ -1,7 +1,7 @@
-﻿namespace  EnemyState
+﻿namespace State
 {
     //狀態機的所有子狀態
-    internal class ES
+    internal class EneyStates
     {
         internal static readonly string Idle = EnemyStateManager.EnemyState.Idle.ToString();
         internal static readonly string Attack = EnemyStateManager.EnemyState.Attack.ToString();

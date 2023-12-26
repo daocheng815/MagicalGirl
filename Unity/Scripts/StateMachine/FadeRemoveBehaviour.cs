@@ -12,7 +12,7 @@ public class FadeRemoveBehaviour : StateMachineBehaviour
     GameObject objToRemove;
     Color startColor;
 
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+    // OnStateEnter is called when a transition starts and the States machine starts to evaluate this States
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         timeElapsed = 0f;

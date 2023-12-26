@@ -27,7 +27,7 @@ public class ParallaxEffeect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 newPosition = startingPostition + camMoveSinceStart / parallaxFactor;
+        Vector2 newPosition = startingPostition + camMoveSinceStart * parallaxFactor;
         transform.position = new Vector3(newPosition.x , newPosition.y , startingZ);
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using currentLevel;
+using Events;
 using UnityEngine;
 public class InLevel : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class InLevel : MonoBehaviour
                 if ((layerMask.value & (1 << other.gameObject.layer)) != 0)
                 {
                     Debug.Log(other.gameObject.name + "進入地圖");
+                    //儲存當前的地圖名稱，至持久化數據
+                    Persistence.IsLevel = myLevelState;
                     StartCoroutine(DelayedAction(delayTime));
                     hasEntered = true; 
                 }

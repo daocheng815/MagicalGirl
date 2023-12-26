@@ -1,4 +1,5 @@
 using System.Collections;
+using Events;
 using UnityEngine;
 
 public class PlayerEffeect : MonoBehaviour

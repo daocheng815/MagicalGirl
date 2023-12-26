@@ -1,29 +1,35 @@
 using UnityEngine;
+
 //Singleton單例模式
-public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+namespace Events
 {
+    /// <summary>
+    /// 單例模式，限定本場景
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
+    {
     
-    private static T instance;
-    public static T Instance
-    {
-        get { return instance; }
-    }
-    protected virtual void Awake()
-    {
-        if(instance != null)
-            Destroy(gameObject);
-        else
-            instance = (T)this;
-    }
-    public static bool IsInitalized
-    {
-        get { return instance != null; }
-    }
-    protected virtual void OnDestroy()
-    {
-        if(instance == this)
+        private static T _instance;
+        public static T Instance => _instance;
+
+        protected virtual void Awake()
         {
-            instance = null;
+            if(_instance != null)
+                Destroy(gameObject);
+            else
+                _instance = (T)this;
+        }
+        public static bool IsInitalized
+        {
+            get { return _instance != null; }
+        }
+        protected virtual void OnDestroy()
+        {
+            if(_instance == this)
+            {
+                _instance = null;
+            }
         }
     }
 }

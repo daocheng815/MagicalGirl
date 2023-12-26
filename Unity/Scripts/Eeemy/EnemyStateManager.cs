@@ -1,4 +1,4 @@
-﻿namespace EnemyState
+﻿namespace State
 {
     public class EnemyStateManager
     {
