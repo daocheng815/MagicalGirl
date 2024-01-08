@@ -28,10 +28,8 @@ public class AstartManger : CSingleton<AstartManger>
     /// <param name="h"></param>
     /// <param name="xmin"></param>
     /// <param name="ymin"></param>
-    public bool InitMapInfo(int w, int h)
+    public void InitMapInfo(int w, int h)
     {
-        var index = AMT.AmtUpdata;
-        if (!index) return false;
         //記錄寬高
         this.mapW = w;
         this.mapH = h;
@@ -41,13 +39,12 @@ public class AstartManger : CSingleton<AstartManger>
         {
             for (int j = 0; j < h; j++)
             {
-                AstartNode node = new AstartNode(i, j, AMT.InitMapType[i, j]);
+                AstartNode node = new AstartNode(i, j, SetAstartTileMap.Instance.aStartMap.InitMapType[i, j]);
                 nodes[i, j] = node;
             }
         }
         //根據寬高創建格子
         Debug.Log("完成");
-        return true;
     }
     
     /// <summary>
@@ -211,7 +208,7 @@ public class AstartManger : CSingleton<AstartManger>
 #endif
         openList.Add(node);
     }
-
+    private static Random random = new Random();
     /// <summary>
     /// 隨機取得某節點周圍的節點
     /// </summary>
@@ -221,14 +218,13 @@ public class AstartManger : CSingleton<AstartManger>
     /// <param name="zMin">搜尋最小半徑</param>
     /// <returns></returns>
     [CanBeNull]
-    public AstartNode RandomNotStopNode(int x,int y,int zMax = 1 ,int zMin = 0)
+    public AstartNode RandomNotStopNode(int x,int y,int zMax = 1 ,int zMin = 0,bool nodeStop = false)
     {
         if (zMin > zMax)
         {
             Debug.Log("最小值不可能大於最大值");
             return null;
         }
-        Random random = new Random();
         List<AstartNode> nodeList = new List<AstartNode>();
         int c = 0;
         for (int i = -zMax; i <= zMax; i++)
@@ -255,16 +251,17 @@ public class AstartManger : CSingleton<AstartManger>
                             if(SetAstartTileMap.Instance.isTestInfo)
                                 SetAstartTileMap.Instance.ChangeColorTextInfo(nx+1, ny);
 #endif
-                            nodeList.Add(nodes[nx, ny]);
+                            if(nodeStop || !NodesStop(nx, ny))
+                                nodeList.Add(nodes[nx, ny]);
                         }
                     }
                 }
             }
         }
-        if (nodeList.Count > 0)
+        if (c > 0)
         {
-            Debug.Log("周圍共有"+c+"可行走的點");
-            return nodeList[random.Next(0, nodeList.Count)];
+            //DebugTask.Log("周圍共有"+c+"可行走的點");
+            return nodeList[random.Next(0, c)];
         }
         return null;
     }
@@ -277,9 +274,21 @@ public class AstartManger : CSingleton<AstartManger>
     /// </summary>
     private bool NodesStop(int x, int y)
     {
-        return nodes[x, y - 1].type == E_Node_Type.Stop ||
-               nodes[x, y + 1].type == E_Node_Type.Stop ||
-               nodes[x - 1, y].type == E_Node_Type.Stop ||
-               nodes[x + 1, y].type == E_Node_Type.Stop;
+        return C(x, y - 1) ||
+               C(x, y + 1) ||
+               C(x - 1, y) ||
+               C(x + 1, y) ||
+               C(x + 1, y - 1) ||
+               C(x - 1, y + 1) ||
+               C(x + 1, y + 1) ||
+               C(x - 1, y - 1);
+    }
+
+    private bool C(int x, int y)
+    {
+        if (x < 0 || x >= mapW ||
+            y < 0 || y >= mapH)
+            return true;
+        return nodes[x,y].type == E_Node_Type.Stop;
     }
 }

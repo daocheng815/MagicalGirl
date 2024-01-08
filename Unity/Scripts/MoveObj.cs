@@ -58,7 +58,7 @@ public class MoveObj : MonoBehaviour
         Vector2 playtPosition = (nextWaypoint.position - gameObject.transform.position).normalized;
 
         float distance = Vector2.Distance(nextWaypoint.position, transform.position);
-        //Debug.Log(playtPosition + "   " + distance);
+        //DebugTask.Log(playtPosition + "   " + distance);
         rb.velocity = playtPosition * objSpeed;
         if (distance <= waypointReachedDistance)
         {
@@ -86,7 +86,7 @@ public class MoveObj : MonoBehaviour
             {
                 playtPosition_x = playerController.transform.position.x - transform.position.x;
                 ison = true;
-                //Debug.Log("重設位置");
+                //DebugTask.Log("重設位置");
             }
         }
     }

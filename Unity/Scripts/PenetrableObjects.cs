@@ -51,6 +51,7 @@ public class PenetrableObjects : MonoBehaviour
     }
     void Update()
     {
+        
         if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && _isColliding)
         {
             DO_isTrigeer = true;

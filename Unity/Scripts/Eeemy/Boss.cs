@@ -1,19 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Ebt;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 public class Boss : MonoBehaviour
 {
     //狀態機
-    public enum AnimatorStates
-    {
-        Idle,
-        Attack,
-        Dead,
-    }
-    
     public enum States
     {
         Idle,//等待
@@ -24,7 +18,6 @@ public class Boss : MonoBehaviour
     }
     
     // 參數獲取
-    private AnimatorStates _state;
     [SerializeField]private States _myState = States.Idle;
     private States MyState
     {
@@ -54,11 +47,12 @@ public class Boss : MonoBehaviour
         }
     }
     private Animator _animator;
+    private Animat _animat;
     private Damageable _damageable;
-    private EnemySearchToPlayers _est;
+    private SearchToPlayers _est;
     private Rigidbody2D _rb;
     private bool isAlive => _damageable.IsAlive;
-    private Vector3 PlayerT => _est.playerT;
+    private Vector3 PlayerT => _est.playerPos;
     private float playerToDistance => _est.distance;
 
     //翻轉
@@ -106,9 +100,10 @@ public class Boss : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _damageable = GetComponent<Damageable>();
-        _est = GetComponent<EnemySearchToPlayers>();
+        _est = GetComponent<SearchToPlayers>();
         _rb = GetComponent<Rigidbody2D>();
-        ChangeState(AnimatorStates.Idle);
+        _animat = new Animat(_animator);
+        _animat.ChangeState(AnimatorStates.Idle);
     }
     /// <summary>
     /// 翻轉方向
@@ -123,21 +118,6 @@ public class Boss : MonoBehaviour
         {
             WalkDirection = WalkableDirection.Right;
         }
-    }
-    /// <summary>
-    /// 轉換動畫狀態機，並且回傳動畫時間
-    /// </summary>
-    /// <param name="state"></param>
-    private float? ChangeState(AnimatorStates state)
-    {
-        _state = state;
-        _animator.Play(_state.ToString());
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName(state.ToString()))
-        {
-            return stateInfo.normalizedTime * stateInfo.length;
-        }
-        return null;
     }
     private int _filpTime;
     private int _isMoveNum;
@@ -185,7 +165,7 @@ public class Boss : MonoBehaviour
         _rb.velocity = moveDirection * speed;
         // 死亡判斷
         if(!isAlive)
-            ChangeState(AnimatorStates.Dead);
+            _animat.ChangeState(AnimatorStates.Dead);
     }
 
     private void Attack_broken()
@@ -208,7 +188,6 @@ public class Boss : MonoBehaviour
     /// </summary>
     private void Idle()
     {
-        Debug.Log("idle");
         if (_filpTime > 4)
             if (playerToDistance < eyeDistanceMin && !_est.distanceBools)
             {
@@ -255,10 +234,10 @@ public class Boss : MonoBehaviour
     {
         if (!_isPath && !_isSinglePath)
         {
-            List<AstartNode> nodes = SetAstartTileMap.Instance.FindPath(start, end);
+            List<AstartNode> nodes = SetAstartTileMap.Instance.FastFindPath(start, end);
             if (nodes != null)
             {
-                var node = SetAstartTileMap.Instance.ChengerNodesToW(nodes);
+                var node = SetAstartTileMap.Instance.NodesCtoW(nodes);
                 StartCoroutine(Path(node));
             }
             else

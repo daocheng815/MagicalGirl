@@ -77,7 +77,7 @@ public class NumValUIController : MonoBehaviour
     void AnimatorTimer()
     {
         timer++;
-        //Debug.Log("計時中:" + timer);
+        //DebugTask.Log("計時中:" + timer);
     }
     //開啟UI計時器
     void OnTimer()

@@ -37,7 +37,7 @@ public class character_image : Singleton<character_image>
     private void Test()
     {
         
-        //Debug.Log(_imageW["black"] + "  " +_imageH["black"] + "        "+_imageW["player_idle"] + "  " +_imageH["player_idle"]);
+        //DebugTask.Log(_imageW["black"] + "  " +_imageH["black"] + "        "+_imageW["player_idle"] + "  " +_imageH["player_idle"]);
     }
     
     private void ObjectSearch()

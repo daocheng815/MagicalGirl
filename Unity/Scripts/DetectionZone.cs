@@ -33,7 +33,7 @@ public class DetectionZone : MonoBehaviour
 
             if ((ISLayer & (1 << collision.gameObject.layer)) != 0)
             {
-                //Debug.Log(collision);
+                //DebugTask.Log(collision);
                 detectColliders.Add(collision);
             }
         }

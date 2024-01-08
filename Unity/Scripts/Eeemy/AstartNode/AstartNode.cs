@@ -1,13 +1,5 @@
 ﻿using UnityEngine;
 
-internal class AMT
-{
-    /// <summary>
-    /// 初始化地圖的Type
-    /// </summary>
-    public static E_Node_Type[,] InitMapType;
-    public static bool AmtUpdata = false;
-}
 /// <summary>
 /// 格子類型
 /// </summary>

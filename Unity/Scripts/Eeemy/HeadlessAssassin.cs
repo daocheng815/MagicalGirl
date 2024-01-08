@@ -30,8 +30,8 @@ public class HeadlessAssassin : MonoBehaviour
     // 玩家是否在敵人正面
     private bool detectionFront =>
         WalkDirection == WalkableDirection.Right ?
-        enemySearchToPlayers.direction.x < 0.9 && WalkDirection == WalkableDirection.Right:
-        enemySearchToPlayers.direction.x > -0.9 && WalkDirection == WalkableDirection.Left;
+        _searchToPlayers.direction.x < 0.9 && WalkDirection == WalkableDirection.Right:
+        _searchToPlayers.direction.x > -0.9 && WalkDirection == WalkableDirection.Left;
     public bool Front;
     
     Rigidbody2D rb; 
@@ -39,7 +39,7 @@ public class HeadlessAssassin : MonoBehaviour
     /// <summary>
     /// 搜尋玩家位置
     /// </summary>
-    EnemySearchToPlayers enemySearchToPlayers;
+    SearchToPlayers _searchToPlayers;
     Detection detection;
     Animator animator;
     Damageable damageable;
@@ -99,7 +99,7 @@ public class HeadlessAssassin : MonoBehaviour
         touchingDirections = GetComponent<TouchingDirections>();
         animator = GetComponent<Animator>();
         damageable = GetComponent<Damageable>();
-        enemySearchToPlayers = GetComponent<EnemySearchToPlayers>();
+        _searchToPlayers = GetComponent<SearchToPlayers>();
         detection = GetComponent<Detection>();
     }
     private void Start()
@@ -117,14 +117,14 @@ public class HeadlessAssassin : MonoBehaviour
         if (playDamageble.IsAlive)
         {
             //進入攻擊距離 與 正在玩家正面 時 攻擊
-            HasTarget = enemySearchToPlayers.distance < attackDistance && detectionFront;
+            HasTarget = _searchToPlayers.distance < attackDistance && detectionFront;
         }
         else
         {
             HasTarget = false;
         }
         //查看當前狀態機
-        //Debug.Log(enemyStateManager.GetCurrentStateString());
+        //DebugTask.Log(enemyStateManager.GetCurrentStateString());
     }
     /// <summary>
     /// 翻轉
@@ -174,10 +174,10 @@ public class HeadlessAssassin : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        //Debug.Log(enemyStateManager.GetCurrentStateString());
+        //DebugTask.Log(enemyStateManager.GetCurrentStateString());
         //如果玩家不在正面且在視野範圍內翻轉
         if (!detectionFront)
-            if(enemySearchToPlayers.distance < pursueDistance)
+            if(_searchToPlayers.distance < pursueDistance)
                 FlipCharacter();
         //if(touchingDirections.IsOnwall && touchingDirections.IsGrounded && detection.isSlope)
         //    FlipCharacter();
@@ -203,7 +203,7 @@ public class HeadlessAssassin : MonoBehaviour
                 {
                     timer += Time.deltaTime;
                     //等待時間內若是靠近就進入追擊
-                    if (enemySearchToPlayers.distance < pursueDistance)
+                    if (_searchToPlayers.distance < pursueDistance)
                     {
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Pursue;
                         break;
@@ -215,7 +215,7 @@ public class HeadlessAssassin : MonoBehaviour
                 //等待結束
                 isIdleDelayTime = false;
                 //設定下一個狀態
-                if (!(enemySearchToPlayers.distance < pursueDistance))
+                if (!(_searchToPlayers.distance < pursueDistance))
                     enemyStateManager.CurrentState = EnemyState;
 
             }
@@ -256,7 +256,7 @@ public class HeadlessAssassin : MonoBehaviour
         if (enemyStateManager.IsCurrentState(EneyStates.Patrol))
         {
             //狀態機判定 === 判定如果距離在視野內進行追擊
-            if (enemySearchToPlayers.distance < pursueDistance)
+            if (_searchToPlayers.distance < pursueDistance)
             {
                 enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Pursue;
                 return;
@@ -289,7 +289,7 @@ public class HeadlessAssassin : MonoBehaviour
                     {
                         //FlipCharacter();
                         currentPatrolIndex = (currentPatrolIndex + 1) % patrolposition.Length;
-                        //Debug.Log("到達");
+                        //DebugTask.Log("到達");
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Idle;
                         
                     }
@@ -311,7 +311,7 @@ public class HeadlessAssassin : MonoBehaviour
             {
                 case EnemyStateManager.EnemyState.Pursue:
                     //普通追擊跳出距離
-                    if (enemySearchToPlayers.distance > pursueDistance)
+                    if (_searchToPlayers.distance > pursueDistance)
                     {
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Patrol;
                         return;
@@ -319,7 +319,7 @@ public class HeadlessAssassin : MonoBehaviour
                     break;
                 case EnemyStateManager.EnemyState.Hit:
                     //受傷追擊跳出距離
-                    if (enemySearchToPlayers.distance > hitPursueDistance)
+                    if (_searchToPlayers.distance > hitPursueDistance)
                     {
                         enemyStateManager.CurrentState = EnemyStateManager.EnemyState.Patrol;
                         return;
@@ -333,11 +333,11 @@ public class HeadlessAssassin : MonoBehaviour
                 {
                     
                     //敵人需要超出追擊玩家點一定的距離這樣才有時間攻擊，做個距離修正
-                    Vector2 playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x , transform.position.y);
+                    Vector2 playWorldLocation = new Vector2(_searchToPlayers.PlayerWorldLocation.x , transform.position.y);
                     if(WalkDirection == WalkableDirection.Left)
-                        playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x + pursueDelayDistance , transform.position.y);
+                        playWorldLocation = new Vector2(_searchToPlayers.PlayerWorldLocation.x + pursueDelayDistance , transform.position.y);
                     if(WalkDirection == WalkableDirection.Right)
-                        playWorldLocation = new Vector2(enemySearchToPlayers.PlayerWorldLocation.x - pursueDelayDistance , transform.position.y);
+                        playWorldLocation = new Vector2(_searchToPlayers.PlayerWorldLocation.x - pursueDelayDistance , transform.position.y);
                     rb.velocity = (playWorldLocation - (Vector2)transform.position).normalized * maxSpeed;
                     //如果撞到牆壁且不在斜坡上
                     if (detection.isWall && !detection.isSlope)

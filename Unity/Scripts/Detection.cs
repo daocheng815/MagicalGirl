@@ -44,7 +44,7 @@ public class
         if (_hitRight.collider != null)
         {
             //if(rayShow)
-                //Debug.Log("¸I¼²¨ìÀð¾À¡I");
+                //DebugTask.Log("¸I¼²¨ìÀð¾À¡I");
         }
         //§P©w¬O¸I¼²¨ìÀð¾À
         isWall = _hitRight.collider;

@@ -13,8 +13,8 @@ public class Damageable : MonoBehaviour
     {   get 
         {
             return _MaxHealth;
-        } 
-        private set {
+        }
+        set {
             _MaxHealth = value;
         } 
     }

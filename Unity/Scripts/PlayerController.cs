@@ -1,8 +1,5 @@
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections;
 using Events;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 // 玩家行為控制
@@ -224,11 +221,11 @@ public class PlayerController : MonoBehaviour
                 switch(MoveCount)
                 {
                     case 0:
-                        //Debug.Log("走路");
+                        //DebugTask.Log("走路");
                         Invoke("ReMoveCount", 0.3f);
                         break;
                     case 1:
-                        //Debug.Log("跑步");
+                        //DebugTask.Log("跑步");
                         IsRunning = true;
                         break;
                     case 2:
@@ -331,7 +328,7 @@ public class PlayerController : MonoBehaviour
             //else if (context.canceled)
             //{
             //    animator.SetBool(AnimationStrings.IsWallClimb,false);
-            //   Debug.Log("放開");
+            //   DebugTask.Log("放開");
             //}
         }
     }
@@ -371,7 +368,7 @@ public class PlayerController : MonoBehaviour
         if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack) && !detection.isWall)
         {
             //PlayerSlidePosition = rb.position;
-            //Debug.Log(PlayerSlidePosition);
+            //DebugTask.Log(PlayerSlidePosition);
             //判定開始滑行時是否在空中
             isSlideAir = !touchingDirections.IsGrounded;
             //開啟動態模糊
@@ -386,7 +383,7 @@ public class PlayerController : MonoBehaviour
             IsSlide = true;
             pmagic.OnMagic(20);
             StartCoroutine(slide(0.3f));
-            //Debug.Log("閃避");
+            //DebugTask.Log("閃避");
         }
         //協程方式不太好，之後記得改成Invoke方法。
         IEnumerator slide(float time)
@@ -395,7 +392,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(time);
             
             IsSlide = false;
-            //Debug.Log("閃避完成");
+            //DebugTask.Log("閃避完成");
             GlobalVolumeManger.Instance.motionBlurSt(0f);
             
             StartCoroutine(FadeSlide(0.3f));

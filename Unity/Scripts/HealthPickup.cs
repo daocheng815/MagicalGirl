@@ -44,6 +44,6 @@ public class HealthPickup : MonoBehaviour
             IsUp = transform.position.y < orgtransform.y - updoneVal;
         }
         
-        //Debug.Log(IsUp);
+        //DebugTask.Log(IsUp);
     }
 }

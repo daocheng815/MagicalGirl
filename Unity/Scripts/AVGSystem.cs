@@ -179,7 +179,7 @@ public class AVGSystem : MonoBehaviour
                     {
                         PlayerController.lockplay = true;
                         playDamageable.LockVelocity = false;
-                        //Debug.Log("¸¨¦a");
+                        //DebugTask.Log("¸¨¦a");
                         timer = timedelay;
                     }
                     yield return null;

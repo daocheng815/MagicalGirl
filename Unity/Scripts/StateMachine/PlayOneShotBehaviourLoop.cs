@@ -67,7 +67,7 @@ public class PlayOneShotBehaviourLoop : StateMachineBehaviour
         {
             while (audioSource.volume <= 1f)
             {
-                //Debug.Log(audioSource.volume);
+                //DebugTask.Log(audioSource.volume);
                 audioSource.volume -= Time.deltaTime/0.5f;
                 if (audioSource.volume <= 0f)
                 {

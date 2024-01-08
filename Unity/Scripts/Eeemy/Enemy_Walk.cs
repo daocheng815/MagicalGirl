@@ -131,7 +131,7 @@ public abstract class Enemy_Walk : MonoBehaviour
         {
             if (touchingDirections.IsOnwall && touchingDirections.IsGrounded)
             {
-                //Debug.Log("碰撞牆壁翻轉");
+                //DebugTask.Log("碰撞牆壁翻轉");
                 FilpDirection();
             }   
 
@@ -173,7 +173,7 @@ public abstract class Enemy_Walk : MonoBehaviour
         {
             if (AttackCooldown == 0)
             {
-                //Debug.Log("翻轉");
+                //DebugTask.Log("翻轉");
                 if (WalkDirection == WalkableDirection.Right)
                 {
                     WalkDirection = WalkableDirection.Left;
@@ -191,7 +191,7 @@ public abstract class Enemy_Walk : MonoBehaviour
     {
         // 玩家擊退
         // 假如原本的位置是負的也會相反
-        //Debug.Log("擊退");
+        //DebugTask.Log("擊退");
         rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
 
 
@@ -200,7 +200,7 @@ public abstract class Enemy_Walk : MonoBehaviour
     {
         if (touchingDirections.IsGrounded)
         {
-            //Debug.Log("下面空的翻轉");
+            //DebugTask.Log("下面空的翻轉");
 
             FilpDirection();
         }
@@ -209,7 +209,7 @@ public abstract class Enemy_Walk : MonoBehaviour
     {
         if (touchingDirections.IsGrounded && playDamageble.IsAlive)
         {
-            //Debug.Log("偵測到玩家才翻轉");
+            //DebugTask.Log("偵測到玩家才翻轉");
             FilpDirection();
         }
     }

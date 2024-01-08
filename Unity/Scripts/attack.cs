@@ -88,13 +88,13 @@ public class attack : MonoBehaviour
         if (randomProbability <= critChanceProbability)
         {
             attackDamage = attackDamage * ((critDamage + 100) / 100); 
-            //Debug.Log("√z¿ª");
+            //DebugTask.Log("√z¿ª");
             IsCrit = true;
         }
         else
         {
             IsCrit = false;
-            //Debug.Log("¥∂≥qß¿ª");
+            //DebugTask.Log("¥∂≥qß¿ª");
         }
 
         Damageable damageable = collision.GetComponent<Damageable>();
@@ -124,7 +124,7 @@ public class attack : MonoBehaviour
                 CharacterEvents.characterTextW.Invoke(collision.gameObject, "miss");
             }
 
-            if (IsCrit && !IsMiss)
+            if (IsCrit && !IsMiss && damageable.IsAlive)
             {
                 CharacterEvents.characterCrit.Invoke(collision.gameObject, "√z¿ª");
             }
