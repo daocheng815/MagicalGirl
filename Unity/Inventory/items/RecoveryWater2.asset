@@ -15,12 +15,13 @@ MonoBehaviour:
   itemID: 4
   itemType: 1
   itemName: RecoveryWater2
-  itemNameNbt: "\u56DE\u5FA9\u85E5\u6C34(\u4E2D)"
-  itemImaage: {fileID: 21300000, guid: 85dfdf9db3e7b2a40b43f3399258b9e6, type: 3}
+  itemNameNbt: "\u52A3\u8CEA\u56DE\u5FA9\u85E5\u6C34(\u4E2D)"
+  itemImaage: {fileID: 1808769367, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
   itemHeld: 1
-  iteminfo: "\u56DE\u5FA9\u85E5\u6C34(\u4E2D)\uFF0C\u8ACB\u653E\u5165\u5FEB\u6377\u80CC\u5305\u4E2D\u4F7F\u7528\u3002"
+  iteminfo: "\u52A3\u8CEA\u56DE\u5FA9\u85E5\u6C34(\u4E2D)\u56DE\u5FA9\u91CF25\uFF0C\u8ACB\u653E\u5165\u5FEB\u6377\u80CC\u5305\u4E2D\u4F7F\u7528\u3002"
   available: 1
   isCoolingTime: 1
   coolingTime: 2
   Healnum: 25
   purifyNum: 0
+  buffID: 0

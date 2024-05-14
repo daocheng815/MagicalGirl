@@ -26,6 +26,8 @@ public class AVGSystem : MonoBehaviour
 
     private FilleManager FilleManager;
 
+    public bool sairesuu;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -34,12 +36,20 @@ public class AVGSystem : MonoBehaviour
         FilleManager = player.GetComponent<FilleManager>();
     }
 
+    private void OnEnable()
+    {
+        AvgEvents.StartScript += StartScript;
+        AvgEvents.Sairesuuss += Sairesuuss;
+    }
+
     private void OnDisable()
     {
         fs.RemoveDialog();
+        AvgEvents.StartScript -= StartScript;
+        AvgEvents.Sairesuuss -= Sairesuuss;
+        
     }
-
-    void Start()
+    private void Start()
     {
         NPC1 = GameObject.Find("QB");
         _NPC1 = NPC1.name;
@@ -48,21 +58,14 @@ public class AVGSystem : MonoBehaviour
         _NPC2 = NPC2.name;
         
         //呼叫對話系統
+        
         fs = FlowerManager.Instance.CreateFlowerSystem("FlowerSample", false);
         if(isOn)
             fs.SetupDialog();
         fs.Stop();
         fs.Resume();
-        //for (int i = 1; i < 3; i++)
-        //{
-        //    if (ScreenSetting.GameLoadNum == i)
-        //    {
-        //        fs.RemoveDialog();
-        //        fs.SetupDialog();
-        //        FilleManager.Lord(i);
-        //    }
-        //}
         fs.SetupDialog("DefaultDialogPrefab1", true);
+        fs.fs.SteUpUiImage();
         if (Persistence.GameLoadNum == 0)
         {
             if (isOn)
@@ -76,7 +79,9 @@ public class AVGSystem : MonoBehaviour
             {
                 fs.RemoveDialog();
                 fs.SetupDialog();
-                fs.ReadTextFromResource("start1");
+                fs.ReadTextFromResource("NewStart1");
+                
+                //fs.ReadTextFromResource("start1");//舊版
                 //fs.ReadTextFromResource("hide");
             }
         }
@@ -88,7 +93,9 @@ public class AVGSystem : MonoBehaviour
         fs.SetVariable("p", "<color=#EA4B4E><size=30><b>常</b></size></color>");
         fs.SetVariable("p_0", "???");
         fs.SetVariable("o_0", "奇怪的生物");
-        fs.SetVariable("o", "OS");
+        fs.SetVariable("o", "<color=#7FCFFF><size=28><b>觀測者</b></size></color>");
+        fs.SetVariable("s_0","<color=#BA67CF><size=30><b>???</b></size></color>");
+        fs.SetVariable("s","<color=#BA67CF><size=30><b>賽蕾絲</b></size></color>");
 
         Commad();
     }
@@ -111,11 +118,24 @@ public class AVGSystem : MonoBehaviour
 
     //}
 
-    void Update()
+    private void Update()
     {
         if (!IsFsStop)
         {
             if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Return))
+            {
+                //Debug.Log($"{fs.CurrentTextListIndex}");
+                fs.Next();
+            }
+            if (Input.GetKeyDown(KeyCode.RightControl)||Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                fs.textSpeed = GameSettings.Instance.TextSpeed;
+            }
+            if (Input.GetKeyUp(KeyCode.RightControl)||Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                fs.textSpeed = 0.01f;
+            }
+            if (Input.GetKey(KeyCode.RightControl)||Input.GetKey(KeyCode.LeftControl))
             {
                 fs.Next();
             }
@@ -145,12 +165,44 @@ public class AVGSystem : MonoBehaviour
         fs.SetupDialog();
         fs.ReadTextFromResource("npc_3");
     }
-    public void Commad()
+    public void Dramtic_emotion_4()
     {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource("npc_4");
+    }
+    public void OnDramticEmotion(string emotion)
+    {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource(emotion);
+    }
+    public void StartScript(string emotion,int idnex = 0)
+    {
+        fs.RemoveDialog();
+        fs.SetupDialog();
+        fs.ReadTextFromResource(emotion,idnex);
+    }
+
+    private void Sairesuuss()
+    {
+        sairesuu = true;
+        Debug.Log($"劇情結束 sairesuu = {sairesuu}");
+    }
+    private void Commad()
+    {
+        fs.RegisterCommand("sairesuuEnd", (List<string> _params) =>
+        {
+            Debug.Log($"劇情結束 sairesuu = {sairesuu}");
+            sairesuu = true;
+            AvgEvents.Sairesuuss.Invoke();
+            Debug.Log($"劇情結束 sairesuu = {sairesuu}");
+            
+        });
         fs.RegisterCommand("start1", (List<string> _params) => {
             fs.RemoveDialog();
             fs.SetupDialog();
-            fs.ReadTextFromResource("start1");
+            fs.ReadTextFromResource("NewStart1");
         });
         //開啟與關閉玩家鎖定
         fs.RegisterCommand("lock_player", (List<string> _params) => {
@@ -224,18 +276,17 @@ public class AVGSystem : MonoBehaviour
             }, true, "DefaultButtonPrefab 1");
             fs.SetupButton("SKIP", () =>
             {
-
-                Time.timeScale = 1f;
-                
-                CurrentLevel.Instance.OnUiShowAndHide(3.5f);
-
-                fs.ReadTextFromResource("hide");
                 PlayerController.lockplay = false;
+                Time.timeScale = 1f;
+                //Debug.Log($"剩餘自數量 : {fs.CurrentTextListIndex}");
+                //CurrentLevel.Instance.OnUiShowAndHide(3.5f);
+                fs.ReadTextFromResource("hide");
+                //Debug.Log($"剩餘自數量 : {fs.CurrentTextListIndex}");
+                
+                
+                fs.NextDelay(0.03f);
                 fs.RemoveButtonGroup();
-                //因為無法調用此函數，所以暫時關閉
-                //Invoke("RemoveButtonGroup", 0.4f);
-                //fs.RemoveDialog();
-
+                
             }, false);
         });
         fs.RegisterCommand("button_st_hide", (List<string> _params) =>
@@ -269,14 +320,28 @@ public class AVGSystem : MonoBehaviour
             fs.RemoveButtonGroup();
             fs.SetupButtonGroup();
             fs.Stop();
-            fs.SetupButton("藥水(小)", () =>
+            fs.SetupButton("回復藥水(回復量:65)需要2個破碎靈魂", () =>
             {
-                bool index = invventoryManger.Instance.AddNewItem(4,0,1);
-                buttonreset(index);
+                if (invventoryManger.Instance.ItemExistenceCheckerAllBagNumDel(2, 2))
+                {
+                    bool index = invventoryManger.Instance.AddNewItem(6,0,2);
+                    buttonreset(index);
+                }
+                else
+                {
+                    GameMessageEvents.AddMessage("破碎靈魂不夠，請戴上足夠的靈魂碎片", 3f);
+                }
             });
-            fs.SetupButton("藥水(中)", () => {
-                bool index = invventoryManger.Instance.AddNewItem(4,0,1);
-                buttonreset(index);
+            fs.SetupButton("回復藥水(回復量:155)需要4個破碎靈魂", () => {
+                if (invventoryManger.Instance.ItemExistenceCheckerAllBagNumDel(2, 4))
+                {
+                    bool index = invventoryManger.Instance.AddNewItem(9,0,2);
+                    buttonreset(index);
+                }
+                else
+                {
+                    GameMessageEvents.AddMessage("破碎靈魂不夠，請戴上足夠的靈魂碎片", 3f);
+                }
             });
             fs.SetupButton("取消購買", () => {
                 fs.Resume();
@@ -333,5 +398,15 @@ public class AVGSystem : MonoBehaviour
             character_image.Instance.zoom_num(11);
         });
 
+    }
+
+    private bool isNext;
+    private IEnumerator IsNext(float delayTime)
+    {
+        isNext = true;
+        yield return new WaitForSeconds(delayTime);
+        fs.Next(); 
+        fs.textSpeed = 0.01f;
+        isNext = false;
     }
 }

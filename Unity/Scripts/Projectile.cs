@@ -79,7 +79,7 @@ public class Projectile : MonoBehaviour
                 Vector2 deliveredKnockback = transform.localScale.x > 0 ? knockback : new Vector2(-knockback.x, knockback.y);
 
                 //hit the traget
-                bool gotHit = damageable.Hit(damage, deliveredKnockback, false);
+                bool gotHit = damageable.Hit(damage, deliveredKnockback, false,attack.AttackType.Remotely);
 
                 if (gotHit)
                 {

@@ -17,7 +17,7 @@ MonoBehaviour:
   itemName: magicCrystal
   itemNameNbt: "\u7834\u788E\u9748\u9B42"
   itemImaage: {fileID: 74701017, guid: 3081f6ef2a9cd534ab3b518e160fc031, type: 3}
-  itemHeld: 1
+  itemHeld: 55
   iteminfo: "\u7834\u788E\u9748\u9B42( <color=#FF466D><b><font=\"GenWanMin-R SDF
     Outline\">\u5403\u6389\u5B83\u53EF\u4EE5\u56DE\u5FA9\u5C11\u8A31\u6C59\u67D3\u503C</font></b></color>
     ) "
@@ -26,3 +26,4 @@ MonoBehaviour:
   coolingTime: 0.5
   Healnum: 0
   purifyNum: 20
+  buffID: 0

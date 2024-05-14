@@ -2,20 +2,39 @@ using Cinemachine;
 using System.Collections;
 using Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class VC2C : Singleton<VC2C>
 {
     public CinemachineVirtualCamera CV;
     public CinemachineFramingTransposer CFT;
+
+    public CinemachineVirtualCamera[] cvGroup;
+
+    public int isCameraNum;
+    
     [Range(0f, 20f)]
     public float O_YD = 2f;
     public bool SYD_IE = false;
     public AnimationCurve MyCyrve;
 
+   
     public Vector3 cftMTof
     {
         get => CV.GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset;
         set => CV.GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset = value;
+    }
+    
+    public void UpdateCameraNum()
+    {
+        for (int i = 0; i < cvGroup.Length-1; i++)
+        {
+            if (cvGroup[i] == CV)
+            {
+                isCameraNum = i;
+                break;
+            }
+        }
     }
     void Update()
     {

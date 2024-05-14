@@ -1,21 +1,37 @@
 using System.Collections;
+using Audio;
 using Events;
+using PlayAction;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+
 // 玩家行為控制
 [RequireComponent(typeof(Detection))]
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(Damageable))]
 public class PlayerController : MonoBehaviour
 {
+    public GameObject light2d;
+    
     public ParticleSystem dast;
     public ParticleSystem Slide_R;
     public ParticleSystem Slide_L;
     
+    public ParticleSystem attackParticle1;
+    public ParticleSystem attackParticle2;
+
+    private AudioSource _slideAudioSource;
+    
+    [SerializeField]private float attackParticleDelay;
+    
     public PMagic pmagic;
+    [BoxGroup("speed")]
     public float walkSpeed = 5f ;
     public float runspeed = 8f;
     public float airWalkSpeed = 3f ;
     public float airrunkSpeed = 5f;
+    [BoxGroup("speed")]
     public float jumpImpulse = 10f ;
     public float jumpImpulse2 = 11f;
     public static bool lockplay = false;
@@ -27,14 +43,28 @@ public class PlayerController : MonoBehaviour
     public bool slide_wall;
     public DetectionZone slide_wall_DetectionZone;
 
-    Vector2 moveInput;
-    TouchingDirections touchingDirections;
-    Detection detection;
-    Damageable damageable;
-
+    private Vector2 moveInput;
+    private TouchingDirections touchingDirections;
+    private Detection detection;
+    private Damageable damageable;
+    
     public Rigidbody2D rb;
-    Animator animator;
+    private Animator animator;
 
+    private Transform _transform;
+
+    private PlaySkills _playSkills;
+    public bool LockJump => _playSkills.doubleJump;
+    public bool LockOnWallClimbIdle => _playSkills.onWallClimbIdle;
+    public bool LockSlide => _playSkills.Slide;
+    public bool LockOnRangeAttack => _playSkills.OnRangeAttack;
+
+    public bool LockRun => _playSkills.Run;
+    
+    /// <summary>
+    /// 前一偵是否在地面
+    /// </summary>
+    private bool _isBack1TickIsGrounded;
     //玩家速度
     public float CurrentMoveSpeed{
         get
@@ -121,7 +151,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isFacingRight != value)
             {
-                transform.localScale *= new Vector2(-1, 1);
+                _transform.localScale *= new Vector2(-1, 1);
                 VC2C.Instance.CameraOffset(value ? 0.5f:-0.5f,0.3f);
             }
             _isFacingRight=value;
@@ -146,27 +176,36 @@ public class PlayerController : MonoBehaviour
         touchingDirections = GetComponent<TouchingDirections>();
         detection = GetComponent<Detection>();
         damageable = GetComponent<Damageable>();
-        
+        _transform = transform;
+        _playSkills = GetComponent<PlaySkills>();
     }
     void Start()
     {
 
-        if (Persistence.GameLoadNum == 0)
-        {
-            invventoryManger.Instance.deltbag( 0);
-            invventoryManger.Instance.deltbag( 1);
-        }
+        // if (Persistence.GameLoadNum == 0)
+        // {
+        //     invventoryManger.Instance.deltbag( 0);
+        //     invventoryManger.Instance.deltbag( 1);
+        // }
         
     }
     private bool is_Slide_up;
     private Vector2 PlayerSlidePosition;
     private Vector2 targetPosition;
+    
     private void FixedUpdate()
     {
+        
+        if(!_isBack1TickIsGrounded&&touchingDirections._isGrounded)
+            AudioMange.Instance.AudioPlay("playFall",0.5f);
+        _isBack1TickIsGrounded = touchingDirections._isGrounded;
+        
         if (!lockplay)
         {
             if (!IsSlide)
             {
+                if (_slideAudioSource != null)
+                    Destroy(_slideAudioSource);
                 if (!damageable.LockVelocity)
                 {
                     //加速度與減速度
@@ -187,8 +226,9 @@ public class PlayerController : MonoBehaviour
                 {
                     is_Slide_up = false;
                     Vector2 np = rb.position + new Vector2(IsFacingRight ? 0.4f : -0.4f, moveInput.y);
-                    
                     rb.MovePosition(np);
+                    if (_slideAudioSource == null)
+                        _slideAudioSource = AudioMange.Instance.AudioPlay("playSlide");
                     //is_Slide_up = false;
                     //float horizontalInput = IsFacingRight ? 1.0f : -1.0f; // 根据朝向确定水平方向
                     //targetPosition = rb.position + new Vector2(horizontalInput, moveInput.y) * 25f * Time.deltaTime;
@@ -226,7 +266,8 @@ public class PlayerController : MonoBehaviour
                         break;
                     case 1:
                         //DebugTask.Log("跑步");
-                        IsRunning = true;
+                        if (LockRun)
+                            IsRunning = true;
                         break;
                     case 2:
                         MoveCount = 0;
@@ -265,9 +306,9 @@ public class PlayerController : MonoBehaviour
     }
     public void OnRun(InputAction.CallbackContext context) 
     {
-        if (!lockplay)
+        if (!lockplay && LockRun)
         {
-            if (context.started)
+            if (context.started )
             {
                 IsRunning = true;
             }
@@ -278,6 +319,8 @@ public class PlayerController : MonoBehaviour
         }
     }
     [SerializeField]private int jumpCount = 0;
+    
+
     public void OnJump(InputAction.CallbackContext context)
     {
         if (!lockplay)
@@ -290,7 +333,7 @@ public class PlayerController : MonoBehaviour
                         jumpCount = 1;
                         PerformJump();
                     }
-                    else if (jumpCount < 2)
+                    else if (jumpCount < 2 && LockJump)
                     {
                         jumpCount = 2;
                         PerformJump();
@@ -319,7 +362,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!lockplay && detection.isWall)
         {
-            if (context.started)
+            if (context.started&&LockOnWallClimbIdle)
             {
                 WallClimbIdleCountDelay = !WallClimbIdleCount;
                 WallClimbIdleCount = !WallClimbIdleCount;
@@ -338,14 +381,21 @@ public class PlayerController : MonoBehaviour
             if (context.started)
             {
                 animator.SetTrigger(AnimationStrings.attackTrigger);
+                Invoke(nameof(AttackParticle),attackParticleDelay);
             }
         //呼叫攝影機控制的震動動畫
         VC2C.Instance.StartCoroutine(VC2C.Instance.CameraSize_Num());
     }
+
+    private void AttackParticle()
+    {
+        attackParticle1.Play();
+        attackParticle2.Play();
+    }
     public void OnRangeAttack(InputAction.CallbackContext context)
     {
         if (!lockplay && pmagic.IsMagic(20))
-            if (context.started)
+            if (context.started&& LockOnRangeAttack)
             {
                 animator.SetTrigger(AnimationStrings.rangeaAttackTrigger);
             }
@@ -365,7 +415,7 @@ public class PlayerController : MonoBehaviour
     {
         // 未完成 打算再做一條用來表示體力 與顯示冷卻時間
         //if (context.started && !iss && touchingDirections.IsGrounded &&IsAlive && !lockplay && pmagic.IsMagic(20))
-        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack) && !detection.isWall)
+        if (context.started && !iss && IsAlive && !lockplay && pmagic.IsMagic(20) && !animator.GetBool(AnimationStrings.IsRangeAttack) && !detection.isWall && LockSlide)
         {
             //PlayerSlidePosition = rb.position;
             //DebugTask.Log(PlayerSlidePosition);
@@ -661,8 +711,15 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSecondsRealtime(deltime);
         WallClimbIdleCountDelay = false;
     }
+
+    public void OnLight2DShow(bool s)
+    {
+        light2d.SetActive(s);
+    }
+    
     private void Update()
     {
+        
         animator.SetBool("lockPlayer",lockplay);
         slide_wall = slide_wall_DetectionZone.detectColliders.Count > 0;
         //調整墜落時重力

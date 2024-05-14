@@ -1,3 +1,4 @@
+using Events;
 using UnityEngine;
 // Å]ªk
 public class PMagic : MonoBehaviour
@@ -36,6 +37,7 @@ public class PMagic : MonoBehaviour
 
     public void OnMagic(int Mc)
     {
+        UiEvents.ShowValUi.Invoke();
         if (P_Magic >= Mc)
         {
             P_Magic -= Mc;

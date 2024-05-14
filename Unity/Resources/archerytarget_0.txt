@@ -1,0 +1,5 @@
+[lock_player]
+[show,100]
+[#o][r]嘗試看看對著靶射箭，這樣就可以繼續往前進了。[w]
+[hide,300]
+[unlock_player]

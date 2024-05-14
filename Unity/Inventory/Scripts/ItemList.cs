@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Events;
+using UnityEngine;
 
 public class ItemList : Singleton<ItemList>
 {
@@ -10,6 +11,7 @@ public class ItemList : Singleton<ItemList>
     private void OnEnable()
     {
         ItemUpDate.ItemListUpDate = false;
+        Debug.Log("開始更新");
         foreach (var i in OrgItem)
         {
             Item.Add(i);
@@ -20,6 +22,7 @@ public class ItemList : Singleton<ItemList>
         {
             Item[i].itemID = i;
         }
+        Debug.Log("結束更新");
         ItemUpDate.ItemListUpDate = true;
     }
 }

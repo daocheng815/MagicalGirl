@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Eeemy;
 using UnityEngine;
 
 /// <summary>
@@ -12,27 +13,42 @@ public class CullingObjectPooling : MonoBehaviour
     private List<Type> _typeList = new List<Type>() 
         {typeof(Transform), typeof(SpriteRenderer), typeof(Animator), typeof(Rigidbody2D), typeof(CapsuleCollider2D)};
 
+    public List<Type> NotTypeList = new List<Type>() {typeof(Sairesuu_boss_plot)};
+    private const string EnemyTag = "Enemy";
+    
     private BoxCollider2D boxCollider;
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
         boxCollider.enabled = false;
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (var g in enemies)
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag(EnemyTag);
+        if (enemies.Length > 0)
         {
-            enemyObjectPooling.Add(g);
-            AC(g, false);
+            foreach (var g in enemies)
+            {
+                enemyObjectPooling.Add(g);
+                AC(g, false);
+            }
         }
         boxCollider.enabled = true;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag(EnemyTag))
         {
             if (!enemyObjectPooling.Contains(other.gameObject))
             {
-                enemyObjectPooling.Add(other.gameObject);
+                bool s = false;
+                var ac = other.GetComponents(typeof(Component));
+                foreach (var c in ac)
+                {
+                    var type = c.GetType();
+                    if (!NotTypeList.Contains(type))
+                        s = true;
+                }
+                if(!s)
+                    enemyObjectPooling.Add(other.gameObject);
             }
             else
             {
@@ -40,9 +56,26 @@ public class CullingObjectPooling : MonoBehaviour
             }
         }
     }
+
+    public void AddPool(GameObject other)
+    {
+        if (other.gameObject.CompareTag(EnemyTag))
+        {
+            if (!enemyObjectPooling.Contains(other.gameObject))
+            {
+                enemyObjectPooling.Add(other.gameObject);
+                AC(other.gameObject,false);
+            }
+            else
+            {
+                AC(other.gameObject,false);
+            }
+        }
+    }
+    
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag(EnemyTag))
         {
             if (enemyObjectPooling.Contains(other.gameObject))
             {

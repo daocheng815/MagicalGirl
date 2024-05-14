@@ -21,7 +21,7 @@ public class ItemDropsWorldManger : MonoBehaviour
     #if UNITY_EDITOR
     [ItemIDName("ª««~¦WºÙ : ")]
     #endif
-    [Range(0,7)]
+    [Range(0,10)]
     public int itemID;
     public Vector3 test;
 

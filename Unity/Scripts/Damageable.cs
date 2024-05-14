@@ -3,9 +3,12 @@ using UnityEngine;
 using UnityEngine.Events;
 public class Damageable : MonoBehaviour
 {
-    public UnityEvent<int, Vector2> damagableHit;
+    public UnityEvent<int, Vector2,attack.AttackType> damagableHit;
 
     Animator animator;
+
+    public attack.AttackType attackTypess;
+    public bool attackTypeTrue;
     
     [SerializeField]
     private int _MaxHealth;
@@ -36,7 +39,6 @@ public class Damageable : MonoBehaviour
 
     [SerializeField]
     private bool _isAlive = true;
-
     [SerializeField]
     private bool isInvincible = false;
 
@@ -103,22 +105,44 @@ public class Damageable : MonoBehaviour
 
     }
 
-    public  bool Hit(int damage,Vector2 knockback,bool crit)
+    public  bool Hit(int damage,Vector2 knockback,bool crit,attack.AttackType attackType)
     {
         if(IsAlive && !isInvincible)
         {
+            if (attackTypeTrue)
+            {
+                if (attackType == attackTypess)
+                {
+                    health -= damage;
+                    isInvincible = true;
+                    animator.SetTrigger(AnimationStrings.hitTrigger);
+                    LockVelocity = true; 
+                    damagableHit?.Invoke(damage, knockback,attackType);
+                    if (gameObject.CompareTag("Player"))
+                    {
+                        UiEvents.ShowValUi.Invoke();
+                    }
+                    if (crit)
+                    { CharacterEvents.characterCritDamaged.Invoke(gameObject, damage); Debug.Log("次數"); }
+                    else
+                    { CharacterEvents.characterDamaged.Invoke(gameObject, damage); }
+                }
+                return true;
+            }
             health -= damage;
             isInvincible = true;
             animator.SetTrigger(AnimationStrings.hitTrigger);
             LockVelocity = true; 
-            damagableHit?.Invoke(damage, knockback);
+            damagableHit?.Invoke(damage, knockback,attackType);
+            if (gameObject.CompareTag("Player"))
+            {
+                UiEvents.ShowValUi.Invoke();
+            }
             if (crit)
             { CharacterEvents.characterCritDamaged.Invoke(gameObject, damage); Debug.Log("次數"); }
             else
             { CharacterEvents.characterDamaged.Invoke(gameObject, damage); }
-
-
-            return true;      
+            return true;
         }
         return false;
     }
@@ -126,11 +150,14 @@ public class Damageable : MonoBehaviour
     {
         if(IsAlive && health <MaxHealth)
         {
-            
             int maxHeal = Mathf.Max(MaxHealth - health, 0);
             int actualHeal = Mathf.Min(maxHeal, healthRestore);
             health += actualHeal;
-            CharacterEvents.characterHealed.Invoke(gameObject, actualHeal);
+            if (gameObject.CompareTag("Player"))
+            {
+                CharacterEvents.characterHealed.Invoke(gameObject, actualHeal);
+                UiEvents.ShowValUi.Invoke();
+            }
             return true;
         }
         return false;

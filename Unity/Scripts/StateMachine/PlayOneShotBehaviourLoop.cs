@@ -23,7 +23,7 @@ public class PlayOneShotBehaviourLoop : StateMachineBehaviour
             audioSource = animator.gameObject.AddComponent<AudioSource>(); 
             audioSource.clip = soundToPlay;
             audioSource.volume = volume;
-            audioSource.loop = loopSound; 
+            audioSource.loop = loopSound;
             audioSource.Play();
         }
         timeSinceEntered = 0f;
@@ -62,6 +62,7 @@ public class PlayOneShotBehaviourLoop : StateMachineBehaviour
             audioSource.volume = volume;
             audioSource.loop = loopSound;
             audioSource.Play();
+            Debug.Log("Â÷¶}ª¬ºA");
         }
         if (loopSound)
         {

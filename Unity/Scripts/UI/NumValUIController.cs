@@ -1,108 +1,53 @@
+using System;
+using Events;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
+
 public class NumValUIController : MonoBehaviour
 {
     public PlayerController pc;
-    [SerializeField]private bool isplaymove;
-    [SerializeField]private bool timerBool = false;
-    [SerializeField]private int timer = 0;
-    private bool isExitUi = false;
-    private bool ison = false;
-    public int timerDelay = 5;
-    public float waitTime = 1f;
-    public float animatorValNum = 100f;
-    public AnimationCurve animatorcurve;
     public RectTransform[] rtList;
-    private Vector3[] rtV3;
+    private Vector3[] _rtShowPosList = new Vector3[3];
+    private Vector3[] _rtHidePosList = new Vector3[3];
+    public int movepos;
+    private Tween[] _showTweens = new Tween[3];
+    private Tween[] _hideTweens = new Tween[3];
+    public enum FadeMode { Show,Hide }
+    [FormerlySerializedAs("_fadeMode")] [SerializeField]private FadeMode fadeMode;
+
+    public float fadeTime;
+    public float hideTime;
+    private float hideTimeDelay;
+    
     public void Start()
     {
-        //¥ýªì©l¤Æ°}¦Cªº¯Á¤Þ­È
-        rtV3 = new Vector3[rtList.Length];
-        //¹M¾ú°}¦C¤º©Ò¦³­È
-        for (int i = 0; i < rtList.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
-            rtV3[i] = rtList[i].position;
-            rtList[i].position = new Vector3(rtV3[i].x,rtV3[i].y+animatorValNum,rtV3[i].z);
+            var position = rtList[i].position;
+            _rtShowPosList[i] = position;
+            position = new Vector3(position.x, position.y + movepos, position.z);
+            rtList[i].position = position;
+            _rtHidePosList[i] = position;
         }
-        //¨C1¬í§P©wª±®a¬O§_¥¿¦b¹B°Ê
+        fadeMode = FadeMode.Hide;
+        //æ¯1ç§’åˆ¤å®šçŽ©å®¶æ˜¯å¦æ­£åœ¨é‹å‹•
         InvokeRepeating("GlobalTimer",0f,0.1f);
-        //©µ¿ð¤@¬í¦A¶}©l©Ò¦³­p®É¾¹»PUI§P©w
-        Invoke("Fadeamimator",1f);
+        ShowValUi();
     }
-    public void Fadeamimator()
-    {
-        ison = true;
-        isExitUi = false;
-        OnTimer();
-        StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0));
-        StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1));
-        StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2));
-    }
-    // ª±®a¼Æ­È±ø°Êµe®ÄªG
-    public IEnumerator NumValAnimator(float val = 50f,float timeDelay = 1f,int NumVal = 0,bool fadeMod = true)
-    {
-        var timer = 0f;
-        while (timer < timeDelay)
-        {
-            timer += Time.deltaTime;
-            rtList[NumVal].position = new Vector3
-            ( 
-                rtList[NumVal].position.x, 
-                Mathf.Lerp( 
-                                fadeMod ? rtV3[NumVal].y + val : rtV3[NumVal].y,
-                                fadeMod ? rtV3[NumVal].y : rtV3[NumVal].y + val,
-                                animatorcurve.Evaluate(timer/timeDelay)
-                            ), 
-                rtList[NumVal].position.z
-            );
-            yield return null;
-        }
-    }
-
-    public IEnumerator AnimatorTimer_(float timedelay)
-    {
-        var timer = 0f;
-        while (timer < timedelay)
-        {
-            timer += Time.deltaTime;
-            //if (pc.canMove)
-            //    break;
-            yield return null;
-        }
-        Debug.Log("µ²§ô¨óµ{");
-    }
-    // ­p®É¾¹¡A¥¼§¹¦¨
-    //±µ¤U¨Ó­n¥h°µ§P©w·íª±®a¤£°Ê®É±Ò°Ê­p®É¾¹¡AµM«á¤@¬q®É¶¡«á´N±NUIÁY¤W¨Ó¡A¦ý¦pªG¦b³o³~¤¤¤S¬ðµM¾D¹J¶Ë®`©Î¬O²¾°Ê¤Î§ðÀ»¡A´N±NUI©ñ¤U¨Ó¡C
-    //À³¸Ó·|¨Ï¥ÎNumValAnimatorªºfadeMod
-    void AnimatorTimer()
-    {
-        timer++;
-        //DebugTask.Log("­p®É¤¤:" + timer);
-    }
-    //¶}±ÒUI­p®É¾¹
-    void OnTimer()
-    {
-        timerBool = true;
-        InvokeRepeating("AnimatorTimer",0f,1f);
-    }
-    //Ãö³¬UI­p®É¾¹
-    void ExitTimer()
-    {
-        CancelInvoke("AnimatorTimer");
-        timerBool = false;
-        timer = 0;
-    }
-    // ¥þ°ì­p®É¾¹¡A¥Î¨Ó§P©wª±®a¬O§_²¾°Êªº©µ¿ð§P©w
+    
+    // å…¨åŸŸè¨ˆæ™‚å™¨ï¼Œç”¨ä¾†åˆ¤å®šçŽ©å®¶æ˜¯å¦ç§»å‹•çš„å»¶é²åˆ¤å®š
     private int GlobalTimerdelay;
+    [SerializeField] private bool isplaymove;
     void GlobalTimer()
     {
-        //¦pªGª±®a²¾°Ê¤F´N±Nbool©Ò¦bÂê¦bTrueª¬ºA2S¡A§P©wºë«×¬O0.1s
+        //å¦‚æžœçŽ©å®¶ç§»å‹•äº†å°±å°‡boolæ‰€åœ¨éŽ–åœ¨Trueç‹€æ…‹2Sï¼Œåˆ¤å®šç²¾åº¦æ˜¯0.1s
         if (isplaymove && GlobalTimerdelay < 20)
         {
             if(pc.rb.velocity.x != 0 || pc.rb.velocity.y != 0 )
                 GlobalTimerdelay = 0;
             GlobalTimerdelay++;
-            isplaymove = isplaymove;
         }
         else
         {
@@ -112,42 +57,58 @@ public class NumValUIController : MonoBehaviour
     }
     public void Update()
     {
-        //¥þ°ì©µ¿ð
-        if (ison)
+        if (isplaymove)
         {
-            //¦pªG­p®É¾¹®É¶¡¨ì¤F¡A¥B­p®É¾¹¶}±ÒµÛ´NÃö³¬­p®É¾¹
-            if (timer > timerDelay && timerBool)
-            {
-                ExitTimer();
-            }
-            //®É¶¡¨ì¤F´NÃö³¬UI
-            if (!timerBool && !isExitUi)
-            {
-                if (!isplaymove)
-                {
-                    isExitUi = true;
-                    StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,false));
-                    StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,false));
-                    StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,false));
-                }
-            }
-            //¦pªGUI¤w¸gÃö³¬¡A¥Bª±®a¦³¦b²¾°Ê
-            if (!timerBool && isExitUi && isplaymove)
-            {
-                isExitUi = false;
-                OnTimer();
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,true));
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,true));
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,true));
-            }
-            //¦pªGª±®a¦º¤`¤]­nÁY¤W¥h
-            if (!pc.IsAlive)
-            {
-                isExitUi = true;
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 0,false));
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 1,false));
-                StartCoroutine(NumValAnimator(animatorValNum, waitTime, 2,false));
-            }
+            ShowValUi();
         }
+        switch (fadeMode)
+        {
+            case FadeMode.Show:
+                hideTimeDelay += Time.deltaTime;
+                if (hideTimeDelay >= hideTime)
+                {
+                    hideTimeDelay = 0;
+                    HideValUi();
+                }
+                break;
+            case FadeMode.Hide:
+                break;
+        }
+        
+    }
+
+    private void OnEnable()
+    {
+        UiEvents.ShowValUi += ShowValUi;
+        UiEvents.HideValUi += HideValUi;
+    }
+
+    private void OnDisable()
+    {
+        UiEvents.ShowValUi -= ShowValUi;
+        UiEvents.HideValUi -= HideValUi;
+    }
+
+    public void HideValUi()
+    {
+        foreach (var t in _showTweens) { t.Kill(); }
+        foreach (var t in _hideTweens) { t.Kill(); }
+        for (int i = 0; i < 3; i++)
+        {
+            _hideTweens[i] = rtList[i].DOMove(_rtHidePosList[i], fadeTime * 2).SetEase(Ease.OutQuad);
+        }
+        fadeMode = FadeMode.Hide;
+    }
+    
+    public void ShowValUi()
+    {
+        foreach (var t in _showTweens) { t.Kill(); }
+        foreach (var t in _hideTweens) { t.Kill(); }
+        hideTimeDelay = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            _showTweens[i] = rtList[i].DOMove(_rtShowPosList[i], fadeTime ).SetEase(Ease.OutQuad);
+        }
+        fadeMode = FadeMode.Show;
     }
 }

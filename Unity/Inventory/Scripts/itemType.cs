@@ -6,6 +6,7 @@
         Potion,//血藥水
         Purify,//淨化
         Buff,//buff
+        Key,//鑰匙
     }
 }
 

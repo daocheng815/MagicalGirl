@@ -18,7 +18,7 @@ public class PlayerVar : Singleton<PlayerVar>
     {
         if (shuDyeingVar.filthyVar >= 50 && damageable.IsAlive)
         {
-            damageable.Hit(10, new Vector2(0, 0), false);
+            damageable.Hit(10, new Vector2(0, 0), false,attack.AttackType.Melee);
             CharacterEvents.characterShuDyeing.Invoke(gameObject, "¤¤¬r");
         }
     }
@@ -26,21 +26,21 @@ public class PlayerVar : Singleton<PlayerVar>
     {
         if (shuDyeingVar.filthyVar >= 70 && damageable.IsAlive)
         {
-            damageable.Hit(20, new Vector2(0, 0), false);
+            damageable.Hit(20, new Vector2(0, 0), false,attack.AttackType.Melee);
             CharacterEvents.characterShuDyeing.Invoke(gameObject, "°IºÜ");
         }
     }private void D3()
     {
         if (shuDyeingVar.filthyVar >= 85 && damageable.IsAlive)
         {
-            damageable.Hit(25, new Vector2(0, 0), false);
+            damageable.Hit(25, new Vector2(0, 0), false,attack.AttackType.Melee);
             CharacterEvents.characterShuDyeing.Invoke(gameObject, "µh­W");
         }
     }private void D4()
     {
         if (shuDyeingVar.filthyVar >= 93 && damageable.IsAlive)
         {
-            damageable.Hit(5, new Vector2(0, 0), false);
+            damageable.Hit(5, new Vector2(0, 0), false,attack.AttackType.Melee);
             CharacterEvents.characterShuDyeing.Invoke(gameObject, "¼RÁn¤OºÜ");
         }
     }

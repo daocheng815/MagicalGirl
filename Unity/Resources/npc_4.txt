@@ -1,0 +1,8 @@
+[lock_player]
+[show,10]
+
+[#p][r]感覺感受到了某種力量正在逐漸湧上來......[w]
+
+[hide,100]
+
+[unlock_player]

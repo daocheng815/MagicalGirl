@@ -26,19 +26,19 @@ public class DetectionZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        NoCollidersRemaEND.Invoke();
-
         if(setLayer)
         {
 
             if ((ISLayer & (1 << collision.gameObject.layer)) != 0)
             {
+                NoCollidersRemaEND.Invoke();
                 //DebugTask.Log(collision);
                 detectColliders.Add(collision);
             }
         }
         else
         {
+            NoCollidersRemaEND.Invoke();
             detectColliders.Add(collision);
         }
     }
@@ -52,7 +52,7 @@ public class DetectionZone : MonoBehaviour
             if (setLayer)
             { if ((ISLayer & (1 << collision.gameObject.layer)) != 0) { NoCollidersRemain.Invoke();} }
             else
-            {NoCollidersRemain.Invoke(); }    
+            {NoCollidersRemain.Invoke(); }  
         }
     }
 }

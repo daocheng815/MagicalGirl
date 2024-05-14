@@ -62,6 +62,7 @@ public class ScreenSetting : MonoBehaviour
         //更新UI描述
         for (int i = 1; i < 4; i++)
         {
+            
             PlayerData pd = ArchiveSystemManager.Instance.Lord(i);
             if (pd != null) loadText[i - 1].text = LevelName.LevelNames[pd.myLevelState] + " " + pd.saveIsTime;
             else loadText[i - 1].text = "無";

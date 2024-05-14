@@ -1,4 +1,5 @@
 [lock_player]
+[hideAllImage]
 [hide,1]
 [unlock_player]
 [FadeOut][wait,500]

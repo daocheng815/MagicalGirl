@@ -193,8 +193,6 @@ public abstract class Enemy_Walk : MonoBehaviour
         // 假如原本的位置是負的也會相反
         //DebugTask.Log("擊退");
         rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
-
-
     }
     public void OnCliffDetected()
     {

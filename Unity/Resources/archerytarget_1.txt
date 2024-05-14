@@ -1,0 +1,5 @@
+[lock_player]
+[show,100]
+[#o][r]太好了，就是這樣，你真棒![w]
+[hide,300]
+[unlock_player]

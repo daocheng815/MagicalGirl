@@ -90,6 +90,25 @@ public class invventoryManger : Singleton<invventoryManger>
         return index;
     }
     /// <summary>
+    /// 使用KEY
+    /// </summary>
+    /// <param name="bagnum"></param>
+    /// <param name="itemID"></param>
+    /// <returns></returns>
+    public bool UsingKey(int bagnum,int itemID)
+    {
+        var item = ItemList.Instance.Item[itemID];
+        if (item.itemType != ItemType.Key)
+            return false;
+        if (ItemExistenceCheckerBag(bagnum,itemID))
+        {
+            var i = CheckerItemIsABagToSlotID(bagnum,itemID);
+            Deleteitems(i, bagnum);
+            return true;
+        }
+        return false;
+    }
+    /// <summary>
     /// 移除物品。
     /// </summary>
     public void Deleteitems(int slotID,int bagNum)
@@ -102,12 +121,45 @@ public class invventoryManger : Singleton<invventoryManger>
                 itemInfromation[bagNum].text = "";
             Bag[bagNum].itemList[slotID] = null;
         }
-        RefreshItem(0);
+        RefreshItem(bagNum);
+    }
+
+    /// <summary>
+    /// 檢查某個背包是否存在某個物品
+    /// </summary>
+    /// <param name="b"></param>
+    /// <param name="itemID"></param>
+    /// <returns></returns>
+    public bool ItemExistenceCheckerBag(int b ,int itemID)
+    {
+        bool index = false;
+        item item = ItemList.Instance.Item[itemID];
+        index = Bag[b].itemList.Contains(item);
+        return index;
+    }
+    /// <summary>
+    /// 檢查某個物品在背包中的SLOT
+    /// </summary>
+    /// <param name="b"></param>
+    /// <param name="itemID"></param>
+    /// <returns></returns>
+    public int CheckerItemIsABagToSlotID(int b ,int itemID)
+    {
+        int index = 0;
+        for (int i = 0; i < Bag[b].itemList.Count; i++)
+        {
+            if (Bag[b].itemList[i].itemID == itemID)
+            {
+                index = i;
+                break; 
+            }
+        }
+        return index;
     }
     /// <summary>
     /// 檢查所有背包是否存在某個物品
     /// </summary>
-    /// <param name="itemID"></param>
+    /// <param name="itemID"></para m>
     /// <returns></returns>
     public bool ItemExistenceCheckerAllBag(int itemID)
     {
@@ -118,6 +170,25 @@ public class invventoryManger : Singleton<invventoryManger>
             index = bag.itemList.Contains(item);
             if(index)
                 break;
+        }
+        return index;
+    }
+    /// <summary>
+    /// 檢查所有背包是否存在某個物品，且是否有足夠的物品，如妥有就扣除
+    /// </summary>
+    /// <param name="itemID"></param>
+    /// <param name="num"></param>
+    /// <returns></returns>
+    public bool ItemExistenceCheckerAllBagNumDel(int itemID,int num)
+    {
+        bool index = false;
+        if (ItemExistenceCheckerAllBag(itemID))
+        {
+            if (ItemList.Instance.Item[itemID].itemHeld >= num)
+            {
+                ItemList.Instance.Item[itemID].itemHeld -= num;
+                index = true;
+            }
         }
         return index;
     }

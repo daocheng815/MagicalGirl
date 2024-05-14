@@ -1,8 +1,19 @@
 using Events;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class attack : MonoBehaviour
 {
+    public enum AttackType
+    {
+        Melee,
+        Remotely
+    }
+    public AttackType myAttackType;
+
+    public UnityEvent<int> onAttack;
+    
     public bool MY = false;
     public bool You = false;
     public int attackDamage = 10;
@@ -65,7 +76,8 @@ public class attack : MonoBehaviour
                 deliveredKnockback = transform.parent.localScale.x > 0 ? knockback : new Vector2(-knockback.x, knockback.y);
             }
             //hit the traget
-            bool gotHit = damageable.Hit(attackDamage, deliveredKnockback, IsCrit);
+            bool gotHit = damageable.Hit(attackDamage, deliveredKnockback, IsCrit,myAttackType);
+            if(gotHit) {onAttack?.Invoke(attackDamage);}
             if (gotHit) { Debug.Log(other.name + "hit for" + attackDamage); }
 
 
@@ -115,7 +127,8 @@ public class attack : MonoBehaviour
             if (!IsMiss)
             {
                 //hit the traget
-                bool gotHit = damageable.Hit(attackDamage, deliveredKnockback, IsCrit);
+                bool gotHit = damageable.Hit(attackDamage, deliveredKnockback, IsCrit,myAttackType);
+                if(gotHit) {onAttack?.Invoke(attackDamage);}
                 if (gotHit) { Debug.Log(collision.name + "hit for" + attackDamage); }
             }
             else

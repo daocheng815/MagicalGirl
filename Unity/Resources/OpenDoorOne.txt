@@ -1,0 +1,10 @@
+[lock_player]
+[addImage,player][setXYrp,player,-200,-50][zoom,player,4,4][alphaFade,player,1,0.3]
+[show,100]
+
+[#p_0][r]看起來門好像鎖起來了。找看看附近有沒有鑰匙還是開關看看。[w]
+
+[alphaFade,player,0,0.1]
+[hide,100]
+[hideAllImage]
+[unlock_player]

@@ -16,7 +16,8 @@ public class SearchToPlayers : MonoBehaviour
 
     public bool distanceBool = true;
     public bool distanceBools = true;
-    
+
+    private float _myScaleX;
     private bool _pl;
     private bool _ml;
     private bool _c;
@@ -44,6 +45,7 @@ public class SearchToPlayers : MonoBehaviour
         //獲取標籤為玩家的物件
         _player = GameObject.FindWithTag("Player");
         _isOnPlayer = _player != null ?  true : false;
+        _myScaleX = GetScale().x;
     }
     private void Update()
     {
@@ -54,7 +56,7 @@ public class SearchToPlayers : MonoBehaviour
         
         _c = playPos.x - myPos.x >= 0;
         _pl = playScale.x >= 1;
-        _ml = myScale.x >= 1 ;
+        _ml = myScale.x >= _myScaleX ;
         
         DistanceBool(1f);
         

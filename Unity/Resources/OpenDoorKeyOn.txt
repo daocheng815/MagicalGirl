@@ -1,0 +1,7 @@
+[lock_player]
+[show,100]
+
+[#p_0][r]打開了!!![w]
+
+[hide,100]
+[unlock_player]
